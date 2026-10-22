@@ -441,7 +441,7 @@ const MODELS=[
 // ═════════ STATE ═════════
 let career=null,av=Object.assign({},MODELS[0]),fatigue=0,M=null,bulk=false;
 const wz={step:1,model:0,arch:null,acad:null,club:null,tab:'Premier League'};
-function save(){try{localStorage.setItem('footballLegacy_v5',JSON.stringify({career,av,fatigue}));}catch(e){}}
+function save(){if(!career)return;try{localStorage.setItem('footballLegacy_v5',JSON.stringify({career,av,fatigue}));}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('footballLegacy_v5')||'null');if(d&&d.career){career=d.career;av=Object.assign({},MODELS[0],d.av||{});fatigue=d.fatigue||0;CLUBS.forEach(c=>c.l=(career.ov&&career.ov[c.n])||c.l0);Object.values(career.fillers||{}).forEach(f=>{if(/Reserve League$/.test(f.l))regReserve(f.l);});}}catch(e){career=null;}}
 function getClub(n){return CLUBS.find(c=>c.n===n)||(career&&career.fillers&&career.fillers[n])||null;}
 function activeName(){return career.loan?career.loan.club:career.club;}
@@ -466,6 +466,7 @@ document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g
 function toast(m,t){if(bulk&&t!=='g'&&t!=='ok')return;const d=document.createElement('div');d.className='toast '+(t||'');d.textContent=m;$('toasts').appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),350);},3400);}
 const CSQ=[];let csOpen=false;
 function cs(d){CSQ.push(d);if(!csOpen)csNext();}
+function ask(t,msg,yes,yesLbl){cs({ic:'⚠️',t,s:'Confirm',sc:msg,q:'',ch:[{t:yesLbl||'Yes, do it',x:'',ef:yes},{t:'Cancel',x:'',ef:()=>{}}]});}
 function csNext(){
  if(!CSQ.length){csOpen=false;$('csOv').classList.remove('open');const s=curScreen();if(s==='career')renderCareer();return;}
  csOpen=true;const d=CSQ.shift();
@@ -720,7 +721,7 @@ function simNext(quiet){
  const P=prepare(e),R=quickPlay(P);resolve(P,R.ys,R.os,R.myG,R.myA,R.rt);
  if(!quiet){const res=R.ys>R.os?'W':R.ys<R.os?'L':'D';toast(res+' '+R.ys+'-'+R.os+' vs '+P.opp.n+' · '+(P.role.type==='bench'?'Unused sub':R.myG+'G '+R.myA+'A · '+R.rt.toFixed(1)),res==='W'?'ok':res==='L'?'bad':'g');}
  return true;}
-function simMany(n){bulk=true;let k=0;for(let i=0;i<n;i++){if(!simNext(true))break;k++;}bulk=false;save();toast('Simulated '+k+' fixture'+(k===1?'':'s')+'.','g');renderCareer();}
+function simMany(n){if(!career)return;bulk=true;let k=0;try{for(let i=0;i<n;i++){if(!simNext(true))break;k++;}}catch(err){console.error(err);}bulk=false;save();toast('Simulated '+k+' fixture'+(k===1?'':'s')+(nextEvent()?'.':' — season complete! Hit End Season.'),'g');if(curScreen()!=='career')go('career');else renderCareer();}
 
 // ═════════ OFFERS / WINDOWS ═════════
 function windowState(){const R=career.rounds.length,m=career.mdPlayed;if(m<=3)return{open:true,summer:true,label:'Summer window OPEN'};if(m>=Math.floor(R*.47)&&m<=Math.ceil(R*.57))return{open:true,summer:false,label:'January window OPEN'};return{open:false,label:'Window closed — reopens '+(m<R*.47?'in January':'in the summer')};}
@@ -756,8 +757,9 @@ function renderMenu(){
   $('menuInfo').textContent=career.name+' · '+career.pos+' · '+activeName()+' · Age '+career.age+' · OVR '+career.ovr;}
  else{if(career&&career.retired)$('menuInfo').textContent='Retired legend: '+career.name+' — '+career.goals+' goals, '+career.assists+' assists in '+career.apps+' games, '+career.trophies.filter(t=>!t.startsWith('Named')).length+' honours.';else $('menuInfo').textContent='';mk('Start New Career','gold',newCareer);}
 }
-function newCareer(){if(career&&!career.retired&&!confirm('Start a new career? Current progress will be deleted.'))return;career=null;try{localStorage.removeItem('footballLegacy_v5');}catch(e){}CLUBS.forEach(c=>c.l=c.l0);av=Object.assign({},MODELS[0]);fatigue=0;Object.assign(wz,{step:1,model:0,arch:null,acad:null,club:null});go('create');}
-$('resetBtn').onclick=()=>{if(!confirm('Delete this career permanently?'))return;career=null;try{localStorage.removeItem('footballLegacy_v5');}catch(e){}CLUBS.forEach(c=>c.l=c.l0);go('menu');};
+function newCareer(){const start=()=>{wipeCareer();setTimeout(()=>go('create'),0);};if(career&&!career.retired)ask('Start New Career','Your current career ('+career.name+') will be deleted.',start,'Start fresh');else start();}
+function wipeCareer(){career=null;fatigue=0;M=null;CSQ.length=0;try{localStorage.removeItem('footballLegacy_v5');}catch(e){}CLUBS.forEach(c=>c.l=c.l0);av=Object.assign({},MODELS[0]);Object.assign(wz,{step:1,model:0,arch:null,acad:null,club:null});}
+$('resetBtn').onclick=()=>ask('Delete Career','This permanently deletes '+(career?career.name:'this career')+'. There is no undo.',()=>{wipeCareer();setTimeout(()=>go('menu'),0);},'Delete permanently');
 
 // ═════════ WIZARD ═════════
 function renderWizard(){
@@ -836,7 +838,7 @@ function renderCareer(){
  if(e){const P=prepare(e);const oc=P.opp;
   nx.innerHTML='<div><div class="nf-comp">'+esc(evName(e))+' · '+fmtD(e.date)+'</div><div class="nf-match">'+badge(P.home?ac:oc,26)+esc(P.home?ac.n:oc.n)+' <span style="color:var(--muted)">vs</span> '+esc(P.home?oc.n:ac.n)+badge(P.home?oc:ac,26)+'</div><div class="nf-meta">'+(P.neutral?'Neutral venue':P.home?'Home':'Away')+' · Expected role: <b style="color:var(--cyan)">'+P.role.label+'</b> · Opponent level '+'★'.repeat(oc.t||2)+'</div></div>'+
   '<div class="nf-btns"><button class="btn green" id="bPlay">▶ Play</button><button class="btn" id="bSim">Sim</button><button class="btn" id="bSim5">Sim ×5</button><button class="btn" id="bSimAll">Sim season</button></div>';
-  $('bPlay').onclick=()=>go('match');$('bSim').onclick=()=>{simNext(false);renderCareer();};$('bSim5').onclick=()=>simMany(5);$('bSimAll').onclick=()=>{if(confirm('Simulate every remaining fixture this season?'))simMany(200);};}
+  $('bPlay').onclick=()=>go('match');$('bSim').onclick=()=>{simNext(false);renderCareer();};$('bSim5').onclick=()=>simMany(5);$('bSimAll').onclick=()=>ask('Simulate Season','Simulate every remaining fixture this season? You will skip all match decisions.',()=>setTimeout(()=>simMany(200),0),'Sim to the end');}
  else{nx.innerHTML='<div><div class="nf-comp">Season complete</div><div class="nf-match">Final position: #'+pos+' in '+esc(career.tableLeague)+'</div><div class="nf-meta">'+S.apps+' apps · '+S.g+' goals · '+S.a+' assists · avg '+avgR+'</div></div><div class="nf-btns"><button class="btn gold" id="bEnd">End Season →</button></div>';$('bEnd').onclick=endSeason;}
  const u21=!career.loan&&career.age<=U21_AGE?u21Side():null;
  const items=[['training','💪','Training','SP '+career.sp+' · fatigue '+fatigue+'%'],['calendar','📅','Calendar','Fixtures & results'],['table','📊','Table & Leaders','#'+pos+' · top-5 stats'],['comps','🏆','Competitions',career.comps.filter(c=>c.status==='active').length+' still alive'],['transfers','💰','Transfers',career.offers.length+' offer(s)',career.offers.length>0],['agent','🤵','Agent & Contract','Until '+career.contractEnd],['profile','🎖️','Profile','Stats, history, trophies']].concat(u21?[['u21','🎓','U21 Pathway','Senior minutes with '+u21.n]]:career.loan&&career.loan.u21?[['recall','⬆️','Return to First Team','Back to '+career.club]]:[]);
@@ -1114,7 +1116,7 @@ function doDrill(i){const d=DRILLS[i];if(fatigue+d.f>100)return toast('Too tired
  if(d.fav&&(career.trainFav||0)<4){career.fav=clamp(career.fav+d.fav,0,100);career.trainFav=(career.trainFav||0)+d.fav;}
  career.ovr=calcOvr(career.stats,career.pos);save();toast(d.ic+' '+d.n+' complete · +'+d.sp+' SP','ok');renderTraining();}
 function upgrade(k){const v=career.stats[k],c=spCost(v);if(v>=99)return;if(career.sp<c)return toast('Need '+c+' SP.','bad');career.sp-=c;career.stats[k]=v+1;const o=career.ovr;career.ovr=calcOvr(career.stats,career.pos);save();toast(LBL[k]+' '+(v+1)+(career.ovr>o?' · OVR '+career.ovr+'!':''),'ok');renderTraining();}
-function retrain(p){if(p===career.pos)return;if(!career.creative){if(career.sp<5)return toast('Retraining costs 5 SP.','bad');if(!confirm('Retrain as '+p+'?'))return;career.sp-=5;}
+function retrain(p,ok){if(p===career.pos)return;if(!career.creative){if(career.sp<5)return toast('Retraining costs 5 SP.','bad');if(!ok)return ask('Retrain Position','Retrain as '+p+' for 5 SP?',()=>setTimeout(()=>retrain(p,true),0));career.sp-=5;}
  const wasGK=career.pos==='GK',toGK=p==='GK';
  if(wasGK&&!toGK){const st={};OUTFIELD.forEach(k=>st[k]=rng(38,52));career.stats=st;}
  else if(!wasGK&&toGK){const st={};GKS.forEach(k=>st[k]=rng(40,52));career.stats=st;}
