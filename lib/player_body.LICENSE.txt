@@ -1,0 +1,6 @@
+lib/player_body.json is derived from "Male human body" by Izaskun_Arraiz
+https://sketchfab.com/3d-models/male-human-body-9350c70c446d403eadb43e87cd43f3cd
+Licensed under Creative Commons Attribution 4.0 (CC BY 4.0): http://creativecommons.org/licenses/by/4.0/
+
+Changes: decimated, re-posed into a neutral standing pose, mirrored to be symmetric,
+skinned to the Football Legacy player skeleton, and split into kit regions with shirt UVs.
