@@ -68,6 +68,9 @@ select.fi option{background:var(--s2);}
 .club-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px;max-height:330px;overflow-y:auto;}
 .ccard{background:var(--s2);border:2px solid var(--b1);border-radius:8px;padding:8px;cursor:pointer;display:flex;align-items:center;gap:8px;}
 .ccard.sel{border-color:var(--gold);background:var(--gold3);}
+.badge.flagb{border-radius:50%;overflow:hidden;box-shadow:0 0 0 1.5px rgba(255,255,255,.35);}.badge.flagb svg{display:block;width:100%;height:100%;}
+svg.flag{display:inline-block;vertical-align:-3px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.22);}
+.archgrp{grid-column:1/-1;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:6px;}
 .badge{border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;flex-shrink:0;}
 .cname{font-size:.76rem;font-weight:500;}.clg{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);}
 /* panels */
@@ -285,7 +288,7 @@ body{background:radial-gradient(1100px 600px at 85% -10%,rgba(232,184,75,.07),tr
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v8</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v9</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="cine" id="cine"><canvas id="cineCv"></canvas><button class="cine-skip" id="cineSkip">SKIP ⏭</button><button class="cine-mute" id="cineMute" title="Mute">🔊</button><div class="cdlg" id="cdlg"><div class="cdlg-who" id="cdWho"></div><div class="cdlg-txt" id="cdTxt"></div><div class="cdlg-hint">TAP · SPACE ▸</div></div><div class="cine-bar"><i id="cineProg"></i></div></div>
@@ -308,7 +311,7 @@ body{background:radial-gradient(1100px 600px at 85% -10%,rgba(232,184,75,.07),tr
     <div class="g2"><div class="fg"><label class="fl">First Name</label><input class="fi" id="fn" maxlength="16" placeholder="First name"></div><div class="fg"><label class="fl">Last Name</label><input class="fi" id="ln" maxlength="16" placeholder="Last name"></div></div>
     <div class="g3">
       <div class="fg"><label class="fl">Starting Age</label><select class="fi" id="age"><option value="16">16 — Academy</option><option value="17">17 — Academy</option><option value="18" selected>18 — Young Pro</option><option value="20">20 — Developing</option><option value="22">22 — Late Bloomer</option></select></div>
-      <div class="fg"><label class="fl">Nationality</label><select class="fi" id="nat"></select></div>
+      <div class="fg"><label class="fl">Nationality <span id="natFlag" style="margin-left:6px;"></span></label><select class="fi" id="nat"></select></div>
       <div class="fg"><label class="fl">Position</label><select class="fi" id="pos">
         <option value="GK">GK — Goalkeeper</option><option value="CB">CB — Centre-Back</option><option value="LB">LB — Left-Back</option><option value="RB">RB — Right-Back</option><option value="LWB">LWB — Left Wing-Back</option><option value="RWB">RWB — Right Wing-Back</option><option value="CDM">CDM — Defensive Mid</option><option value="CM" selected>CM — Central Mid</option><option value="CAM">CAM — Attacking Mid</option><option value="LM">LM — Left Mid</option><option value="RM">RM — Right Mid</option><option value="LW">LW — Left Wing</option><option value="RW">RW — Right Wing</option><option value="CF">CF — Centre-Forward</option><option value="ST">ST — Striker</option>
       </select></div>
@@ -411,25 +414,25 @@ const fmtD=iso=>new Date(iso).toLocaleDateString('en-GB',{weekday:'short',day:'n
 // ═════════ DATA ═════════
 const NATIONS=['Algeria','Argentina','Australia','Austria','Belgium','Brazil','Cameroon','Canada','Chile','Colombia','Croatia','Czech Republic','Denmark','Ecuador','Egypt','England','France','Germany','Ghana','Greece','Ireland','Italy','Ivory Coast','Jamaica','Japan','Mexico','Morocco','Netherlands','Nigeria','Northern Ireland','Norway','Poland','Portugal','Saudi Arabia','Scotland','Senegal','Serbia','South Korea','Spain','Sweden','Switzerland','Turkey','Ukraine','United States','Uruguay','Wales'];
 const CLUBS=[
-{n:'Arsenal',l:'Premier League',p:'#EF0107',a:'ARS',t:5},{n:'Liverpool',l:'Premier League',p:'#C8102E',a:'LIV',t:5},{n:'Manchester City',l:'Premier League',p:'#6CABDD',a:'MCI',t:5},{n:'Chelsea',l:'Premier League',p:'#034694',a:'CHE',t:5},{n:'Manchester United',l:'Premier League',p:'#DA291C',a:'MUN',t:4},{n:'Tottenham Hotspur',l:'Premier League',p:'#132257',a:'TOT',t:4},{n:'Newcastle United',l:'Premier League',p:'#241F20',a:'NEW',t:4},{n:'Aston Villa',l:'Premier League',p:'#670E36',a:'AVL',t:4},{n:'Brighton',l:'Premier League',p:'#0057B8',a:'BHA',t:3},{n:'West Ham United',l:'Premier League',p:'#7A263A',a:'WHU',t:3},{n:'Nottingham Forest',l:'Premier League',p:'#DD0000',a:'NFO',t:3},{n:'Crystal Palace',l:'Premier League',p:'#1B458F',a:'CRY',t:3},{n:'Brentford',l:'Premier League',p:'#E30613',a:'BRE',t:3},{n:'Fulham',l:'Premier League',p:'#222222',a:'FUL',t:3},{n:'Everton',l:'Premier League',p:'#003399',a:'EVE',t:3},{n:'AFC Bournemouth',l:'Premier League',p:'#DA291C',a:'BOU',t:3},{n:'Wolves',l:'Premier League',p:'#FDB913',a:'WOL',t:2},{n:'Leeds United',l:'Premier League',p:'#FFCD00',a:'LEE',t:2},{n:'Burnley',l:'Premier League',p:'#6C1D45',a:'BUR',t:2},{n:'Sunderland',l:'Premier League',p:'#EB172B',a:'SUN',t:2},
-{n:'Sheffield United',l:'Championship',p:'#EE2737',a:'SHU',t:2},{n:'Southampton',l:'Championship',p:'#D71920',a:'SOU',t:2},{n:'Leicester City',l:'Championship',p:'#003090',a:'LEI',t:2},{n:'Ipswich Town',l:'Championship',p:'#0044A9',a:'IPS',t:2},{n:'Middlesbrough',l:'Championship',p:'#E21A24',a:'MID',t:2},{n:'Norwich City',l:'Championship',p:'#00A650',a:'NOR',t:2},{n:'West Brom',l:'Championship',p:'#122F67',a:'WBA',t:2},{n:'Watford',l:'Championship',p:'#FBEE23',a:'WAT',t:2},{n:'Coventry City',l:'Championship',p:'#59CBBF',a:'COV',t:2},{n:'Derby County',l:'Championship',p:'#111111',a:'DER',t:2},{n:'Swansea City',l:'Championship',p:'#DDDDDD',a:'SWA',t:1},{n:'Millwall',l:'Championship',p:'#001D5E',a:'MIL',t:1},
-{n:'Birmingham City',l:'League One',p:'#0000FF',a:'BIR',t:2},{n:'Bolton Wanderers',l:'League One',p:'#263B7E',a:'BOL',t:1},{n:'Charlton Athletic',l:'League One',p:'#CC0000',a:'CHA',t:1},{n:'Huddersfield',l:'League One',p:'#0E63AD',a:'HUD',t:1},{n:'Wrexham',l:'League One',p:'#D7000F',a:'WRX',t:1},
+{n:'Arsenal',l:'Premier League',p:'#EF0107',a:'ARS',t:5},{n:'Liverpool',l:'Premier League',p:'#C8102E',a:'LIV',t:5},{n:'Manchester City',l:'Premier League',p:'#6CABDD',a:'MCI',t:5},{n:'Chelsea',l:'Premier League',p:'#034694',a:'CHE',t:5},{n:'Manchester United',l:'Premier League',p:'#DA291C',a:'MUN',t:4},{n:'Tottenham Hotspur',l:'Premier League',p:'#F2F2F2',a:'TOT',t:4},{n:'Newcastle United',l:'Premier League',p:'#241F20',a:'NEW',t:4},{n:'Aston Villa',l:'Premier League',p:'#670E36',a:'AVL',t:4},{n:'Brighton',l:'Premier League',p:'#0057B8',a:'BHA',t:3},{n:'West Ham United',l:'Premier League',p:'#7A263A',a:'WHU',t:3},{n:'Nottingham Forest',l:'Premier League',p:'#DD0000',a:'NFO',t:3},{n:'Crystal Palace',l:'Premier League',p:'#1B458F',a:'CRY',t:3},{n:'Brentford',l:'Premier League',p:'#E30613',a:'BRE',t:3},{n:'Fulham',l:'Premier League',p:'#F2F2F2',a:'FUL',t:3},{n:'Everton',l:'Premier League',p:'#003399',a:'EVE',t:3},{n:'AFC Bournemouth',l:'Premier League',p:'#DA291C',a:'BOU',t:3},{n:'Wolves',l:'Premier League',p:'#FDB913',a:'WOL',t:2},{n:'Leeds United',l:'Premier League',p:'#F2F2F2',a:'LEE',t:2},{n:'Burnley',l:'Premier League',p:'#6C1D45',a:'BUR',t:2},{n:'Sunderland',l:'Premier League',p:'#EB172B',a:'SUN',t:2},
+{n:'Sheffield United',l:'Championship',p:'#EE2737',a:'SHU',t:2},{n:'Southampton',l:'Championship',p:'#D71920',a:'SOU',t:2},{n:'Leicester City',l:'Championship',p:'#003090',a:'LEI',t:2},{n:'Ipswich Town',l:'Championship',p:'#0044A9',a:'IPS',t:2},{n:'Middlesbrough',l:'Championship',p:'#E21A24',a:'MID',t:2},{n:'Norwich City',l:'Championship',p:'#FFE100',a:'NOR',t:2},{n:'West Brom',l:'Championship',p:'#122F67',a:'WBA',t:2},{n:'Watford',l:'Championship',p:'#FBEE23',a:'WAT',t:2},{n:'Coventry City',l:'Championship',p:'#59CBBF',a:'COV',t:2},{n:'Derby County',l:'Championship',p:'#F2F2F2',a:'DER',t:2},{n:'Swansea City',l:'Championship',p:'#F2F2F2',a:'SWA',t:1},{n:'Millwall',l:'Championship',p:'#001D5E',a:'MIL',t:1},
+{n:'Birmingham City',l:'League One',p:'#1E3FA8',a:'BIR',t:2},{n:'Bolton Wanderers',l:'League One',p:'#F2F2F2',a:'BOL',t:1},{n:'Charlton Athletic',l:'League One',p:'#CC0000',a:'CHA',t:1},{n:'Huddersfield',l:'League One',p:'#0E63AD',a:'HUD',t:1},{n:'Wrexham',l:'League One',p:'#D7000F',a:'WRX',t:1},
 {n:'Accrington Stanley',l:'League Two',p:'#CC0000',a:'ACC',t:1},{n:'Newport County',l:'League Two',p:'#F7A600',a:'NPC',t:1},{n:'Bradford City',l:'League Two',p:'#8B1C2C',a:'BRA',t:1},
-{n:'Bayern Munich',l:'Bundesliga',p:'#DC052D',a:'FCB',t:5},{n:'Borussia Dortmund',l:'Bundesliga',p:'#FDE100',a:'BVB',t:4},{n:'Bayer Leverkusen',l:'Bundesliga',p:'#E32221',a:'B04',t:4},{n:'RB Leipzig',l:'Bundesliga',p:'#DD0741',a:'RBL',t:4},{n:'Eintracht Frankfurt',l:'Bundesliga',p:'#E1000F',a:'SGE',t:3},{n:'VfB Stuttgart',l:'Bundesliga',p:'#E32221',a:'VFB',t:3},{n:'Werder Bremen',l:'Bundesliga',p:'#1D9053',a:'SVW',t:2},{n:'Borussia Monchengladbach',l:'Bundesliga',p:'#111111',a:'BMG',t:2},
+{n:'Bayern Munich',l:'Bundesliga',p:'#DC052D',a:'FCB',t:5},{n:'Borussia Dortmund',l:'Bundesliga',p:'#FDE100',a:'BVB',t:4},{n:'Bayer Leverkusen',l:'Bundesliga',p:'#E32221',a:'B04',t:4},{n:'RB Leipzig',l:'Bundesliga',p:'#F2F2F2',a:'RBL',t:4},{n:'Eintracht Frankfurt',l:'Bundesliga',p:'#E1000F',a:'SGE',t:3},{n:'VfB Stuttgart',l:'Bundesliga',p:'#F2F2F2',a:'VFB',t:3},{n:'Werder Bremen',l:'Bundesliga',p:'#1D9053',a:'SVW',t:2},{n:'Borussia Monchengladbach',l:'Bundesliga',p:'#F2F2F2',a:'BMG',t:2},
 {n:'Schalke 04',l:'Bundesliga 2',p:'#004D9D',a:'S04',t:2},{n:'Hertha Berlin',l:'Bundesliga 2',p:'#005CA9',a:'BSC',t:2},{n:'Kaiserslautern',l:'Bundesliga 2',p:'#C8102E',a:'FCK',t:1},
-{n:'Real Madrid',l:'La Liga',p:'#F2F2F2',a:'RMA',t:5},{n:'Barcelona',l:'La Liga',p:'#A50044',a:'BAR',t:5},{n:'Atletico Madrid',l:'La Liga',p:'#CB3524',a:'ATM',t:4},{n:'Athletic Bilbao',l:'La Liga',p:'#EE2523',a:'ATH',t:3},{n:'Real Sociedad',l:'La Liga',p:'#003DA5',a:'RSO',t:3},{n:'Villarreal',l:'La Liga',p:'#F7D000',a:'VIL',t:3},{n:'Real Betis',l:'La Liga',p:'#00954C',a:'BET',t:3},{n:'Sevilla',l:'La Liga',p:'#D4282D',a:'SEV',t:3},{n:'Valencia',l:'La Liga',p:'#FE6600',a:'VAL',t:2},
+{n:'Real Madrid',l:'La Liga',p:'#F2F2F2',a:'RMA',t:5},{n:'Barcelona',l:'La Liga',p:'#A50044',a:'BAR',t:5},{n:'Atletico Madrid',l:'La Liga',p:'#CB3524',a:'ATM',t:4},{n:'Athletic Bilbao',l:'La Liga',p:'#EE2523',a:'ATH',t:3},{n:'Real Sociedad',l:'La Liga',p:'#003DA5',a:'RSO',t:3},{n:'Villarreal',l:'La Liga',p:'#F7D000',a:'VIL',t:3},{n:'Real Betis',l:'La Liga',p:'#00954C',a:'BET',t:3},{n:'Sevilla',l:'La Liga',p:'#F2F2F2',a:'SEV',t:3},{n:'Valencia',l:'La Liga',p:'#F2F2F2',a:'VAL',t:2},
 {n:'Malaga',l:'La Liga 2',p:'#003DA5',a:'MAL',t:1},{n:'Deportivo La Coruna',l:'La Liga 2',p:'#0067B1',a:'DEP',t:1},
-{n:'Inter Milan',l:'Serie A',p:'#010E80',a:'INT',t:5},{n:'Napoli',l:'Serie A',p:'#12A0C3',a:'NAP',t:4},{n:'Juventus',l:'Serie A',p:'#222222',a:'JUV',t:4},{n:'AC Milan',l:'Serie A',p:'#FB090B',a:'ACM',t:4},{n:'Atalanta',l:'Serie A',p:'#1E3888',a:'ATA',t:4},{n:'AS Roma',l:'Serie A',p:'#8B0000',a:'ROM',t:3},{n:'Lazio',l:'Serie A',p:'#9BCEE4',a:'LAZ',t:3},{n:'Fiorentina',l:'Serie A',p:'#4B0082',a:'FIO',t:3},{n:'Bologna',l:'Serie A',p:'#A21C26',a:'BFC',t:3},
+{n:'Inter Milan',l:'Serie A',p:'#010E80',a:'INT',t:5},{n:'Napoli',l:'Serie A',p:'#12A0C3',a:'NAP',t:4},{n:'Juventus',l:'Serie A',p:'#222222',a:'JUV',t:4},{n:'AC Milan',l:'Serie A',p:'#FB090B',a:'ACM',t:4},{n:'Atalanta',l:'Serie A',p:'#1E3888',a:'ATA',t:4},{n:'AS Roma',l:'Serie A',p:'#8E1F2F',a:'ROM',t:3},{n:'Lazio',l:'Serie A',p:'#9BCEE4',a:'LAZ',t:3},{n:'Fiorentina',l:'Serie A',p:'#4B0082',a:'FIO',t:3},{n:'Bologna',l:'Serie A',p:'#A21C26',a:'BFC',t:3},
 {n:'Sampdoria',l:'Serie B',p:'#003DA5',a:'SAM',t:1},{n:'Palermo',l:'Serie B',p:'#F4A6C0',a:'PAL',t:1},
-{n:'Paris Saint-Germain',l:'Ligue 1',p:'#004170',a:'PSG',t:5},{n:'Olympique Marseille',l:'Ligue 1',p:'#009BD8',a:'OM',t:4},{n:'AS Monaco',l:'Ligue 1',p:'#D4021D',a:'ASM',t:4},{n:'Lille',l:'Ligue 1',p:'#DA291C',a:'LIL',t:3},{n:'Olympique Lyonnais',l:'Ligue 1',p:'#0046AD',a:'OL',t:3},{n:'Nice',l:'Ligue 1',p:'#CC0000',a:'NIC',t:3},
-{n:'Ajax',l:'Eredivisie',p:'#D2122E',a:'AJA',t:3},{n:'PSV Eindhoven',l:'Eredivisie',p:'#ED1C24',a:'PSV',t:3},{n:'Feyenoord',l:'Eredivisie',p:'#C8102E',a:'FEY',t:3},{n:'AZ Alkmaar',l:'Eredivisie',p:'#E2001A',a:'AZ',t:2},
+{n:'Paris Saint-Germain',l:'Ligue 1',p:'#004170',a:'PSG',t:5},{n:'Olympique Marseille',l:'Ligue 1',p:'#F2F2F2',a:'OM',t:4},{n:'AS Monaco',l:'Ligue 1',p:'#D4021D',a:'ASM',t:4},{n:'Lille',l:'Ligue 1',p:'#DA291C',a:'LIL',t:3},{n:'Olympique Lyonnais',l:'Ligue 1',p:'#F2F2F2',a:'OL',t:3},{n:'Nice',l:'Ligue 1',p:'#CC0000',a:'NIC',t:3},
+{n:'Ajax',l:'Eredivisie',p:'#F2F2F2',a:'AJA',t:3},{n:'PSV Eindhoven',l:'Eredivisie',p:'#ED1C24',a:'PSV',t:3},{n:'Feyenoord',l:'Eredivisie',p:'#C8102E',a:'FEY',t:3},{n:'AZ Alkmaar',l:'Eredivisie',p:'#E2001A',a:'AZ',t:2},
 {n:'Benfica',l:'Primeira Liga',p:'#E83030',a:'SLB',t:4},{n:'FC Porto',l:'Primeira Liga',p:'#003DA5',a:'FCP',t:4},{n:'Sporting CP',l:'Primeira Liga',p:'#119728',a:'SCP',t:4},
 {n:'Celtic',l:'Scottish Prem',p:'#119728',a:'CEL',t:3},{n:'Rangers',l:'Scottish Prem',p:'#1B458F',a:'RAN',t:3},
 {n:'Galatasaray',l:'Super Lig',p:'#A90432',a:'GS',t:3},{n:'Fenerbahce',l:'Super Lig',p:'#002D72',a:'FB',t:3},{n:'Besiktas',l:'Super Lig',p:'#222222',a:'BJK',t:3},
-{n:'River Plate',l:'Argentine Primera',p:'#E30613',a:'RIV',t:4},{n:'Boca Juniors',l:'Argentine Primera',p:'#003DA5',a:'BOC',t:4},
-{n:'Flamengo',l:'Brasileirao',p:'#C8102E',a:'FLA',t:4},{n:'Palmeiras',l:'Brasileirao',p:'#006437',a:'PAL',t:4},{n:'Corinthians',l:'Brasileirao',p:'#222222',a:'COR',t:3},{n:'Sao Paulo',l:'Brasileirao',p:'#E30613',a:'SAO',t:3},{n:'Santos',l:'Brasileirao',p:'#DDDDDD',a:'SAN',t:3},
+{n:'River Plate',l:'Argentine Primera',p:'#F2F2F2',a:'RIV',t:4},{n:'Boca Juniors',l:'Argentine Primera',p:'#003DA5',a:'BOC',t:4},
+{n:'Flamengo',l:'Brasileirao',p:'#C8102E',a:'FLA',t:4},{n:'Palmeiras',l:'Brasileirao',p:'#006437',a:'PAL',t:4},{n:'Corinthians',l:'Brasileirao',p:'#F2F2F2',a:'COR',t:3},{n:'Sao Paulo',l:'Brasileirao',p:'#F2F2F2',a:'SAO',t:3},{n:'Santos',l:'Brasileirao',p:'#DDDDDD',a:'SAN',t:3},
 {n:'Club America',l:'Liga MX',p:'#FFD700',a:'AME',t:3},{n:'Chivas',l:'Liga MX',p:'#CD1041',a:'CHV',t:3},{n:'Monterrey',l:'Liga MX',p:'#00205B',a:'MTY',t:3},
-{n:'Inter Miami',l:'MLS',p:'#F7B5CD',a:'MIA',t:3},{n:'LA Galaxy',l:'MLS',p:'#00245D',a:'LAG',t:2},{n:'LAFC',l:'MLS',p:'#1A1A1A',a:'LFC',t:2},{n:'New York City FC',l:'MLS',p:'#6CABDD',a:'NYC',t:2},{n:'Philadelphia Union',l:'MLS',p:'#071B2C',a:'PHI',t:2},
+{n:'Inter Miami',l:'MLS',p:'#F7B5CD',a:'MIA',t:3},{n:'LA Galaxy',l:'MLS',p:'#F2F2F2',a:'LAG',t:2},{n:'LAFC',l:'MLS',p:'#1A1A1A',a:'LFC',t:2},{n:'New York City FC',l:'MLS',p:'#6CABDD',a:'NYC',t:2},{n:'Philadelphia Union',l:'MLS',p:'#071B2C',a:'PHI',t:2},
 {n:'Al-Hilal',l:'Saudi Pro League',p:'#005BAC',a:'HIL',t:4},{n:'Al-Nassr',l:'Saudi Pro League',p:'#FFD700',a:'NAS',t:4},{n:'Al-Ittihad',l:'Saudi Pro League',p:'#222222',a:'ITT',t:3},{n:'Al-Ahli',l:'Saudi Pro League',p:'#0B8A3E',a:'AHL',t:3}
 ];
 const LC={'Premier League':'England','Championship':'England','League One':'England','League Two':'England','Bundesliga':'Germany','Bundesliga 2':'Germany','La Liga':'Spain','La Liga 2':'Spain','Serie A':'Italy','Serie B':'Italy','Ligue 1':'France','Ligue 2':'France','Eredivisie':'Netherlands','Primeira Liga':'Portugal','Scottish Prem':'Scotland','Super Lig':'Turkey','Argentine Primera':'Argentina','Brasileirao':'Brazil','Liga MX':'Mexico','MLS':'USA','Saudi Pro League':'Saudi Arabia','AFC':'Asia'};
@@ -463,6 +466,24 @@ function FMT(id){const c=CUPF[id];
  if(id==='lib')return{r:['Group MD1','Group MD2','Group MD3','Group MD4','Group MD5','Group MD6'].concat(legs(['Round of 16','Quarter-Final','Semi-Final','Final'])),f:[.12,.2,.28,.36,.44,.52,.6,.63,.7,.73,.8,.83,.99],groupN:6};
  if(c.g6)return{r:['Group MD1','Group MD2','Group MD3','Group MD4','Group MD5','Group MD6','Round of 16','Quarter-Final','Semi-Final','Final'],f:[.12,.2,.28,.36,.44,.52,.62,.74,.86,.99],groupN:6};
  return c.r?{r:c.r,f:c.f}:GEN;}
+// real home colours for the wider pyramid: [shirt, pattern, second colour, shorts]
+const FILL_KIT=(()=>{const W='#F2F2F2',K='#111111',o={},add=s=>s.split(';').forEach(r=>{const [n,p,pt,k2,sh]=r.split('|');o[n.trim()]=[p,pt||'plain',k2||'',sh||''];});
+ add("Reading|#004494|hoops|"+W+"|"+W+";Stoke City|#E03A3E|stripes|"+W+"|"+W+";Blackburn Rovers|#009EE0|halves|"+W+"|"+W+";Preston North End|"+W+"|||#0B1F4D;Hull City|#F5A12D|stripes|"+K+"|"+K+";Luton Town|#F78F1E|||#0B1F4D;Bristol City|#E21A23|||"+W+";Wigan Athletic|#1D59AF|stripes|"+W+"|#1D59AF;Oxford United|#FFE600|||#0B1F4D;Plymouth Argyle|#00562B|||"+W+";Barnsley|#D71920|||"+W+";Rotherham United|#D71920|||"+W+";Peterborough|#1C3F94|||"+W+";Lincoln City|#E21A23|stripes|"+W+"|"+K+";Wycombe|#87CEEB|halves|#0B1F4D|#0B1F4D;Cambridge United|#FDB913|||"+K+";Shrewsbury|#004C97|||#004C97;Northampton|#7A1E2C|||"+W+";Stevenage|"+W+"|||#E21A23;Crewe|"+W+"|||#D71920;Gillingham|#1C3F94|||"+W+";Doncaster|#D71920|hoops|"+W+"|"+K+";Carlisle|#1C3F94|||"+W+";Walsall|#E21A23|||"+W+";Grimsby|"+K+"|stripes|"+W+"|"+K+";Colchester|#1C3F94|stripes|"+W+"|#1C3F94;Tranmere|"+W+"|||#1C3F94;Notts County|"+K+"|stripes|"+W+"|"+K+";Portsmouth|#001489|||"+W+";QPR|#1D5BA4|hoops|"+W+"|"+W+";Cardiff City|#0070B5|||#0070B5;Blackpool|#F68712|||"+W+";Stockport|#1C3F94|||"+W+";Exeter|#E21A23|stripes|"+W+"|"+K+";Leyton Orient|#E21A23|||"+W+";Mansfield|#FDB913|||#1C3F94;Port Vale|"+W+"|||"+K+";Salford|#E21A23|||"+W+";Fleetwood|#E21A23|sleeves|"+W+"|"+W+";Chesterfield|#1C3F94|||"+W+";Bromley|"+W+"|||"+K+";Barrow|#1C3F94|||"+W+";Swindon|#D71920|||"+W+";MK Dons|"+W+"|||"+W+";Harrogate|#FDE100|||"+K+";Morecambe|#E21A23|||"+W+";AFC Wimbledon|#1C3F94|||#1C3F94;Crawley|#E21A23|||#E21A23;Burton|#FDE100|||"+K+";Cheltenham|#E21A23|||"+W+";Bristol Rovers|#1C3F94|halves|"+W+"|"+W+";Sheffield Wednesday|#1F5FB8|stripes|"+W+"|"+K+";Oldham|#0047AB|||#0047AB");
+ add("Freiburg|#E2001A|||"+K+";Mainz 05|#C3141E|||"+W+";Augsburg|"+W+"|||#C3141E;Union Berlin|#D4011D|||"+W+";Wolfsburg|#65B32E|||"+W+";Hoffenheim|#1961B5|||#1961B5;Heidenheim|#E2001A|||#003D7C;Bochum|#005CA9|||#005CA9;Holstein Kiel|#003D7C|||"+W+";St. Pauli|#5C3317|||#5C3317;Hamburger SV|"+W+"|||#D4011D;Koln|"+W+"|||"+W+";Darmstadt|#004E9F|||"+W+";Paderborn|#005CA9|||#005CA9;Nurnberg|#8B1C2C|||"+K+";Karlsruhe|#005CA9|||"+W+";Magdeburg|#005CA9|||"+W+";Greuther Furth|"+W+"|||#009639;Fortuna Dusseldorf|#E2001A|||"+W+";Hannover 96|#E2001A|||"+K+";Braunschweig|#FDE100|||#0B1F4D;Elversberg|"+K+"|||"+W+";Ulm|"+K+"|||"+W+";Munster|"+K+"|||"+W+";Regensburg|#E2001A|||"+W+";Preussen|#00843D|||"+K);
+ add("Getafe|#005999|||#005999;Osasuna|#D91A21|||#0B1F4D;Celta Vigo|#8AC3EE|||"+W+";Mallorca|#E20613|||"+K+";Rayo Vallecano|"+W+"|sash|#E20613|"+W+";Alaves|#0761AF|stripes|"+W+"|#0761AF;Las Palmas|#FFE400|||#0B5FA5;Girona|#E20613|stripes|"+W+"|#E20613;Espanyol|#007FC8|stripes|"+W+"|#007FC8;Leganes|#0055A4|stripes|"+W+"|#0055A4;Valladolid|#5C2D91|stripes|"+W+"|#5C2D91;Zaragoza|"+W+"|||#0055A4;Oviedo|#0055A4|||"+W+";Racing Santander|"+W+"|||"+K+";Sporting Gijon|#E20613|stripes|"+W+"|#0B1F4D;Eibar|#7A1E2C|stripes|#0055A4|#0055A4;Tenerife|"+W+"|||#0055A4;Huesca|#0055A4|stripes|#7A1E2C|#0055A4;Almeria|#E20613|stripes|"+W+"|"+W+";Cadiz|#FFE400|||#0055A4;Granada|#E20613|hoops|"+W+"|#0B1F4D;Levante|#0055A4|stripes|#7A1E2C|#0055A4;Elche|"+W+"|hband|#00843D|"+W+";Burgos|"+W+"|||"+K+";Albacete|"+W+"|||"+W+";Cordoba|"+W+"|stripes|#00843D|#00843D;Mirandes|#E20613|||"+K+";Castellon|"+K+"|stripes|"+W+"|"+K+";Eldense|#0055A4|stripes|#E20613|#0055A4;Ferrol|#4A148C|||"+W);
+ add("Torino|#8B1A1A|||"+W+";Udinese|"+K+"|stripes|"+W+"|"+K+";Genoa|#A71930|halves|#0B1F4D|"+W+";Lecce|#FFE400|stripes|#E20613|#0B1F4D;Empoli|#0067B1|||"+W+";Cagliari|#A71930|halves|#0B1F4D|"+W+";Hellas Verona|#0E2C63|||#FFE400;Como|#1F5FB8|||"+W+";Monza|#E20613|hband|"+W+"|"+W+";Venezia|"+K+"|hband|#F97A00|"+K+";Parma|"+W+"|||"+W+";Bari|"+W+"|||#E20613;Spezia|"+W+"|||"+K+";Cremonese|#A71930|stripes|#9E9E9E|"+W+";Salernitana|#7A1E2C|||"+W+";Pisa|"+K+"|stripes|#0055A4|"+K+";Modena|#FFE400|||#0B5FA5;Brescia|#0055A4|||"+W+";Sassuolo|#009639|stripes|"+K+"|"+K+";Frosinone|#FFE400|||#0055A4;Reggiana|#7A1E2C|||"+W+";Catanzaro|#FFE400|stripes|#E20613|#E20613;Cesena|"+W+"|||"+K+";Cittadella|#7A1E2C|||#7A1E2C;Juve Stabia|#FFE400|||#0055A4;Mantova|"+W+"|hband|#E20613|"+W+";Carrarese|#FFE400|stripes|#0055A4|#0055A4;Sudtirol|"+W+"|||#E20613");
+ add("Rennes|#E20613|||"+K+";Lens|#FFE400|||#E20613;Nantes|#FFE400|||#00843D;Strasbourg|#0055A4|||"+W+";Toulouse|#5C2D91|||#5C2D91;Montpellier|#0E2C63|||#0E2C63;Brest|#E20613|||"+W+";Reims|#E20613|sleeves|"+W+"|"+W+";Le Havre|#87CEEB|||#0B1F4D;Angers|"+K+"|stripes|"+W+"|"+K+";Auxerre|"+W+"|||"+W+";Saint-Etienne|#00843D|||"+W+";Metz|#7A1E2C|||#7A1E2C;Lorient|#F97A00|||"+K+";Bordeaux|#0E2C63|||"+W+";Caen|#0055A4|stripes|#E20613|"+W+";Guingamp|#E20613|||"+K+";Paris FC|#0E2C63|||#0E2C63;Bastia|#0055A4|||"+W+";Grenoble|#0055A4|||"+W+";Amiens|"+W+"|||"+K+";Pau|#FFE400|||#0055A4;Laval|#F97A00|||"+K+";Annecy|#E20613|||"+W+";Rodez|#E20613|stripes|#FFE400|#E20613;Dunkerque|#0055A4|||"+W+";Troyes|#0055A4|||"+W+";Clermont|#E20613|||#0055A4;Valenciennes|#E20613|||"+W+";Sochaux|#FFE400|||#0055A4;Nancy|"+W+"|||#E20613;Red Star|#00843D|||"+W+";Dijon|#E20613|||"+W+";Nimes|#E20613|||"+W);
+ add("Utrecht|#E20613|||"+W+";Twente|#E20613|||"+W+";Heerenveen|#0055A4|stripes|"+W+"|"+W+";Groningen|#00843D|||"+W+";Sparta Rotterdam|#E20613|stripes|"+W+"|"+K+";NEC|#E20613|halves|#00843D|"+K+";Go Ahead Eagles|#E20613|hband|#FFE400|"+K+";Heracles|"+K+"|||"+K+";Fortuna Sittard|#FFE400|||#00843D;Willem II|#E20613|stripes|"+W+"|#0E2C63;PEC Zwolle|#0055A4|||"+W+";RKC|#FFE400|||#0055A4;Almere City|#E20613|||"+K+";NAC Breda|#FFE400|||"+K);
+ add("Braga|#E20613|sleeves|"+W+"|"+W+";Vitoria SC|"+W+"|||"+K+";Boavista|"+K+"|checks|"+W+"|"+K+";Famalicao|"+W+"|||#0055A4;Gil Vicente|#E20613|||#0055A4;Rio Ave|#00843D|stripes|"+W+"|"+W+";Estoril|#FFE400|||#0055A4;Casa Pia|"+K+"|||"+K+";Moreirense|#00843D|||"+W+";Arouca|#FFE400|||#0055A4;Santa Clara|#E20613|||"+W+";Nacional|"+K+"|stripes|"+W+"|"+W+";Estrela|#E20613|||"+W+";AVS|#E20613|||#E20613;Farense|"+K+"|||"+K);
+ add("Aberdeen|#E20613|||#E20613;Hearts|#7A1E2C|||"+W+";Hibernian|#00843D|sleeves|"+W+"|"+W+";Dundee|#0E2C63|||"+W+";Motherwell|#F5A12D|hband|#7A1E2C|"+W+";Kilmarnock|#0055A4|stripes|"+W+"|"+W+";St Mirren|"+K+"|stripes|"+W+"|"+K+";Ross County|#0E2C63|||#0E2C63;Dundee United|#F97A00|||"+K+";St Johnstone|#0055A4|||"+W);
+ add("Trabzonspor|#7A1E2C|stripes|#87CEEB|#7A1E2C;Basaksehir|#F97A00|||#0E2C63;Sivasspor|#E20613|||"+W+";Konyaspor|#00843D|stripes|"+W+"|#00843D;Kasimpasa|#0055A4|||"+W+";Alanyaspor|#F97A00|||#00843D;Antalyaspor|#E20613|||"+W+";Kayserispor|#FFE400|stripes|#E20613|#E20613;Rizespor|#00843D|stripes|#0055A4|#0055A4;Samsunspor|#E20613|||"+W+";Goztepe|#FFE400|halves|#E20613|"+K+";Eyupspor|#5C2D91|||#FFE400;Hatayspor|#7A1E2C|||"+W+";Bodrumspor|#00843D|||"+W+";Gaziantep|#E20613|||"+K+";Adana Demirspor|#0055A4|stripes|#87CEEB|#0055A4;Kocaelispor|#00843D|stripes|"+K+"|"+K);
+ add("Racing Club|#87CEEB|stripes|"+W+"|"+K+";Independiente|#E20613|||#0E2C63;San Lorenzo|#0E2C63|stripes|#E20613|"+W+";Estudiantes|#E20613|stripes|"+W+"|"+K+";Velez Sarsfield|"+W+"|||#0055A4;Lanus|#7A1E2C|||"+W+";Talleres|#0E2C63|stripes|"+W+"|#0E2C63;Rosario Central|#0055A4|stripes|#FFE400|#0055A4;Newells Old Boys|"+K+"|halves|#E20613|"+K+";Huracan|"+W+"|||"+W+";Banfield|#00843D|stripes|"+W+"|"+W+";Godoy Cruz|#0055A4|stripes|"+W+"|#0055A4;Argentinos Juniors|#E20613|||"+W+";Belgrano|#87CEEB|||#0E2C63;Tigre|#0055A4|hband|#E20613|#0055A4;Platense|"+W+"|||"+K+";Union|#E20613|stripes|"+W+"|"+K+";Gimnasia|"+W+"|hband|#0E2C63|"+W+";Defensa y Justicia|#00843D|halves|#FFE400|#00843D");
+ add("Gremio|#5BB4E5|stripes|"+K+"|"+K+";Internacional|#E20613|||"+W+";Atletico Mineiro|"+K+"|stripes|"+W+"|"+K+";Fluminense|#7A1E2C|stripes|#00843D|"+W+";Botafogo|"+K+"|stripes|"+W+"|"+K+";Vasco da Gama|"+K+"|sash|"+W+"|"+K+";Cruzeiro|#0055A4|||"+W+";Bahia|"+W+"|||#0055A4;Fortaleza|#0055A4|hband|#E20613|"+W+";Athletico Paranaense|#E20613|stripes|"+K+"|"+K+";Bragantino|"+W+"|||"+W+";Juventude|#00843D|||"+W+";Vitoria|#E20613|stripes|"+K+"|"+W+";Cuiaba|#FFE400|||#00843D;Criciuma|#FFE400|stripes|"+K+"|"+K+";Sport Recife|"+K+"|hoops|#E20613|"+K);
+ add("Tigres|#FDB913|||#0055A4;Cruz Azul|#0055A4|||"+W+";Pumas|#0E2C63|||#0E2C63;Toluca|#E20613|||"+W+";Santos Laguna|#00843D|stripes|"+W+"|"+W+";Pachuca|"+W+"|stripes|#0E2C63|"+W+";Leon|#00843D|||"+W+";Atlas|#E20613|halves|"+K+"|"+K+";Tijuana|#E20613|stripes|"+K+"|"+K+";Puebla|"+W+"|sash|#0055A4|"+W+";Queretaro|#0055A4|stripes|"+K+"|"+K+";Necaxa|#E20613|stripes|"+W+"|"+W+";Mazatlan|#5C2D91|||"+W+";Juarez|#E20613|||"+W+";San Luis|#E20613|||#0055A4");
+ add("Seattle Sounders|#5D9741|||#5D9741;Atlanta United|#80000A|stripes|"+K+"|"+K+";Columbus Crew|#FEDD00|||"+K+";Portland Timbers|#00482B|||#00482B;Orlando City|#633492|||#633492;FC Cincinnati|#003087|||#003087;Nashville SC|#ECE83A|||#1F1646;Austin FC|#00B140|||"+K+";Real Salt Lake|#B30838|||#013A81;Minnesota United|"+K+"|||"+K+";Sporting KC|#93B1D7|||#0E2C63;Colorado Rapids|#862633|||"+W+";DC United|"+K+"|||"+K+";New England Revolution|#0A2240|||#0A2240;Houston Dynamo|#FF6B00|||"+K+";Charlotte FC|#1A85C8|||"+W+";St. Louis City|#DD004A|||#0E2C63;NY Red Bulls|"+W+"|||#ED1E36;Chicago Fire|#AF2626|||"+W+";Toronto FC|#B81137|||#B81137;CF Montreal|"+K+"|||"+K+";Vancouver Whitecaps|"+W+"|||#00245E");
+ add("Al-Shabab|"+W+"|||"+K+";Al-Ettifaq|#00843D|||"+W+";Al-Taawoun|#FFE400|||#0055A4;Al-Fateh|"+W+"|||#0055A4;Al-Fayha|#F97A00|||"+W+";Damac|#7A1E2C|||#7A1E2C;Al-Raed|#E20613|||"+K+";Al-Khaleej|#FFE400|||#00843D;Al-Wehda|#E20613|||"+W+";Al-Riyadh|#E20613|||"+K+";Al-Okhdood|#5C2D91|||#5C2D91;Al-Qadsiah|#E20613|||#FFE400;Al-Kholood|#FFE400|||"+K+";Al-Orobah|#0055A4|||"+W);
+ add("Al-Sadd|"+W+"|||"+W+";Ulsan HD|#0055A4|||#0055A4;Kawasaki Frontale|#3BA8E0|stripes|"+K+"|"+K+";Shanghai Port|#E20613|||#E20613;Persepolis|#E20613|||"+W+";Al-Ain|#5C2D91|||#5C2D91;Yokohama F. Marinos|#0E2C63|||"+W+";Buriram United|#0E2C63|||#0E2C63;Johor Darul Tazim|#E20613|hband|#0055A4|#0055A4;Al-Gharafa|#FFE400|||#0055A4;Gwangju FC|#FFE400|||#FFE400;Pohang Steelers|#E20613|stripes|"+K+"|"+K);
+ return o;})();
 const FILL={England:['Reading','Stoke City','Blackburn Rovers','Preston North End','Hull City','Luton Town','Bristol City','Wigan Athletic','Oxford United','Plymouth Argyle','Barnsley','Rotherham United','Peterborough','Lincoln City','Wycombe','Cambridge United','Shrewsbury','Northampton','Stevenage','Crewe','Gillingham','Doncaster','Carlisle','Walsall','Grimsby','Colchester','Tranmere','Notts County','Portsmouth','QPR','Cardiff City','Blackpool','Stockport','Exeter','Leyton Orient','Mansfield','Port Vale','Salford','Fleetwood','Chesterfield','Bromley','Barrow','Swindon','MK Dons','Harrogate','Morecambe','AFC Wimbledon','Crawley','Burton','Cheltenham','Bristol Rovers','Sheffield Wednesday','Oldham'],
  Germany:['Freiburg','Mainz 05','Augsburg','Union Berlin','Wolfsburg','Hoffenheim','Heidenheim','Bochum','Holstein Kiel','St. Pauli','Hamburger SV','Koln','Darmstadt','Paderborn','Nurnberg','Karlsruhe','Magdeburg','Greuther Furth','Fortuna Dusseldorf','Hannover 96','Braunschweig','Elversberg','Ulm','Munster','Regensburg','Preussen'],
  Spain:['Getafe','Osasuna','Celta Vigo','Mallorca','Rayo Vallecano','Alaves','Las Palmas','Girona','Espanyol','Leganes','Valladolid','Zaragoza','Oviedo','Racing Santander','Sporting Gijon','Eibar','Tenerife','Huesca','Almeria','Cadiz','Granada','Levante','Elche','Burgos','Albacete','Cordoba','Mirandes','Castellon','Eldense','Ferrol'],
@@ -705,15 +726,15 @@ const MORE_L=['Abreu','Becker','Castro','Doumbia','Eriksen','Fofana','Gutierrez'
 let career=null,av=Object.assign({},MODELS[0]),fatigue=0,M=null,bulk=false;
 const wz={step:1,model:0,arch:null,acad:null,club:null,tab:'Premier League'};
 function save(){if(!career)return;try{localStorage.setItem('footballLegacy_v5',JSON.stringify({career,av,fatigue}));}catch(e){}}
-function load(){try{const d=JSON.parse(localStorage.getItem('footballLegacy_v5')||'null');if(d&&d.career){career=d.career;av=Object.assign({},MODELS[0],d.av||{});fatigue=d.fatigue||0;CLUBS.forEach(c=>c.l=(career.ov&&career.ov[c.n])||c.l0);(career.leaders||[]).forEach(x=>{if(x.pos===undefined){x.pos={ST:'ST',W:'LW',M:'CM',GK:'GK'}[x.r]||'CM';x.slot={ST:9,W:8,M:5,GK:0}[x.r]||5;}});Object.values(career.fillers||{}).forEach(f=>{if(/Reserve League$/.test(f.l))regReserve(f.l);});}}catch(e){career=null;}}
+function load(){try{const d=JSON.parse(localStorage.getItem('footballLegacy_v5')||'null');if(d&&d.career){career=d.career;Object.values(career.fillers||{}).forEach(f=>{if(FILL_KIT[f.n])f.p=FILL_KIT[f.n][0];});av=Object.assign({},MODELS[0],d.av||{});fatigue=d.fatigue||0;CLUBS.forEach(c=>c.l=(career.ov&&career.ov[c.n])||c.l0);(career.leaders||[]).forEach(x=>{if(x.pos===undefined){x.pos={ST:'ST',W:'LW',M:'CM',GK:'GK'}[x.r]||'CM';x.slot={ST:9,W:8,M:5,GK:0}[x.r]||5;}});Object.values(career.fillers||{}).forEach(f=>{if(/Reserve League$/.test(f.l))regReserve(f.l);});}}catch(e){career=null;}}
 function getClub(n){return CLUBS.find(c=>c.n===n)||(career&&career.fillers&&career.fillers[n])||null;}
 function activeName(){return career.loan?career.loan.club:career.club;}
 function activeClub(){return getClub(activeName());}
-function hashCol(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;const p=['#B71C1C','#0D47A1','#1B5E20','#4A148C','#E65100','#006064','#37474F','#F9A825','#880E4F','#33691E','#01579B','#5D4037'];return p[h%p.length];}
+function hashCol(s){if(FILL_KIT[s])return FILL_KIT[s][0];let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;const p=['#B71C1C','#0D47A1','#1B5E20','#4A148C','#E65100','#006064','#37474F','#F9A825','#880E4F','#33691E','#01579B','#5D4037'];return p[h%p.length];}
 function ensureFiller(n,l,t){career.fillers=career.fillers||{};if(!career.fillers[n])career.fillers[n]={n,l,p:hashCol(n),a:n.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase(),t,f:true};else if(l)career.fillers[n].l=l;return career.fillers[n];}
 function country(c){return LC[c.l]||'England';}
 function clubStr(c){if(!c)return 60;return 52+(c.t||2)*7+((PRES[c.l]||2)-3)*4;}
-function badge(c,sz){sz=sz||30;const tc=isLight(c.p)?'#000':'#fff';return '<div class="badge" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz*.3)+'px;background:'+c.p+';color:'+tc+';">'+esc(c.a)+'</div>';}
+function badge(c,sz){sz=sz||30;if(c.nat&&FLAG_SVG[c.n])return '<div class="badge flagb" title="'+esc(c.n)+'" style="width:'+sz+'px;height:'+sz+'px;">'+flagSVG(c.n,sz,sz,'round')+'</div>';const bg=kitCSS(c.n,c.p),pat=bg!==c.p,tc=pat?'#fff':isLight(c.p)?'#000':'#fff';return '<div class="badge" style="width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz*.3)+'px;background:'+bg+';color:'+tc+';'+(pat?'text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 3px rgba(0,0,0,.6);':'')+'">'+esc(c.a)+'</div>';}
 
 // ═════════ ROUTING ═════════
 function go(id){
@@ -765,7 +786,7 @@ function drawRig(ctx,cfg,po){
  // legs (lift = foot raised for walk/run cycles, g = splay angle)
  [[-1,po.lL||0,po.gL||0],[1,po.lR||0,po.gR||0]].forEach(([l,lift,g])=>{ctx.save();ctx.translate(cx+l*9.5,H*.69);ctx.rotate(-g*l);
   ctx.fillStyle=cfg.suit?kit:skin;rr(ctx,-5.5,0,11,Math.max(6,22-lift),4);ctx.fill();
-  ctx.fillStyle=cfg.suit?darken(kit,15):kit;rr(ctx,-6,19.7-lift,12,15,3);ctx.fill();if(!cfg.suit){ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillRect(-6,21.7-lift,12,2);}
+  ctx.fillStyle=cfg.suit?darken(kit,15):(cfg.socks||kit);rr(ctx,-6,19.7-lift,12,15,3);ctx.fill();if(!cfg.suit){ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillRect(-6,21.7-lift,12,2);}
   const bx=l<0?-8.5:-6.5;ctx.fillStyle=boot;rr(ctx,bx,32.7-lift,15,8,4);ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(bx+2,33.7-lift,7,1.6);ctx.fillStyle='rgba(0,0,0,.4)';ctx.fillRect(bx,39.2-lift,15,1.5);ctx.restore();});
  // shorts
@@ -774,6 +795,7 @@ function drawRig(ctx,cfg,po){
  // torso
  const g=ctx.createLinearGradient(cx-22,0,cx+22,0);g.addColorStop(0,darken(kit,20));g.addColorStop(.45,kit);g.addColorStop(1,darken(kit,30));
  ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(cx-20,H*.565);ctx.bezierCurveTo(cx-22,H*.44,cx-24,H*.33,cx-19,H*.27);ctx.lineTo(cx+19,H*.27);ctx.bezierCurveTo(cx+24,H*.33,cx+22,H*.44,cx+20,H*.565);ctx.closePath();ctx.fill();
+ if(cfg.pat&&cfg.kit2&&!cfg.suit){ctx.save();ctx.clip();drawKitPattern(ctx,cfg,cx,H);ctx.restore();}
  ctx.fillStyle=kd;ctx.fillRect(cx-20,H*.4,3,H*.16);ctx.fillRect(cx+17,H*.4,3,H*.16);
  ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=isLight(kit)?'rgba(0,0,0,.6)':'rgba(255,255,255,.88)';
  const num=cfg.num!=null?String(cfg.num):'10';
@@ -786,7 +808,7 @@ function drawRig(ctx,cfg,po){
  [-1,1].forEach(d=>{const th=d<0?(po.aL!=null?po.aL:.18):(po.aR!=null?po.aR:.18),bd=d<0?(po.bL!=null?po.bL:-.08):(po.bR!=null?po.bR:-.08);
   const [sx,sy,ex,ey,hx,hy]=armFK(d,th,bd);ctx.lineCap='round';ctx.lineJoin='round';
   ctx.strokeStyle=skin;ctx.lineWidth=6.6;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
-  ctx.strokeStyle=kit;ctx.lineWidth=cfg.suit?8.6:9.5;ctx.beginPath();ctx.moveTo(sx,sy);
+  ctx.strokeStyle=cfg.suit?kit:(cfg.sleeve||kit);ctx.lineWidth=cfg.suit?8.6:9.5;ctx.beginPath();ctx.moveTo(sx,sy);
   if(cfg.suit){ctx.lineTo(ex,ey);ctx.lineTo(ex+(hx-ex)*.78,ey+(hy-ey)*.78);}else ctx.lineTo(sx+(ex-sx)*.62,sy+(ey-sy)*.62);ctx.stroke();
   ctx.fillStyle=skin;ctx.beginPath();ctx.arc(hx,hy,4.3,0,Math.PI*2);ctx.fill();
   if(po.out){const p=ctx.getTransform().transformPoint(new DOMPoint(hx,hy));po.out[d<0?'l':'r']={x:p.x,y:p.y};}});
@@ -835,14 +857,14 @@ function drawHair(ctx,cx,H,style,col){
  else if(style==='Side Part'){cap(.045);ctx.strokeStyle=vdk;ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(cx-6,H*.05);ctx.lineTo(cx-8,H*.11);ctx.stroke();ctx.strokeStyle=dk;ctx.lineWidth=.9;for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(cx-4+i*3,H*.055);ctx.quadraticCurveTo(cx+4+i*2,H*.07,cx+10+i,H*.1);ctx.stroke();}}
  else if(style==='Long Flow'){cap(.045);ctx.fillStyle=col;[-1,1].forEach(d=>{ctx.beginPath();ctx.moveTo(cx+d*15.5,H*.12);ctx.bezierCurveTo(cx+d*20,H*.2,cx+d*20,H*.27,cx+d*16,H*.33);ctx.lineTo(cx+d*12.5,H*.3);ctx.bezierCurveTo(cx+d*15.5,H*.24,cx+d*15,H*.18,cx+d*13,H*.13);ctx.closePath();ctx.fill();});ctx.fillStyle=dk;ctx.fillRect(cx-.8,H*.045,1.6,H*.06);}
 }
-function redrawAvatars(){const ac=career&&!career.retired?activeClub():null;[['cvCreate'],['cvHub'],['cvProf']].forEach(([id])=>{const c=$(id);if(c)drawPlayer(c,Object.assign({num:career?career.num:10},av,ac&&id!=='cvCreate'?{kit:ac.p}:{}));});}
+function redrawAvatars(){const ac=career&&!career.retired?activeClub():null;[['cvCreate'],['cvHub'],['cvProf']].forEach(([id])=>{const c=$(id);if(c)drawPlayer(c,Object.assign({num:career?career.num:10},av,ac&&id!=='cvCreate'?(kitOf(ac.n)||{kit:ac.p}):{}));});}
 
 // ═════════ STATS / OVR ═════════
 function statKeys(){return career.pos==='GK'?GKS:OUTFIELD;}
 function calcOvr(st,pos){const ks=POS_KEYS[pos]||POS_KEYS.CM;return Math.round(avg(ks.map(k=>st[k]||40)));}
 function buildStats(arch,acad,pos,age,ht){
  const st={},pen=age<=16?11:age<=17?9:age<=18?7:age<=20?4:2;
- if(pos==='GK'){GKS.forEach(k=>st[k]=clamp(rng(62,72)-pen+(acad.b[k]||0),40,90));return st;}
+ if(pos==='GK'){GKS.forEach(k=>st[k]=clamp(rng(62,72)-pen+(acad.b[k]||0)+((arch.gk||{})[k]||0),40,92));return st;}
  OUTFIELD.forEach(k=>{let b=55;for(const c in ARCH_MAP){if(ARCH_MAP[c].includes(k)&&arch.s[c]){b=arch.s[c]-6+rng(-5,3);break;}}if(acad.b[k])b+=acad.b[k];st[k]=clamp(b-pen,30,92);});
  if(ht>=190){['heading','jumping','strength'].forEach(k=>st[k]=clamp(st[k]+5,30,95));['acceleration','agility'].forEach(k=>st[k]=clamp(st[k]-4,30,95));}
  if(ht<=170){['agility','balance','acceleration'].forEach(k=>st[k]=clamp(st[k]+4,30,95));['heading','jumping','strength'].forEach(k=>st[k]=clamp(st[k]-5,30,95));}
@@ -882,7 +904,9 @@ function makeSquad(team){career.sq=career.sq||{};let b=career.sq[team];
  else if(b.y!==career.year){const used=usedNames(team);b={y:career.year,f:formOf(team),p:b.p.map(q=>Math.random()<(q.real?.1:.15)?{n:uniqName(used),num:q.num}:q)};}
  if(!b.f)b.f=formOf(team);career.sq[team]=b;
  return formFor(team).map((s,i)=>({n:b.p[i].n,club:team,pos:s[0],slot:i,num:b.p[i].num,g:0,a:0,apps:0,rs:0,cs:0}));}
-function styleFx(P){const a=STYLE_FX[styleOf(P.me.n)]||[1,1],b=STYLE_FX[styleOf(P.opp.n)]||[1,1];P.pMy*=a[0]*b[1];P.pOpp*=b[0]*a[1];return P;}
+function styleFx(P){const a=STYLE_FX[styleOf(P.me.n)]||[1,1],b=STYLE_FX[styleOf(P.opp.n)]||[1,1];P.pMy*=a[0]*b[1];P.pOpp*=b[0]*a[1];
+ const bf=BUILD_FX[career.ps];if(bf&&P.role.type!=='bench'){P.gs*=bf[0];P.as*=bf[1];if(P.role.type==='start')P.pOpp*=bf[2];}
+ const pr=career.pre;P.rtAdj=0;if(pr&&P.role.type!=='bench'){P.gs*=pr.g||1;P.as*=pr.a||1;P.rtAdj=pr.rt||0;}return P;}
 function wpick(arr,wf){return arr.length?pickW(arr,arr.map(wf)):null;}
 function pRate(p,gf,ga,g,a){let r=6.45+(gf-ga)*.17+(Math.random()-.5)*1.1+g*.95+a*.55;if(DEFP.includes(p.pos)){r-=ga*.18;if(ga===0)r+=.5;}return Math.round(clamp(r,4.3,10)*10)/10;}
 function initSeason(fromFrac){
@@ -1016,7 +1040,7 @@ function resolve(P,ys,os,myG,myA,rt){
  e.res.note=note;
  const S=career.ss;
  if(played){S.apps++;S.g+=myG;S.a+=myA;S.rs+=rt;if(isDef()&&os===0&&P.role.type==='start')S.cs++;career.apps++;career.goals+=myG;career.assists+=myA;career.form.push(rt);if(career.form.length>5)career.form.shift();
-  career.fav+=(rt-6.6)*3.2;if(myG>0&&!career.firstGoal){career.firstGoal=true;if(!bulk)cs({cine:{type:'siu',col:P.me.p,opp:P.opp.n,min:null}});if(!bulk)cs({ic:'⚽',t:'First Professional Goal',s:P.me.n,sc:'The net ripples. For a split second there is silence in your head — then the roar. Your first ever senior goal. Teammates mob you by the corner flag.',q:'Celebration?',ch:[{t:'Run to the fans',x:'This one is for them.',ef:()=>{career.fav+=4;}},{t:'Point to the sky',x:'For everyone who believed.',ef:()=>{career.stats.composure=clamp((career.stats.composure||50)+2,1,99);}}]});}}
+  career.fav+=(rt-6.6)*3.2;if(myG>0&&!career.firstGoal){career.firstGoal=true;if(!bulk)cs({cine:{type:'siu',col:P.me.p,club:P.me.n,opp:P.opp.n,min:null}});if(!bulk)cs({ic:'⚽',t:'First Professional Goal',s:P.me.n,sc:'The net ripples. For a split second there is silence in your head — then the roar. Your first ever senior goal. Teammates mob you by the corner flag.',q:'Celebration?',ch:[{t:'Run to the fans',x:'This one is for them.',ef:()=>{career.fav+=4;}},{t:'Point to the sky',x:'For everyone who believed.',ef:()=>{career.stats.composure=clamp((career.stats.composure||50)+2,1,99);}}]});}}
  else career.fav+=.3;
  if(played)career.fav+=won?1.2:dr?0:-1.2;career.fav=clamp(career.fav,0,100);
  career.lastRole=P.role.type;career.benchRun=played?0:(career.benchRun||0)+1;career.trainFav=0;
@@ -1024,7 +1048,9 @@ function resolve(P,ys,os,myG,myA,rt){
  fatigue=Math.max(0,fatigue-35);
  offerChance(played);managerEvents(P,rt,won,dr,played);
  {const D=duties();if(D.pen&&!career.dutP)toast('🎯 You are now the designated penalty taker!','g');if(D.fk&&!career.dutF)toast('🌀 Free kicks are yours now!','g');career.dutP=D.pen;career.dutF=D.fk;}
+ mediaPost(P,rt,won,dr,played,myG);career.pre=null;
  if(career.injury)tickInjury(P);else if(played)maybeInjure(P);
+ queuePre();
  save();}
 function cupResolve(e,ys,os,P){
  const c=getComp(e.comp),f=FMT(e.comp),won=ys>os,dr=ys===os;let note='';
@@ -1048,7 +1074,7 @@ function addXP(x){career.xp+=x;while(career.xp>=100+(career.level-1)*60){career.
 
 // ═════════ QUICK SIM ═════════
 function quickPlay(P){
- const r=P.role,on0=r.type!=='bench';let ys=0,os=0,myG=0,myA=0,rt=6.3;
+ const r=P.role,on0=r.type!=='bench';let ys=0,os=0,myG=0,myA=0,rt=6.3+(P.rtAdj||0);
  for(let t=1;t<=18;t++){const min=t*5,on=on0&&r.entry<=min;
   if(Math.random()<P.pMy){ys++;if(on){if(Math.random()<P.gs){myG++;rt+=.9;}else if(Math.random()<P.as){myA++;rt+=.55;}else rt+=.08;}}
   if(Math.random()<P.pOpp){os++;if(on)rt-=isDef()?.25:.08;}
@@ -1071,7 +1097,7 @@ function windowState(){if(career.freeAgent)return{open:true,summer:true,label:'F
 function offerChance(played){
  if(career.offers.length>=4)return;
  const form=career.form.length?avg(career.form):6.3;
- if(Math.random()<.012+(played?Math.max(0,form-6.8)*.05:0))makeOffer('transfer');
+ if(Math.random()<.012+Math.max(0,repOf()-40)*.00015+(played?Math.max(0,form-6.8)*.05:0))makeOffer('transfer');
  if((career.lastRole==='bench'||career.lastRole==='sub')&&career.age<=23&&!career.loan&&Math.random()<.05)makeOffer('loan');}
 function makeOffer(type,free){
  const cur=getClub(career.club),tgt=career.ovr>=84?5:career.ovr>=77?4:career.ovr>=70?3:career.ovr>=63?2:1;let pool;
@@ -1125,10 +1151,10 @@ function renderAvatarStep(){
  swatches('optHairCol',HCOLS,'hairCol');swatches('optSkin',SKINS,'skin');swatches('optKit',KITS,'kit');swatches('optBoot',BOOTS,'boot');redrawAvatars();}
 function renderArch(){
  const pos=$('pos').value,g=$('archGrid');g.innerHTML='';
- ARCH.filter(a=>pos==='GK'?a.id==='keeper':a.id!=='keeper').forEach(a=>{const p=PS[a.id];const d=document.createElement('div');d.className='pick'+(wz.arch===a.id?' sel':'');d.innerHTML='<div class="i">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="d">'+a.grp+' · '+p[2]+'</div>';d.onclick=()=>{wz.arch=a.id;renderArch();};g.appendChild(d);});
+ let lastG='';ARCH.filter(a=>(pos==='GK')===(a.grp==='Goalkeeper')).sort((a,b)=>['Forward','Mid/Wing','Def/CDM','Goalkeeper'].indexOf(a.grp)-['Forward','Mid/Wing','Def/CDM','Goalkeeper'].indexOf(b.grp)).forEach(a=>{if(a.grp!==lastG){lastG=a.grp;const hd=document.createElement('div');hd.className='archgrp';hd.textContent=a.grp;g.appendChild(hd);}const p=PS[a.id];const d=document.createElement('div');d.className='pick'+(wz.arch===a.id?' sel':'');d.innerHTML='<div class="i">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="d">'+p[2]+'</div>'+(BUILD_FX[a.id]?'<div class="d" style="color:var(--gold);margin-top:4px;">'+BUILD_FX[a.id][3]+'</div>':'');d.onclick=()=>{wz.arch=a.id;renderArch();};g.appendChild(d);});
  const a=ARCH.find(x=>x.id===wz.arch);const pv=$('archPrev');
- if(a&&a.id!=='keeper'){pv.style.display='block';pv.innerHTML='<div class="ph">Base profile</div>'+Object.keys(a.s).map(k=>'<div class="sr"><div class="sl">'+k+'</div><div class="sb"><i style="width:'+a.s[k]+'%"></i></div><div class="sv">'+a.s[k]+'</div></div>').join('');}else pv.style.display='none';
- if(wz.arch&&!ARCH.find(x=>x.id===wz.arch&&(pos==='GK'?x.id==='keeper':x.id!=='keeper')))wz.arch=null;}
+ if(a&&a.grp!=='Goalkeeper'){pv.style.display='block';pv.innerHTML='<div class="ph">Base profile</div>'+Object.keys(a.s).map(k=>'<div class="sr"><div class="sl">'+k+'</div><div class="sb"><i style="width:'+a.s[k]+'%"></i></div><div class="sv">'+a.s[k]+'</div></div>').join('');}else pv.style.display='none';
+ if(wz.arch&&!ARCH.find(x=>x.id===wz.arch&&(pos==='GK')===(x.grp==='Goalkeeper')))wz.arch=null;}
 function renderAcad(){const g=$('acadGrid');g.innerHTML='';ACADS.forEach(a=>{const d=document.createElement('div');d.className='pick'+(wz.acad===a.id?' sel':'');d.innerHTML='<div class="i">'+a.ic+'</div><div class="n">'+a.n+'</div><div class="d">'+a.d+'</div>';d.onclick=()=>{wz.acad=a.id;renderAcad();};g.appendChild(d);});}
 function renderClubs(){
  const leagues=[...new Set(CLUBS.map(c=>c.l))];const tb=$('lgTabs');tb.innerHTML='';
@@ -1171,20 +1197,21 @@ function renderCareer(){
  redrawAvatars();
  $('hName').textContent=career.name+(career.captain?' ©':'');
  $('hInfo').innerHTML='<span style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle;">'+badge(ac,20)+esc(ac.n)+'</span>'+(career.loan?' <span style="color:var(--cyan)">('+(career.loan.u21?'U21 side of ':'on loan from ')+esc(career.club)+')</span>':'')+' · '+esc(ac.l);
- $('hPills').innerHTML='<span class="pill g">'+career.pos+'</span><span class="pill">Age '+career.age+'</span><span class="pill">'+esc(career.nat)+'</span><span class="pill">'+career.foot+' foot</span><span class="pill g">'+PS[career.ps][1]+'</span>'+(career.loan?'<span class="pill c">'+(career.loan.u21?'U21':'LOAN')+'</span>':'')+(career.caps?'<span class="pill">🌍 '+career.caps+' caps</span>':'')+(career.bdoWins?'<span class="pill g">🥇 x'+career.bdoWins+'</span>':'')+(career.creative?'<span class="pill g">🎨 Creative</span>':'')+(duties().pen?'<span class="pill g">🎯 Pens</span>':'')+(duties().fk?'<span class="pill g">🌀 FKs</span>':'');
+ $('hPills').innerHTML='<span class="pill g">'+career.pos+'</span><span class="pill">Age '+career.age+'</span><span class="pill">'+flagSVG(career.nat,18,12)+' '+esc(career.nat)+'</span><span class="pill">'+career.foot+' foot</span><span class="pill g">'+PS[career.ps][1]+'</span>'+(career.loan?'<span class="pill c">'+(career.loan.u21?'U21':'LOAN')+'</span>':'')+(career.caps?'<span class="pill">🌍 '+career.caps+' caps</span>':'')+(career.bdoWins?'<span class="pill g">🥇 x'+career.bdoWins+'</span>':'')+(career.creative?'<span class="pill g">🎨 Creative</span>':'')+(duties().pen?'<span class="pill g">🎯 Pens</span>':'')+(duties().fk?'<span class="pill g">🌀 FKs</span>':'');
  $('hOvr').textContent=career.ovr;$('hPos').textContent=career.pos+' OVR';
  const favCol=career.fav>65?'var(--green)':career.fav>35?'var(--gold)':'var(--red)';
  const avgR=S.apps?(S.rs/S.apps).toFixed(2):'—';
- $('hBar').innerHTML=[['Season',career.year+'/'+String(career.year+1).slice(2)],['League pos','#'+pos+' / '+career.teams.length],['Season',S.apps+' apps · '+S.g+'G · '+S.a+'A'],['Avg rating',avgR],['Wage',money(career.salary)+'/wk'],['SP',career.sp]].map(x=>'<div class="sbi"><div class="l">'+x[0]+'</div><div class="v">'+x[1]+'</div></div>').join('')+
+ $('hBar').innerHTML=[['Season',career.year+'/'+String(career.year+1).slice(2)],['League pos','#'+pos+' / '+career.teams.length],['Season',S.apps+' apps · '+S.g+'G · '+S.a+'A'],['Avg rating',avgR],['Wage',money(career.salary)+'/wk'+(career.endorse?' +'+money(career.endorse):'')],['SP',career.sp]].map(x=>'<div class="sbi"><div class="l">'+x[0]+'</div><div class="v">'+x[1]+'</div></div>').join('')+
   '<div class="sbi" style="flex:1;min-width:150px;"><div class="l">Manager trust — '+esc(career.manager)+'</div><div class="bar"><i style="width:'+career.fav+'%;background:'+favCol+'"></i></div></div>'+
-  '<div class="sbi" style="min-width:110px;"><div class="l">Fatigue</div><div class="bar"><i style="width:'+fatigue+'%;background:'+(fatigue>70?'var(--red)':fatigue>40?'var(--gold)':'var(--green)')+'"></i></div></div>';
+  '<div class="sbi" style="min-width:110px;"><div class="l">Fatigue</div><div class="bar"><i style="width:'+fatigue+'%;background:'+(fatigue>70?'var(--red)':fatigue>40?'var(--gold)':'var(--green)')+'"></i></div></div>'+
+  '<div class="sbi" style="min-width:120px;"><div class="l">Public image</div><div class="bar"><i style="width:'+repOf()+'%;background:'+(repOf()>65?'var(--cyan)':repOf()>30?'var(--gold)':'var(--red)')+'"></i></div></div>';
  const w=windowState();
  $('hAlert').innerHTML=(career.offers.length?'<div class="warn">💰 '+career.offers.length+' offer(s) on the table · '+w.label+'</div>':'')+(career.fav<30?'<div class="warn" style="color:#ef5350;border-color:#c62828;">⚠ Manager trust is low — you will struggle for minutes.</div>':'');
  const SM=career.summer,e=curEvent(),nx=$('hNext');
  if(SM)$('hAlert').innerHTML=summerPanel()+$('hAlert').innerHTML;
  if(career.freeAgent){nx.innerHTML='<div><div class="nf-comp">🆓 Free agent · '+career.year+'/'+String(career.year+1).slice(2)+'</div><div class="nf-match">No club — '+career.offers.length+' offer'+(career.offers.length===1?'':'s')+' waiting</div><div class="nf-meta">Your contract with '+esc(career.club)+' has expired. Free agents sign without a fee and earn a signing-on bonus — pick your next club.</div></div><div class="nf-btns"><button class="btn gold" id="bFA">View offers →</button><button class="btn" id="bFAm">Ask agent for more</button></div>';$('bFA').onclick=()=>go('transfers');$('bFAm').onclick=()=>{freeOffers();toast('Your agent has fresh offers.','g');renderCareer();};}
  else if(e){const P=prepare(e);const oc=P.opp,ac=P.me;
-  nx.innerHTML='<div><div class="nf-comp">'+(SM?'☀️ Summer '+SM.year+' · ':'')+esc(evName(e))+' · '+fmtD(e.date)+'</div><div class="nf-match">'+badge(P.home?ac:oc,26)+esc(P.home?ac.n:oc.n)+' <span style="color:var(--muted)">vs</span> '+esc(P.home?oc.n:ac.n)+badge(P.home?oc:ac,26)+'</div><div class="nf-meta">'+(P.neutral?'Neutral venue':P.home?'Home':'Away')+' · Expected role: <b style="color:var(--cyan)">'+P.role.label+'</b> · Opponent level '+'★'.repeat(oc.t||2)+'</div></div>'+
+  nx.innerHTML='<div><div class="nf-comp">'+(SM?'☀️ Summer '+SM.year+' · ':'')+esc(evName(e))+' · '+fmtD(e.date)+'</div><div class="nf-match">'+badge(P.home?ac:oc,26)+esc(P.home?ac.n:oc.n)+' <span style="color:var(--muted)">vs</span> '+esc(P.home?oc.n:ac.n)+badge(P.home?oc:ac,26)+'</div><div class="nf-meta">'+(P.neutral?'Neutral venue':P.home?'Home':'Away')+' · Expected role: <b style="color:var(--cyan)">'+P.role.label+'</b> · Opponent level '+'★'.repeat(oc.t||2)+'</div>'+preNote()+'</div>'+
   '<div class="nf-btns"><button class="btn green" id="bPlay">▶ Play</button><button class="btn" id="bSim">Sim</button><button class="btn" id="bSim5">Sim ×5</button><button class="btn" id="bSimAll">'+(SM?'Sim tournament':'Sim season')+'</button></div>';
   $('bPlay').onclick=()=>go('match');$('bSim').onclick=()=>{simNext(false);renderCareer();};$('bSim5').onclick=()=>simMany(5);$('bSimAll').onclick=()=>ask('Simulate Season','Simulate every remaining fixture this season? You will skip all match decisions.',()=>setTimeout(()=>simMany(200),0),'Sim to the end');}
  else if(SM){nx.innerHTML='<div><div class="nf-comp">☀️ Summer '+SM.year+' · '+esc(SM.T)+'</div><div class="nf-match">'+(SM.notCalled?'Not selected for '+esc(career.nat):SM.won?'🏆 '+esc(career.nat)+' are champions!':esc(career.nat)+' — out in the '+esc(SM.reached))+'</div><div class="nf-meta">'+SM.apps+' apps · '+SM.g+' goals · '+SM.a+' assists</div></div><div class="nf-btns"><button class="btn gold" id="bEnd">Continue to '+(career.year+1)+'/'+String(career.year+2).slice(2)+' →</button></div>';$('bEnd').onclick=endSeason;}
@@ -1224,7 +1251,7 @@ function renderXI(final){
 function renderMatch(){
  const e=curEvent();if(!e){go('career');return;}
  const P=prepare(e);
- M={P,ys:0,os:0,min:0,ti:0,myG:0,myA:0,rt:6.3,dec:[],live:false,over:false,ball:{x:.5,y:.5},bt:{x:.5,y:.5},flash:0,flashT:'',raf:null,timer:null};
+ M={P,ys:0,os:0,min:0,ti:0,myG:0,myA:0,rt:6.3+(P.rtAdj||0),dec:[],live:false,over:false,ball:{x:.5,y:.5},bt:{x:.5,y:.5},flash:0,flashT:'',raf:null,timer:null};
  M.fMe=formFor(P.me.n).map(s=>[s[1],s[2]]);M.fOpp=formFor(P.opp.n).map(s=>[s[1],s[2]]);M.pp=M.fMe.concat(M.fOpp).map((f,i)=>({x:i<11?f[0]:1-f[0],y:f[1]}));M.trail=[];M.poss='me';M.carrier=10;
  const nDec=e.t!=='L'?rng(2,3):pickW([0,1,2],[38,54,8]);
  if(P.role.type!=='bench'){const mins=[];for(let m=Math.max(10,P.role.entry+5);m<=85;m+=5)mins.push(m);M.dec=shuffle(mins).slice(0,P.role.entry>60?Math.min(1,nDec):nDec).sort((a,b)=>a-b);}
@@ -1274,7 +1301,7 @@ function drawPitchFrame(){
   if(i===M.carrier){tx=M.ball.x-(mine?.012:-.012);ty=M.ball.y;}
   tx=clamp(tx,.03,.97);ty=clamp(ty,.06,.94);const kk=1-Math.exp(-dt*(i===M.carrier?6:2.2));p.x+=(tx-p.x)*kk;p.y+=(ty-p.y)*kk;});
  const clash=Math.abs(parseInt(P.me.p.slice(1,3),16)-parseInt(P.opp.p.slice(1,3),16))<60&&Math.abs(parseInt(P.me.p.slice(5,7),16)-parseInt(P.opp.p.slice(5,7),16))<60;
- const opC=clash?'#EEEEEE':P.opp.p;
+ const opC=clash?(isLight(P.opp.p)?'#1E2A4A':'#EEEEEE'):P.opp.p;
  M.pp.forEach((p,i)=>{const mine=i<11,px=p.x*W,py=p.y*H,me=mine&&i===youIdx&&onP,col=mine?P.me.p:opC,r=me?8.5:7;
   const pl=mine?M.xiMe&&M.xiMe.find(q=>q.slot===i):M.xiOpp&&M.xiOpp.find(q=>q.slot===i-11),num=me?career.num:pl?(pl.you?career.num:pl.num):'';
   x.fillStyle='rgba(0,0,0,.3)';x.beginPath();x.ellipse(px+1.5,py+r*.85,r*.9,r*.35,0,0,Math.PI*2);x.fill();
@@ -1451,7 +1478,7 @@ function resolveIntl(P,ys,os,myG,myA,rt){
  const sm=career.summer,e=P.e,played=P.role.type!=='bench',ko=e.ri>=3;let won=ys>os,note='';
  if(ko&&ys===os){const pk=career.pos==='GK'?(career.stats.gk_reflexes||60):(career.stats.penalties||60);won=Math.random()<.5+(played?(pk-70)/300:0);note=won?'Won on penalties':'Lost on penalties';}
  if(played){sm.apps++;sm.g+=myG;sm.a+=myA;career.caps=(career.caps||0)+1;career.intlGoals=(career.intlGoals||0)+myG;career.intlAssists=(career.intlAssists||0)+myA;
-  if(myG>0&&!career.firstGoal){career.firstGoal=true;if(!bulk)cs({cine:{type:'siu',col:P.me.p,opp:P.opp.n,min:null}});}
+  if(myG>0&&!career.firstGoal){career.firstGoal=true;if(!bulk)cs({cine:{type:'siu',col:P.me.p,club:P.me.n,opp:P.opp.n,min:null}});}
   if(!sm.starter&&rt>=7.4&&Math.random()<.6){sm.starter=true;note=(note?note+' · ':'')+'You have earned a starting spot!';}}
  if(!ko)sm.pts+=ys>os?3:ys===os?1:0;
  if(e.ri===2){if(sm.pts>=4||(sm.pts===3&&Math.random()<.6)){note=(note?note+' · ':'')+'Through to the knockouts';toast(career.nat+' are through with '+sm.pts+' pts!','ok');}else{sm.out=true;note=(note?note+' · ':'')+'Out in the group';}}
@@ -1459,8 +1486,9 @@ function resolveIntl(P,ys,os,myG,myA,rt){
  sm.res.push({stage:e.stage,opp:e.opp,ys,os,note,rt:played?Math.round(rt*10)/10:null,g:myG,a:myA});
  e.done=true;e.res={ys,os,note};sm.i++;
  addXP(played?22+myG*15+myA*10+(won?10:0):6);fatigue=Math.max(0,fatigue-35);
+ mediaPost(P,rt,won,ys===os,played,myG);career.pre=null;
  if(career.injury)tickInjury(P);else if(played)maybeInjure(P);
- if(sm.out||sm.won)finishSummer();save();}
+ if(sm.out||sm.won)finishSummer();else queuePre();save();}
 function finishSummer(silent){const sm=career.summer;sm.done=true;sm.reached=sm.won?'Winners':sm.stages[Math.max(0,sm.i-1)];
  sm.bonus=sm.notCalled?0:(sm.won?22:/Final/.test(sm.reached)?12:/Semi/.test(sm.reached)?7:/Quarter/.test(sm.reached)?3:0)+sm.g*1.5+sm.a;career.intl={year:sm.year,bonus:sm.bonus};
  if(sm.won&&!sm.notCalled){career.trophies.push(sm.T+' Winner ('+sm.year+')');const c=cityOf(career.nat,true);
@@ -1472,26 +1500,28 @@ function summerPanel(){const sm=career.summer;if(!sm)return '';
 
 // ═════════ BALLON D'OR ═════════
 // Forwards win it with big numbers + trophies; everyone else is scaled down and needs a historic season.
-const BDO_PM={ST:1,CF:1,LW:1,RW:1,CAM:1,CM:.8,LM:.85,RM:.85,CDM:.72,CB:.7,LB:.7,RB:.7,LWB:.72,RWB:.72,GK:.66};
+const BDO_PM={ST:1,CF:1,LW:.95,RW:.95,CAM:.88,CM:.62,LM:.7,RM:.7,CDM:.55,CB:.5,LB:.5,RB:.5,LWB:.52,RWB:.52,GK:.45};
 function newStar(){const el=CLUBS.filter(x=>x.t>=4&&!x.u21);return{n:rname(),c:el[rng(0,el.length-1)].n,p:pickW(['ST','LW','RW','CAM','CF','CM'],[5,4,4,3,2,1])};}
 function ballonDor(){
- const S=career.ss,club=activeClub(),yr=career.year+1,pos=career.pos,elig=S.apps>=20;
+ const S=career.ss,club=activeClub(),yr=career.year+1,pos=career.pos,elig=S.apps>=25;
  const att=['ST','CF','LW','RW','CAM'].includes(pos),avgR=S.apps?S.rs/S.apps:6;
  let sc=0;
  if(elig){
-  sc=(avgR-6.5)*30+(att?S.g+S.a*.6:S.g*1.3+S.a*.8)+(pos==='GK'?S.cs*1.3:isDef()?S.cs*.6:0)+Math.max(0,career.ovr-78)*1.5;
+  sc=(avgR-6.6)*28+(att?S.g+S.a*.5:S.g*1.2+S.a*.7)+(pos==='GK'?S.cs*1.2:isDef()?S.cs*.5:0)+Math.max(0,career.ovr-80)*1.5;
   const won=career.comps.filter(x=>x.status==='won').map(x=>x.id);
   if(leaguePos()===1)sc+=15*((PRES[club.l]||2)/5);
   const u=getComp('ucl');if(won.includes('ucl'))sc+=28;else if(u&&/Semi|Final/.test(u.stage))sc+=8;
   if(won.some(id=>id==='uel'||id==='lib'))sc+=10;
   sc+=won.filter(id=>(COUNTRY_CUPS[LC[club.l]]||[]).includes(id)).length*4;
   if(career.intl&&career.intl.year===yr)sc+=career.intl.bonus||0;
-  sc*=clamp(((PRES[club.l]||2)+club.t)/9,.35,1.1)*(BDO_PM[pos]||.8);}
- const nominated=elig&&sc>=50;
+  sc*=clamp(((PRES[club.l]||2)+club.t)/9,.35,1.1)*(BDO_PM[pos]||.8);
+  if(!att&&avgR>=7.8&&won.includes('ucl')&&leaguePos()===1)sc*=1.25;sc+=(repOf()-50)*.3;}
+ const nominated=elig&&sc>=45;
  const real=BDO_STARS.filter(r=>career.year-r.b<=35&&career.year-r.b>=17);career.stars=(career.stars||[]).filter(r=>r.gen);while(career.stars.length<Math.max(2,10-real.length))career.stars.push(Object.assign(newStar(),{gen:1}));if(Math.random()<.2)career.stars[rng(0,career.stars.length-1)]=Object.assign(newStar(),{gen:1});
  const elite=CLUBS.filter(x=>x.t>=4&&!x.u21);
- const field=real.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(72,120)-Math.abs(career.year-r.b-27)*1.6})).concat(career.stars.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(80,118)})));
+ const field=real.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(62,106)-Math.abs(career.year-r.b-27)*1.6})).concat(career.stars.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(66,104)})));
  for(let i=field.length;i<30;i++)field.push({n:rname(),c:elite[rng(0,elite.length-1)].n,p:pickW(['ST','LW','RW','CAM','CF','CM','CB','GK'],[5,4,4,4,2,3,2,1]),s:Math.max(15,96-i*3.2+rng(-8,6))});
+ {const top=field.slice().sort((a,b)=>b.s-a.s).slice(0,4),hero=top[rng(0,top.length-1)];if(hero)hero.s=Math.max(hero.s,rng(106,145));}
  if(nominated)field.push({n:career.name,c:club.n,p:pos,s:sc,you:true});field.sort((a,b)=>b.s-a.s);
  const rank=nominated?field.findIndex(x=>x.you)+1:0;if(rank)career.bdoBest=Math.min(career.bdoBest||99,rank);
  const win=field[0];career.bdoHist=career.bdoHist||[];career.bdoHist.push({yr,w:win.n,c:win.c,you:rank||null});
@@ -1499,7 +1529,7 @@ function ballonDor(){
  const hint=!att&&rank!==1&&elig?' As a '+pos+', only a historic season — elite ratings, '+(isDef()?'clean sheets, ':'')+'and the biggest trophies — beats the forwards to it.':'';
  if(rank===1){career.trophies.push("Ballon d'Or ("+yr+")");career.bdoWins=(career.bdoWins||0)+1;
   cs({cine:{type:'ballon',yr,name:career.name,suit:true,sub:(pos==='GK'?S.cs+' CLEAN SHEETS · ':S.g+' GOALS · '+S.a+' ASSISTS · ')+avgR.toFixed(2)+' AVG · '+club.n.toUpperCase()}});}
- cs({ic:rank===1?'🥇':'🎟️',t:"Ballon d'Or "+yr,s:'Paris — Théâtre du Châtelet',sc:rank===1?'The best footballer on the planet. '+career.name+' joins the immortals. Podium: '+pod:'And the Ballon d\'Or '+yr+' goes to… '+win.n+' ('+win.p+', '+win.c+')! '+(rank?'You were nominated among the world\'s best 30 and finished #'+rank+'.':'You were not among the 30 nominees this year'+(elig?' — you need trophies and elite numbers at a top club.':' — you need at least 20 appearances to be considered.'))+hint+'  Podium: '+pod,q:rank===1?'Your speech?':'Reaction?',ch:rank===1?[{t:'Thank the team',x:'Football is a team game.',ef:()=>{career.fav=clamp(career.fav+10,0,100);}},{t:'Thank your family',x:'For every sacrifice.',ef:()=>{career.sp+=3;}}]:[{t:rank&&rank<=3?'So close':'Motivation',x:rank&&rank<=3?'Next year it is mine.':'One day that will be me.',ef:()=>{career.sp+=rank&&rank<=10?2:rank?1:0;}}]});}
+ cs({ic:rank===1?'🥇':'🎟️',t:"Ballon d'Or "+yr,s:'Paris — Théâtre du Châtelet',sc:rank===1?'The best footballer on the planet. '+career.name+' joins the immortals. Podium: '+pod:'And the Ballon d\'Or '+yr+' goes to… '+win.n+' ('+win.p+', '+win.c+')! '+(rank?'You were nominated among the world\'s best 30 and finished #'+rank+'.':'You were not among the 30 nominees this year'+(elig?' — you need trophies and elite numbers at a top club.':' — you need at least 25 appearances to be considered.'))+hint+'  Podium: '+pod,q:rank===1?'Your speech?':'Reaction?',ch:rank===1?[{t:'Thank the team',x:'Football is a team game.',ef:()=>{career.fav=clamp(career.fav+10,0,100);}},{t:'Thank your family',x:'For every sacrifice.',ef:()=>{career.sp+=3;}}]:[{t:rank&&rank<=3?'So close':'Motivation',x:rank&&rank<=3?'Next year it is mine.':'One day that will be me.',ef:()=>{career.sp+=rank&&rank<=10?2:rank?1:0;}}]});}
 
 // ═════════ END SEASON ═════════
 function closeClubSeason(){
@@ -1673,7 +1703,8 @@ function renderProfile(){
  redrawAvatars();$('pfName').textContent=career.name;$('pfPos').textContent=career.pos+' · OVR '+career.ovr+' · Age '+career.age;
  const keys=POS_KEYS[career.pos],S=career.ss,p=PS[career.ps];
  let h='<div class="panel"><div class="ph">Key '+career.pos+' attributes</div>'+keys.map(k=>'<div class="sr"><div class="sl key">'+LBL[k]+'</div><div class="sb"><i style="width:'+(career.stats[k]||0)+'%"></i></div><div class="sv">'+(career.stats[k]||0)+'</div></div>').join('')+'</div>';
- h+='<div class="panel"><div class="ph">PlayStyle</div><div class="psg"><div class="psc"><div style="font-size:1.3rem">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="d">'+p[2]+'</div></div></div></div>';
+ h+='<div class="panel"><div class="ph">PlayStyle</div><div class="psg"><div class="psc"><div style="font-size:1.3rem">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="d">'+p[2]+'</div>'+(BUILD_FX[career.ps]?'<div class="d" style="color:var(--gold)">'+BUILD_FX[career.ps][3]+'</div>':'')+'</div></div></div>';
+ h+='<div class="panel"><div class="ph">📰 Headlines · Public image '+repOf()+'/100'+(career.endorse?' · Endorsements '+money(career.endorse)+'/wk':'')+'</div>'+((career.news||[]).length?career.news.map(n=>'<div class="kv">'+esc(n.t)+'<b style="color:'+(n.d>0?'var(--green)':n.d<0?'var(--red)':'var(--muted)')+'">'+n.y+'/'+String(n.y+1).slice(2)+'</b></div>').join(''):'<div class="mono" style="font-size:.65rem;color:var(--muted)">No headlines yet — your choices off the pitch will show up here.</div>')+'</div>';
  h+=dutiesHTML();
  h+='<div class="panel"><div class="ph">Shirt Number</div><div style="display:flex;gap:8px;align-items:center;"><input class="fi" id="pfNum" type="number" min="1" max="99" value="'+career.num+'" style="width:100px;"><button class="btn sm gold" id="pfNumB">Change</button></div></div>';
  h+='<div class="panel"><div class="ph">This season</div><div class="kv">Appearances<b>'+S.apps+'</b></div><div class="kv">Goals / Assists<b>'+S.g+' / '+S.a+'</b></div><div class="kv">Avg rating<b>'+(S.apps?(S.rs/S.apps).toFixed(2):'—')+'</b></div>'+(isDef()?'<div class="kv">Clean sheets<b>'+S.cs+'</b></div>':'')+'</div>';
@@ -1971,7 +2002,7 @@ function buildCrowd(W,H,dpr,col,o,parity,hot){SEED=11+parity*31+(hot?5:0);const 
    else if(roll>.93){x.fillStyle=srnd()<.5?col:'#fff';x.fillRect(px-sz*1.6,y-sz*1.6,sz*3.2,sz*.9);}}}
  return c;}
 function flag(x,px,py,sz,col,t){x.strokeStyle='#bbb';x.lineWidth=2;x.beginPath();x.moveTo(px,py);x.lineTo(px,py-sz);x.stroke();x.fillStyle=col;x.beginPath();x.moveTo(px,py-sz);
- for(let k=0;k<=10;k++){const u=k/10;x.lineTo(px+u*sz*1.3,py-sz+Math.sin(t*5-u*5)*sz*.09*u);}for(let k=10;k>=0;k--){const u=k/10;x.lineTo(px+u*sz*1.3,py-sz*.45+Math.sin(t*5-u*5)*sz*.09*u);}x.closePath();x.fill();
+ for(let k=0;k<=10;k++){const u=k/10;x.lineTo(px+u*sz*1.3,py-sz+Math.sin(t*5-u*5)*sz*.09*u);}for(let k=10;k>=0;k--){const u=k/10;x.lineTo(px+u*sz*1.3,py-sz*.45+Math.sin(t*5-u*5)*sz*.09*u);}x.closePath();if(typeof col==='string')x.fill();else{x.save();x.clip();x.drawImage(col,px,py-sz*1.1,sz*1.3,sz*.75);x.restore();}
  x.fillStyle='rgba(255,255,255,.18)';x.fillRect(px,py-sz*.78,sz*1.3,sz*.07);}
 function flashes(x,W,top,bot,n){for(let i=0;i<n;i++){if(Math.random()>.25)continue;const fx=Math.random()*W,fy=top+Math.random()*(bot-top),r=8+Math.random()*14,g=x.createRadialGradient(fx,fy,0,fx,fy,r);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(fx-r,fy-r,r*2,r*2);}}
 function drawArena(x,W,H,t,st,col,exc,o){o=o||{};
@@ -1990,7 +2021,7 @@ function drawArena(x,W,H,t,st,col,exc,o){o=o||{};
  x.fillStyle=isLight(darken(col,10))?'#111':'#fff';x.font='700 '+Math.round(bh*.55)+'px Oswald, sans-serif';x.textBaseline='middle';x.textAlign='left';if('letterSpacing' in x)x.letterSpacing='3px';
  const msg=o.ad||'FOOTBALL LEGACY',seg=W/3;for(let i=-1;i<4;i++)x.fillText(msg,i*seg+((-t*70)%seg),by+bh/2,seg*.9);if('letterSpacing' in x)x.letterSpacing='0px';
  x.fillStyle='rgba(255,255,255,.14)';x.fillRect(0,by,W,1);
- [.18,.47,.79].forEach((fx,i)=>flag(x,W*fx,top+(bot-top)*.6,H*.09,i===1?'#fff':col,t+i));
+ [.18,.47,.79].forEach((fx,i)=>flag(x,W*fx,top+(bot-top)*.6,H*.09,st&&st.flagImg||(i===1?'#fff':col),t+i));
  if(exc>.3)flashes(x,W,top,bot,Math.round(exc*6));}
 function confettiSys(x,W,H,st,dt,rate,cols,burst){const P=st.P,pick=()=>cols[Math.floor(Math.random()*cols.length)];
  for(let i=0;i<rate*dt*60;i++)if(P.length<520)P.push({x:Math.random()*W,y:-20,vx:(Math.random()-.5)*60,vy:60+Math.random()*90,r:Math.random()*6,vr:(Math.random()-.5)*6,c:pick(),s:5+Math.random()*7,ph:Math.random()*6});
@@ -2277,6 +2308,249 @@ function renderAchieve(){const g=gallery(),n=GALLERY.filter(a=>g[a[0]]).length;$
  if(!career){$('achMs').innerHTML='';return;}const C=career,ms=[['🎽','Professional debut',C.apps>=1],['⚽','First goal',C.goals>=1],['🎯','50 career goals',C.goals>=50],['💯','100 career goals',C.goals>=100],['👑','300 career goals',C.goals>=300],['🅰️','100 career assists',C.assists>=100],['🏃','250 appearances',C.apps>=250],['🌍','International debut',(C.caps||0)>=1],['🧢','50 caps',(C.caps||0)>=50],['🥅','International goal',(C.intlGoals||0)>=1],['©️','Club captain',!!C.captain||C.trophies.some(t=>/Captain/.test(t))],['👟','Golden Boot',C.trophies.some(t=>/Golden Boot/.test(t))],['🏆','5 honours',C.trophies.filter(t=>!/^Named/.test(t)).length>=5],['⭐','10 Player of the Match awards',(C.potm||0)>=10],['🥉',"Ballon d'Or podium",(C.bdoBest||99)<=3]];
  $('achMs').innerHTML='<div class="sh" style="font-size:1.3rem;margin-top:26px;">Milestones — '+esc(C.name)+'</div><div class="ssub">'+ms.filter(m=>m[2]).length+' / '+ms.length+' reached</div><div class="ach-grid">'+ms.map(m=>'<div class="ach mini'+(m[2]?'':' lock')+'"><div class="ai">'+(m[2]?m[0]:'🔒')+'</div><div class="at">'+m[1]+'</div></div>').join('')+'</div>';}
 
+// ═════════ NATIONAL FLAGS (inline SVG, 30×20) ═════════
+const FLAG_SVG=(()=>{
+ const R=(x,y,w,h,c)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+c+'"/>';
+ const Hs=cs=>cs.map((c,i)=>R(0,i*20/cs.length,30,20/cs.length+.05,c)).join(''),Vs=cs=>cs.map((c,i)=>R(i*30/cs.length,0,30/cs.length+.05,20,c)).join('');
+ const P=(pts,c,ex)=>'<polygon points="'+pts.map(p=>p.map(v=>+v.toFixed(2)).join(',')).join(' ')+'" fill="'+c+'"'+(ex||'')+'/>';
+ const C=(x,y,r,c)=>'<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+c+'"/>';
+ const star=(cx,cy,r,c,rot,ex)=>{const p=[];for(let i=0;i<10;i++){const a=(rot||-90)*Math.PI/180+i*Math.PI/5,rr=i%2?r*.4:r;p.push([cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]);}return P(p,c,ex);};
+ const cres=(cx,cy,R0,r,d,c)=>{const x=(d*d+R0*R0-r*r)/(2*d),y=Math.sqrt(Math.max(0,R0*R0-x*x)),p1=(cx+x).toFixed(2)+' '+(cy-y).toFixed(2),p2=(cx+x).toFixed(2)+' '+(cy+y).toFixed(2);
+  return '<path d="M'+p1+' A'+R0+' '+R0+' 0 1 0 '+p2+' A'+r+' '+r+' 0 '+(x-d>0?1:0)+' 1 '+p1+'Z" fill="'+c+'"/>';};
+ const L=(x1,y1,x2,y2,c,w)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+w+'"/>';
+ const nord=(bg,cr,inner,vx)=>R(0,0,30,20,bg)+R(vx||9,0,inner?5:3.4,20,cr)+R(0,inner?7.5:8.3,30,inner?5:3.4,cr)+(inner?R((vx||9)+1.25,0,2.5,20,inner)+R(0,8.75,30,2.5,inner):'');
+ const uj=(w,h)=>R(0,0,w,h,'#012169')+L(0,0,w,h,'#fff',h*.2)+L(w,0,0,h,'#fff',h*.2)+L(0,0,w,h,'#C8102E',h*.07)+L(w,0,0,h,'#C8102E',h*.07)+R(w*.42,0,w*.16,h,'#fff')+R(0,h*.36,w,h*.28,'#fff')+R(w*.45,0,w*.1,h,'#C8102E')+R(0,h*.4,w,h*.2,'#C8102E');
+ const stripes=(n,a,b)=>{let s='';for(let i=0;i<n;i++)s+=R(0,i*20/n,30,20/n+.05,i%2?b:a);return s;};
+ const F={
+  Algeria:Vs(['#006233','#fff'])+cres(15.6,10,5,4,1.25,'#D21034')+star(17.3,10,2,'#D21034',180),
+  Argentina:Hs(['#74ACDF','#fff','#74ACDF'])+C(15,10,2.1,'#F6B40E')+C(15,10,1.3,'#E8A200'),
+  Australia:R(0,0,30,20,'#012169')+uj(15,10)+star(7.5,15,2.4,'#fff')+star(22.5,16.5,1.2,'#fff')+star(19.5,9,1.1,'#fff')+star(22.5,3.8,1.1,'#fff')+star(25.8,7.8,1.1,'#fff')+star(24,11.2,.6,'#fff'),
+  Austria:Hs(['#ED2939','#fff','#ED2939']),Belgium:Vs(['#111','#FAE042','#ED2939']),
+  Brazil:R(0,0,30,20,'#009C3B')+P([[3,10],[15,2.4],[27,10],[15,17.6]],'#FFDF00')+C(15,10,4.6,'#002776')+'<path d="M10.6 9.2 Q15 7.4 19.6 10.6" stroke="#fff" stroke-width=".8" fill="none"/>',
+  Cameroon:Vs(['#007A5E','#CE1126','#FCD116'])+star(15,10,2.4,'#FCD116'),
+  Canada:R(0,0,7.5,20,'#D80621')+R(7.5,0,15,20,'#fff')+R(22.5,0,7.5,20,'#D80621')+P([[15,3.2],[16.2,5.6],[17.6,4.9],[17.2,8.1],[19.6,6.3],[20.2,7.6],[22.1,7.2],[21.4,9.5],[22.3,10.1],[19.2,13],[19.6,14.2],[15.5,13.6],[15.5,16.8],[14.5,16.8],[14.5,13.6],[10.4,14.2],[10.8,13],[7.7,10.1],[8.6,9.5],[7.9,7.2],[9.8,7.6],[10.4,6.3],[12.8,8.1],[12.4,4.9],[13.8,5.6]],'#D80621'),
+  Chile:R(0,0,30,10,'#fff')+R(0,10,30,10,'#D52B1E')+R(0,0,10,10,'#0039A6')+star(5,5,2.4,'#fff'),
+  Colombia:R(0,0,30,10,'#FCD116')+R(0,10,30,5,'#003893')+R(0,15,30,5,'#CE1126'),
+  Croatia:Hs(['#FF0000','#fff','#171796'])+(()=>{let s=R(11.8,5.2,6.4,7.6,'#fff');for(let i=0;i<5;i++)for(let j=0;j<6;j++)if((i+j)%2===0)s+=R(11.8+i*1.28,5.2+j*1.27,1.28,1.27,'#FF0000');return s+'<rect x="11.8" y="5.2" width="6.4" height="7.6" fill="none" stroke="#171796" stroke-width=".4"/>';})(),
+  'Czech Republic':R(0,0,30,10,'#fff')+R(0,10,30,10,'#D7141A')+P([[0,0],[15,10],[0,20]],'#11457E'),
+  Denmark:nord('#C8102E','#fff'),
+  Ecuador:R(0,0,30,10,'#FFD100')+R(0,10,30,5,'#0072CE')+R(0,15,30,5,'#EF3340')+C(15,10,2.6,'#6B8E23')+C(15,10,1.7,'#FFD100'),
+  Egypt:Hs(['#CE1126','#fff','#111'])+P([[15,7.4],[16.6,9.2],[16,12.2],[15,11.4],[14,12.2],[13.4,9.2]],'#C09300'),
+  England:R(0,0,30,20,'#fff')+R(13,0,4,20,'#CE1124')+R(0,8,30,4,'#CE1124'),
+  France:Vs(['#0055A4','#fff','#EF4135']),Germany:Hs(['#111','#DD0000','#FFCE00']),
+  Ghana:Hs(['#CE1126','#FCD116','#006B3F'])+star(15,10,2.6,'#111'),
+  Greece:stripes(9,'#0D5EAF','#fff')+R(0,0,11.1,11.1,'#0D5EAF')+R(4.45,0,2.2,11.1,'#fff')+R(0,4.45,11.1,2.2,'#fff'),
+  Ireland:Vs(['#169B62','#fff','#FF883E']),Italy:Vs(['#009246','#fff','#CE2B37']),'Ivory Coast':Vs(['#F77F00','#fff','#009E60']),
+  Jamaica:R(0,0,30,20,'#009B3A')+P([[0,0],[13,10],[0,20]],'#111')+P([[30,0],[17,10],[30,20]],'#111')+L(0,0,30,20,'#FED100',3)+L(30,0,0,20,'#FED100',3),
+  Japan:R(0,0,30,20,'#fff')+C(15,10,6,'#BC002D'),
+  Mexico:Vs(['#006847','#fff','#CE1126'])+C(15,10,2.4,'#8C6A2E')+C(15,10,1.4,'#5E7A2E'),
+  Morocco:R(0,0,30,20,'#C1272D')+star(15,10.3,4.6,'none',-90,' stroke="#006233" stroke-width=".9" stroke-linejoin="round"'),
+  Netherlands:Hs(['#AE1C28','#fff','#21468B']),Nigeria:Vs(['#008751','#fff','#008751']),
+  'Northern Ireland':R(0,0,30,20,'#fff')+R(13,0,4,20,'#CE1124')+R(0,8,30,4,'#CE1124')+star(15,10,3.4,'#fff',-90)+C(15,10.4,1.3,'#CE1124')+P([[13.6,5.4],[15,4.2],[16.4,5.4],[16,6.4],[14,6.4]],'#F6B40E'),
+  Norway:nord('#BA0C2F','#fff','#00205B',8),
+  Poland:R(0,0,30,10,'#fff')+R(0,10,30,10,'#DC143C'),
+  Portugal:R(0,0,12,20,'#006600')+R(12,0,18,20,'#FF0000')+C(12,10,3.6,'#FFE000')+C(12,10,2.6,'#FF0000')+R(10.6,8.2,2.8,3.6,'#fff')+R(11.5,9.1,1,1.8,'#003399'),
+  'Saudi Arabia':R(0,0,30,20,'#006C35')+R(7,6,16,1.1,'#fff')+R(8,8,3,1.1,'#fff')+R(12.5,8,4,1.1,'#fff')+R(18,8,4,1.1,'#fff')+R(8,13.6,13,.9,'#fff')+R(20.6,12.9,.9,2.3,'#fff'),
+  Scotland:R(0,0,30,20,'#005EB8')+L(0,0,30,20,'#fff',3.4)+L(30,0,0,20,'#fff',3.4),
+  Senegal:Vs(['#00853F','#FDEF42','#E31B23'])+star(15,10,2.4,'#00853F'),
+  Serbia:Hs(['#C6363C','#0C4076','#fff'])+R(7.2,4.6,3.6,6,'#C6363C')+R(8.6,5.2,.8,4.8,'#fff')+R(7.6,6.9,2.8,.8,'#fff'),
+  'South Korea':R(0,0,30,20,'#fff')+'<g transform="rotate(33.7 15 10)">'+'<path d="M10.5 10 A4.5 4.5 0 0 1 19.5 10Z" fill="#CD2E3A"/><path d="M10.5 10 A4.5 4.5 0 0 0 19.5 10Z" fill="#0047A0"/>'+C(12.75,10,2.25,'#CD2E3A')+C(17.25,10,2.25,'#0047A0')+'</g>'+
+   [[5.2,4.6,33.7],[24.8,15.4,33.7],[24.8,4.6,-33.7],[5.2,15.4,-33.7]].map(([x,y,a])=>'<g transform="rotate('+a+' '+x+' '+y+')">'+R(x-2.2,y-1.9,4.4,.9,'#111')+R(x-2.2,y-.45,4.4,.9,'#111')+R(x-2.2,y+1,4.4,.9,'#111')+'</g>').join(''),
+  Spain:R(0,0,30,5,'#AA151B')+R(0,5,30,10,'#F1BF00')+R(0,15,30,5,'#AA151B')+R(7.2,7.2,3.4,4.4,'#AA151B')+R(7.8,7.8,2.2,3.2,'#F1BF00'),
+  Sweden:nord('#006AA7','#FECC00'),
+  Switzerland:R(0,0,30,20,'#D52B1E')+R(13.2,4,3.6,12,'#fff')+R(9,8.2,12,3.6,'#fff'),
+  Turkey:R(0,0,30,20,'#E30A17')+cres(11.5,10,5,4,1.3,'#fff')+star(17.6,10,2.2,'#fff',180),
+  Ukraine:R(0,0,30,10,'#0057B7')+R(0,10,30,10,'#FFD700'),
+  'United States':stripes(13,'#B22234','#fff')+R(0,0,12,10.77,'#3C3B6E')+(()=>{let s='';for(let j=0;j<5;j++)for(let i=0;i<6-(j%2);i++)s+=C(1.2+i*2+(j%2),1.2+j*2.05,.42,'#fff');return s;})(),
+  Uruguay:stripes(9,'#fff','#0038A8')+R(0,0,11.1,11.1,'#fff')+C(5.55,5.55,2.6,'#FCD116')+C(5.55,5.55,1.7,'#E8A200'),
+  Wales:R(0,0,30,10,'#fff')+R(0,10,30,10,'#00B140')+P([[7,13],[9,9],[12,8.4],[14,6],[17,6.6],[18.6,5],[21,5.6],[20,7.4],[22.6,8.6],[20.2,10],[23.4,13],[20,12.6],[17,14.6],[14,13.2],[12,15.6],[11,13.6]],'#C8102E')};
+ return F;})();
+function flagSVG(n,w,h,cls){const b=FLAG_SVG[n];if(!b)return '';return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 20" width="'+w+'" height="'+h+'" preserveAspectRatio="'+(cls==='round'?'xMidYMid slice':'none')+'" class="flag'+(cls?' '+cls:'')+'">'+b+'</svg>';}
+const FLAG_IMG={};
+function flagImg(n){if(!FLAG_SVG[n])return null;if(!FLAG_IMG[n]){const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(flagSVG(n,120,80));FLAG_IMG[n]=im;}const im=FLAG_IMG[n];return im.complete&&im.naturalWidth?im:null;}
+NATIONS.forEach(flagImg);
+
+// ═════════ KITS: real home-shirt designs ═════════
+// name: [pattern, second colour, shorts, socks, sleeves]
+const KIT_DEF={
+ 'Arsenal':['sleeves','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF'],'Liverpool':['plain','','#C8102E','#C8102E'],'Manchester City':['plain','','#FFFFFF','#6CABDD'],'Chelsea':['plain','','#034694','#FFFFFF'],
+ 'Manchester United':['plain','','#FFFFFF','#111111'],'Tottenham Hotspur':['plain','','#132257','#FFFFFF'],'Newcastle United':['stripes','#FFFFFF','#111111','#111111'],'Aston Villa':['sleeves','#95BFE5','#FFFFFF','#670E36','#95BFE5'],
+ 'Brighton':['stripes','#FFFFFF','#0057B8','#FFFFFF'],'West Ham United':['sleeves','#1BB1E7','#FFFFFF','#FFFFFF','#1BB1E7'],'Nottingham Forest':['plain','','#FFFFFF','#DD0000'],'Crystal Palace':['stripes','#C4122E','#1B458F','#1B458F'],
+ 'Brentford':['stripes','#FFFFFF','#111111','#E30613'],'Fulham':['plain','','#111111','#FFFFFF'],'Everton':['plain','','#FFFFFF','#FFFFFF'],'AFC Bournemouth':['stripes','#111111','#111111','#111111'],'Wolves':['plain','','#111111','#FDB913'],
+ 'Leeds United':['plain','','#FFFFFF','#FFFFFF'],'Burnley':['sleeves','#99D6EA','#FFFFFF','#FFFFFF','#99D6EA'],'Sunderland':['stripes','#FFFFFF','#111111','#EB172B'],'Sheffield United':['stripes','#FFFFFF','#111111','#111111'],
+ 'Southampton':['stripes','#FFFFFF','#111111','#FFFFFF'],'Leicester City':['plain','','#003090','#003090'],'Ipswich Town':['plain','','#FFFFFF','#0044A9'],'Middlesbrough':['hband','#FFFFFF','#FFFFFF','#E21A24'],
+ 'Norwich City':['plain','','#00A650','#FFE100'],'West Brom':['stripes','#FFFFFF','#FFFFFF','#FFFFFF'],'Watford':['plain','','#111111','#FBEE23'],'Coventry City':['plain','','#59CBBF','#59CBBF'],'Derby County':['plain','','#111111','#FFFFFF'],
+ 'Swansea City':['plain','','#FFFFFF','#FFFFFF'],'Millwall':['plain','','#FFFFFF','#001D5E'],'Birmingham City':['plain','','#FFFFFF','#1E3FA8'],'Bolton Wanderers':['plain','','#263B7E','#FFFFFF'],'Charlton Athletic':['plain','','#FFFFFF','#CC0000'],
+ 'Huddersfield':['stripes','#FFFFFF','#FFFFFF','#0E63AD'],'Wrexham':['plain','','#FFFFFF','#D7000F'],'Accrington Stanley':['plain','','#FFFFFF','#CC0000'],'Newport County':['plain','','#111111','#F7A600'],'Bradford City':['stripes','#FDB913','#111111','#8B1C2C'],
+ 'Bayern Munich':['plain','','#DC052D','#DC052D'],'Borussia Dortmund':['plain','','#111111','#FDE100'],'Bayer Leverkusen':['halves','#111111','#111111','#E32221'],'RB Leipzig':['plain','','#FFFFFF','#FFFFFF'],'Eintracht Frankfurt':['plain','','#111111','#111111'],
+ 'VfB Stuttgart':['hband','#E32221','#FFFFFF','#FFFFFF'],'Werder Bremen':['plain','','#1D9053','#1D9053'],'Borussia Monchengladbach':['plain','','#FFFFFF','#FFFFFF'],'Schalke 04':['plain','','#FFFFFF','#004D9D'],'Hertha Berlin':['stripes','#FFFFFF','#FFFFFF','#005CA9'],'Kaiserslautern':['plain','','#FFFFFF','#C8102E'],
+ 'Real Madrid':['plain','','#FFFFFF','#FFFFFF'],'Barcelona':['stripes','#004D98','#004D98','#004D98'],'Atletico Madrid':['stripes','#FFFFFF','#1A3A8F','#CB3524'],'Athletic Bilbao':['stripes','#FFFFFF','#111111','#111111'],'Real Sociedad':['stripes','#FFFFFF','#FFFFFF','#003DA5'],
+ 'Villarreal':['plain','','#F7D000','#F7D000'],'Real Betis':['stripes','#FFFFFF','#00954C','#00954C'],'Sevilla':['plain','','#FFFFFF','#FFFFFF'],'Valencia':['plain','','#111111','#FFFFFF'],'Malaga':['stripes','#FFFFFF','#003DA5','#003DA5'],'Deportivo La Coruna':['stripes','#FFFFFF','#0067B1','#0067B1'],
+ 'Inter Milan':['stripes','#111111','#111111','#111111'],'Napoli':['plain','','#FFFFFF','#12A0C3'],'Juventus':['stripes','#FFFFFF','#FFFFFF','#FFFFFF'],'AC Milan':['stripes','#111111','#FFFFFF','#111111'],'Atalanta':['stripes','#111111','#111111','#111111'],
+ 'AS Roma':['plain','','#FFFFFF','#8E1F2F'],'Lazio':['plain','','#FFFFFF','#9BCEE4'],'Fiorentina':['plain','','#FFFFFF','#4B0082'],'Bologna':['stripes','#1A2F6B','#FFFFFF','#1A2F6B'],'Sampdoria':['hband','#FFFFFF','#FFFFFF','#003DA5'],'Palermo':['plain','','#111111','#F4A6C0'],
+ 'Paris Saint-Germain':['band','#DA291C','#004170','#004170'],'Olympique Marseille':['plain','','#FFFFFF','#FFFFFF'],'AS Monaco':['diag','#FFFFFF','#FFFFFF','#D4021D'],'Lille':['plain','','#002F6C','#DA291C'],'Olympique Lyonnais':['plain','','#FFFFFF','#FFFFFF'],'Nice':['stripes','#111111','#111111','#111111'],
+ 'Ajax':['band','#D2122E','#FFFFFF','#FFFFFF'],'PSV Eindhoven':['stripes','#FFFFFF','#111111','#ED1C24'],'Feyenoord':['halves','#FFFFFF','#111111','#111111'],'AZ Alkmaar':['plain','','#FFFFFF','#E2001A'],
+ 'Benfica':['plain','','#FFFFFF','#E83030'],'FC Porto':['stripes','#FFFFFF','#003DA5','#003DA5'],'Sporting CP':['hoops','#FFFFFF','#111111','#119728'],'Celtic':['hoops','#FFFFFF','#FFFFFF','#FFFFFF'],'Rangers':['plain','','#FFFFFF','#111111'],
+ 'Galatasaray':['halves','#FDB912','#A90432','#A90432'],'Fenerbahce':['stripes','#FDE100','#FFFFFF','#002D72'],'Besiktas':['stripes','#FFFFFF','#111111','#111111'],
+ 'River Plate':['sash','#E30613','#111111','#FFFFFF'],'Boca Juniors':['hband','#FDB913','#003DA5','#003DA5'],'Flamengo':['hoops','#111111','#FFFFFF','#111111'],'Palmeiras':['plain','','#FFFFFF','#006437'],'Corinthians':['plain','','#111111','#FFFFFF'],
+ 'Sao Paulo':['hband','#E30613','#FFFFFF','#FFFFFF'],'Santos':['plain','','#FFFFFF','#FFFFFF'],'Club America':['plain','','#0B2D6B','#FFD700'],'Chivas':['stripes','#FFFFFF','#0B2D6B','#CD1041'],'Monterrey':['stripes','#FFFFFF','#00205B','#00205B'],
+ 'Inter Miami':['plain','','#F7B5CD','#F7B5CD'],'LA Galaxy':['sash','#00245D','#FFFFFF','#FFFFFF'],'LAFC':['plain','','#111111','#1A1A1A'],'New York City FC':['plain','','#FFFFFF','#6CABDD'],'Philadelphia Union':['plain','','#071B2C','#071B2C'],
+ 'Al-Hilal':['plain','','#005BAC','#005BAC'],'Al-Nassr':['plain','','#003DA5','#FFD700'],'Al-Ittihad':['stripes','#111111','#111111','#111111'],'Al-Ahli':['plain','','#FFFFFF','#0B8A3E']};
+const NAT_KIT={England:['plain','','#0B1F4D','#FFFFFF'],France:['plain','','#FFFFFF','#C8102E'],Brazil:['plain','','#0A3D91','#FFFFFF'],Argentina:['stripes','#FFFFFF','#111111','#FFFFFF'],Spain:['plain','','#0A2B6B','#111111'],
+ Germany:['plain','','#111111','#FFFFFF'],Portugal:['plain','','#0B6E3A','#B5121B'],Netherlands:['plain','','#FFFFFF','#FF7A00'],Italy:['plain','','#FFFFFF','#1E5BC6'],Belgium:['plain','','#C8102E','#C8102E'],Croatia:['checks','#FFFFFF','#FFFFFF','#1E3C8C'],
+ Uruguay:['plain','','#111111','#111111'],Colombia:['plain','','#0A2B6B','#FFFFFF'],Mexico:['plain','','#FFFFFF','#C8102E'],'United States':['plain','','#0A2B6B','#FFFFFF'],Japan:['plain','','#FFFFFF','#1B3C8C'],Scotland:['plain','','#FFFFFF','#1B2A5C'],
+ Wales:['plain','','#C8102E','#C8102E'],Ireland:['plain','','#FFFFFF','#169B62'],Nigeria:['plain','','#008751','#008751'],Senegal:['plain','','#FFFFFF','#FFFFFF'],Ghana:['plain','','#FFFFFF','#FFFFFF'],Denmark:['plain','','#FFFFFF','#C8102E'],
+ Sweden:['plain','','#0A3D91','#FECC00'],Norway:['plain','','#FFFFFF','#00205B'],Poland:['plain','','#DC143C','#FFFFFF'],Turkey:['plain','','#FFFFFF','#E30A17'],Switzerland:['plain','','#FFFFFF','#D52B1E'],Serbia:['plain','','#0C4076','#FFFFFF'],
+ Ukraine:['plain','','#FFD500','#FFD500'],Austria:['plain','','#FFFFFF','#ED2939'],'South Korea':['plain','','#111111','#C60C30'],Egypt:['plain','','#FFFFFF','#CE1126'],Cameroon:['plain','','#C8102E','#FCD116'],Algeria:['plain','','#FFFFFF','#FFFFFF'],
+ Canada:['plain','','#D80621','#D80621'],Australia:['plain','','#006847','#FFCD00'],Chile:['plain','','#0039A6','#FFFFFF'],Ecuador:['plain','','#0A3D91','#FFD100'],Greece:['plain','','#FFFFFF','#0D5EAF'],'Czech Republic':['plain','','#FFFFFF','#D7141A'],
+ 'Saudi Arabia':['plain','','#FFFFFF','#006C35'],Jamaica:['plain','','#111111','#FED100'],'Northern Ireland':['plain','','#FFFFFF','#00843D'],Morocco:['plain','','#0B6E3A','#C1272D'],'Ivory Coast':['plain','','#FFFFFF','#FF8200']};
+function kitOf(n){const c=getClub(n),natK=NAT_KIT[n],fk=FILL_KIT[n],base=fk?fk[0]:c?c.p:NAT_COL[n];if(!base)return null;
+ const k=natK||KIT_DEF[n]||KIT_DEF[c&&c.parent]||(fk?[fk[1],fk[2],fk[3]||(isLight(base)?'#111111':'#FFFFFF'),base,fk[1]==='sleeves'?fk[2]:'']:null)||['plain','',isLight(base)?'#111111':'#FFFFFF',base];
+ return{kit:base,pat:k[0]==='plain'||k[0]==='sleeves'?null:k[0],kit2:k[1]||null,shorts:k[2],socks:k[3]||base,sleeve:k[4]||null};}
+function kitCSS(n,base){const k=kitOf(n);if(!k||!k.pat||!k.kit2)return base;const a=k.kit,b=k.kit2;
+ return {stripes:'repeating-linear-gradient(90deg,'+a+' 0 18%,'+b+' 18% 36%)',hoops:'repeating-linear-gradient(0deg,'+a+' 0 20%,'+b+' 20% 40%)',halves:'linear-gradient(90deg,'+b+' 50%,'+a+' 50%)',band:'linear-gradient(90deg,'+a+' 36%,'+b+' 36% 64%,'+a+' 64%)',hband:'linear-gradient(0deg,'+a+' 38%,'+b+' 38% 62%,'+a+' 62%)',sash:'linear-gradient(135deg,'+a+' 38%,'+b+' 38% 60%,'+a+' 60%)',diag:'linear-gradient(135deg,'+a+' 50%,'+b+' 50%)',checks:'repeating-conic-gradient('+a+' 0 25%,'+b+' 0 50%) 0 0/40% 40%'}[k.pat]||base;}
+// torso pattern, drawn inside the shirt clip in rig space
+function drawKitPattern(ctx,cfg,cx,H){const b=cfg.kit2;if(!b||!cfg.pat)return;ctx.fillStyle=b;const top=H*.25,bot=H*.58,hh=bot-top;
+ switch(cfg.pat){case 'stripes':for(let x=-24;x<24;x+=11)ctx.fillRect(cx+x+5.5,top,5.5,hh);break;
+  case 'hoops':for(let y=top+5;y<bot;y+=11)ctx.fillRect(cx-26,y,52,5.5);break;
+  case 'halves':ctx.fillRect(cx,top,26,hh);break;
+  case 'band':ctx.fillRect(cx-6,top,12,hh);break;
+  case 'hband':ctx.fillRect(cx-26,H*.36,52,H*.08);break;
+  case 'sash':ctx.beginPath();ctx.moveTo(cx+14,top);ctx.lineTo(cx+24,top);ctx.lineTo(cx-14,bot);ctx.lineTo(cx-24,bot);ctx.closePath();ctx.fill();break;
+  case 'diag':ctx.beginPath();ctx.moveTo(cx+24,top);ctx.lineTo(cx+24,bot);ctx.lineTo(cx-24,bot);ctx.closePath();ctx.fill();break;
+  case 'checks':for(let i=0;i<9;i++)for(let j=0;j<7;j++)if((i+j)%2)ctx.fillRect(cx-24+i*5.4,top+j*5.4,5.4,5.4);break;}}
+
+// ═════════ BUILDS: more archetypes, each with an on-pitch trait ═════════
+Object.assign(PS,{poacher:['🦊','Poacher','Fox in the Box+'],falsenine:['🎭','False Nine','Drop Deep+'],speedster:['🚀','Speed Demon','Rapid+'],complete:['🧩','Complete Forward','All-Rounder+'],
+ insidefwd:['↩️','Inside Forward','Cut Inside+'],winger:['🪁','Classic Winger','Whipped Cross+'],boxtobox:['🔁','Box-to-Box','Late Run+'],regista:['🎻','Regista','Long Ball+'],shadow:['👤','Shadow Striker','Ghost Run+'],
+ ballplayer:['🧠','Ball-Playing CB','Line-Breaker+'],stopper:['🧱','Stopper','Bruiser+'],invertedfb:['🔀','Inverted Full-back','Inside Drift+'],libero:['🧹','Libero','Step Up+'],anchor:['⚓','Anchor','Shield+'],
+ sweeperkeeper:['🏃‍♂️','Sweeper Keeper','Rush Out+'],commander:['📣','Box Commander','Cross Claimer+']});
+ARCH.splice(ARCH.findIndex(a=>a.id==='keeper'),0,
+ {id:'poacher',grp:'Forward',s:{pace:80,shooting:90,passing:58,dribbling:72,defending:26,physical:64}},{id:'falsenine',grp:'Forward',s:{pace:72,shooting:78,passing:84,dribbling:84,defending:36,physical:60}},
+ {id:'speedster',grp:'Forward',s:{pace:95,shooting:76,passing:62,dribbling:80,defending:30,physical:58}},{id:'complete',grp:'Forward',s:{pace:78,shooting:82,passing:74,dribbling:78,defending:40,physical:78}},
+ {id:'insidefwd',grp:'Mid/Wing',s:{pace:84,shooting:80,passing:70,dribbling:85,defending:34,physical:60}},{id:'winger',grp:'Mid/Wing',s:{pace:88,shooting:62,passing:80,dribbling:84,defending:38,physical:58}},
+ {id:'boxtobox',grp:'Mid/Wing',s:{pace:76,shooting:70,passing:76,dribbling:72,defending:72,physical:84}},{id:'regista',grp:'Mid/Wing',s:{pace:60,shooting:62,passing:92,dribbling:74,defending:68,physical:64}},
+ {id:'shadow',grp:'Mid/Wing',s:{pace:80,shooting:84,passing:74,dribbling:80,defending:36,physical:62}},
+ {id:'ballplayer',grp:'Def/CDM',s:{pace:66,shooting:42,passing:82,dribbling:66,defending:84,physical:78}},{id:'stopper',grp:'Def/CDM',s:{pace:68,shooting:38,passing:58,dribbling:52,defending:90,physical:90}},
+ {id:'invertedfb',grp:'Def/CDM',s:{pace:78,shooting:54,passing:82,dribbling:76,defending:76,physical:68}},{id:'libero',grp:'Def/CDM',s:{pace:74,shooting:50,passing:80,dribbling:70,defending:86,physical:76}},
+ {id:'anchor',grp:'Def/CDM',s:{pace:62,shooting:50,passing:74,dribbling:62,defending:88,physical:88}});
+ARCH.push({id:'sweeperkeeper',grp:'Goalkeeper',s:{},gk:{gk_kicking:8,gk_speed:7,gk_positioning:2}},{id:'commander',grp:'Goalkeeper',s:{},gk:{gk_handling:6,gk_positioning:6,gk_diving:2}});
+ARCH.find(a=>a.id==='keeper').gk={gk_reflexes:6,gk_diving:5};
+// [goal chance ×, assist chance ×, goals conceded × when you start, one-line trait]
+const BUILD_FX={magician:[1.05,1.12,1,'Flair: goals +5%, assists +12%'],finisher:[1.14,.9,1,'Clinical: goals +14%, assists −10%'],target:[1.08,.98,1,'Aerial threat: goals +8%'],
+ recycler:[1,1.05,.97,'Wins it back: team concedes 3% less'],maestro:[.95,1.18,1,'Tempo setter: assists +18%'],creator:[.97,1.22,1,'Final ball: assists +22%'],spark:[1.06,1.1,1,'Unpredictable: goals +6%, assists +10%'],
+ progressor:[1,1.1,.98,'Carries it forward: assists +10%'],boss:[1,1,.95,'Dominant: team concedes 5% less'],engine:[1.05,1.05,.98,'Everywhere: small boost to everything'],marauder:[1,1.16,1,'Overlaps: assists +16%'],keeper:[1,1,.94,'Shot stopper: team concedes 6% less'],
+ poacher:[1.2,.78,1,'Six-yard box: goals +20%, assists −22%'],falsenine:[.88,1.32,1,'Drops deep: assists +32%, goals −12%'],speedster:[1.1,1.06,1,'In behind: goals +10%, assists +6%'],complete:[1.07,1.07,1,'Does it all: goals & assists +7%'],
+ insidefwd:[1.15,.95,1,'Cuts inside: goals +15%'],winger:[.85,1.32,1,'Byline crosses: assists +32%, goals −15%'],boxtobox:[1.16,1.02,.99,'Late runs: goals +16%'],regista:[.8,1.28,.98,'Long balls: assists +28%'],shadow:[1.22,.9,1,'Ghost runs: goals +22%'],
+ ballplayer:[1,1.22,.98,'Line-breaking passes: assists +22%'],stopper:[1.1,.9,.94,'Bruiser: concedes 6% less, set-piece goals +10%'],invertedfb:[1,1.2,.99,'Inside drift: assists +20%'],libero:[1,1.1,.96,'Steps up: concedes 4% less, assists +10%'],anchor:[.9,1,.94,'Screens the defence: concedes 6% less'],
+ sweeperkeeper:[1,1.3,.97,'Rushes out: concedes 3% less, launches attacks'],commander:[1,1,.95,'Owns the box: concedes 5% less']};
+
+// ═════════ OFF-PITCH LIFE: pre-match nights, media, public image ═════════
+const repOf=()=>career.rep==null?(career.rep=35):career.rep;
+function repAdd(n,head){career.rep=clamp(repOf()+n,0,100);if(head)headline(head,n);}
+function headline(txt,n){career.news=career.news||[];career.news.unshift({y:career.year,t:txt,d:n||0});if(career.news.length>14)career.news.pop();}
+const favAdd=n=>{career.fav=clamp(career.fav+n,0,100);};
+const fatAdd=n=>{fatigue=clamp(fatigue+n,0,100);};
+function setPre(label,o){career.pre=Object.assign({label,rt:0,g:1,a:1},o);}
+function mateName(){const L=(career.leaders||[]).filter(p=>p.club===activeName());return L.length?lname(L[rng(0,L.length-1)].n):'Silva';}
+const PUBS=['The Crown & Anchor','The Red Lion','The Queens Head','O’Neill’s','The Kings Arms','The Corner Flag','The Half Time'];
+// pre-match decisions are shown after a fixture and shape the NEXT one
+const PRE_EVENTS=[
+ {id:'pub',w:()=>3,make:(o,big)=>({ic:'🍺',t:'The Night Before',s:'Tomorrow: '+o,sc:mateName()+' is buying the first round at '+PUBS[rng(0,PUBS.length-1)]+'. Half the squad is going. '+(big?'It is the night before a massive game. ':'')+'The group chat will not stop buzzing.',q:'Are you going?',ch:[
+  {t:'Go — have a few',x:'Bond with the lads. Risky if a camera is around.',ef:()=>{fatAdd(14);favAdd(-1);const caught=Math.random()<(big?.5:.32);setPre('🍺 Big night out',{rt:-.35,a:1.08});career.memo=Object.assign(career.memo||{},{pub:(career.memo&&career.memo.pub||0)+1});
+   if(caught){repAdd(-9,'PICTURED: '+career.name+' out until 2am before '+o+' clash');favAdd(-7);toast('📸 Tabloids have photos of your night out.','bad');}else{repAdd(1);toast('🍻 Great night. Nobody saw a thing.','g');}}},
+  {t:'Go, soft drinks only',x:'Show face, leave by ten.',ef:()=>{fatAdd(4);setPre('🥤 Team bonding',{a:1.08});repAdd(1);}},
+  {t:'Early night',x:'Protein, stretching, eight hours.',ef:()=>{fatAdd(-8);favAdd(1);setPre('😴 Early night',{rt:.15});}}]})},
+ {id:'party',w:()=>repOf()>45||activeClub().t>=4?2:0,make:o=>({ic:'🎉',t:'Celebrity Invite',s:'Album launch party',sc:'A chart-topping artist wants you at their album launch tonight. Photographers, influencers, free bar. '+o+' is tomorrow.',q:'Decision?',ch:[
+  {t:'Go and post it',x:'Massive for your profile. Risky the night before a match.',ef:()=>{fatAdd(16);setPre('🎉 Party night',{rt:-.25});repAdd(7,career.name+' spotted at star-studded launch party');if(Math.random()<.25){repAdd(-12,'SCANDAL: '+career.name+' in late-night bust-up outside club');favAdd(-9);toast('🚨 The night ended in the papers for the wrong reasons.','bad');}}},
+  {t:'Show your face for an hour',x:'Photo on the carpet, home by eleven.',ef:()=>{fatAdd(5);repAdd(3);}},
+  {t:'Decline',x:'Football first.',ef:()=>{setPre('🧘 Stayed focused',{rt:.1});favAdd(1);}}]})},
+ {id:'presser',w:()=>activeClub().t>=3?3:1,make:o=>({ic:'🎙️',t:'Pre-Match Press Conference',s:'Media room',sc:'A journalist leans in: "There are reports '+(CLUBS.filter(c=>c.t>=4&&c.n!==career.club)[rng(0,10)]||{n:'a big club'}).n+' want you in the summer. Are you happy here?"',q:'Your answer?',ch:[
+  {t:'"I\'m happy here."',x:'Shut it down.',ef:()=>{favAdd(5);repAdd(2,career.name+': "I am happy at '+career.club+'"');}},
+  {t:'"Never say never."',x:'Your agent will love it. Your manager won\'t.',ef:()=>{favAdd(-7);repAdd(3,career.name+' refuses to rule out move');if(Math.random()<.6)makeOffer('transfer');}},
+  {t:'"I only care about '+o+'."',x:'Give them nothing.',ef:()=>{setPre('🎯 Locked in',{rt:.06});}}]})},
+ {id:'trash',w:()=>2,make:(o,big,star)=>({ic:'🗣️',t:'Trash Talk',s:o,sc:(star||'Their captain')+' told reporters you are "overrated" and "only good on social media". It is all over the internet.',q:'Respond?',ch:[
+  {t:'Fire back online',x:'Fans love it — but now you must deliver.',ef:()=>{repAdd(4,career.name+' hits back at '+(star||o)+' ahead of showdown');setPre('🔥 Called out '+(star||o),{g:1.15,bet:'trash'});}},
+  {t:'Let the football talk',x:'Say nothing. Use it.',ef:()=>{repAdd(2);setPre('🤐 Quiet fire',{rt:.1});}},
+  {t:'Praise them back',x:'Kill it with kindness.',ef:()=>{repAdd(1);favAdd(2);}}]})},
+ {id:'extra',w:()=>3,make:o=>({ic:'🎯',t:'Matchday Morning',s:'Training ground',sc:'The kit man has left the balls out. The physio would rather you rested. The analysts have clips of '+o+' ready.',q:'How do you prepare?',ch:[
+  {t:'Extra finishing',x:'50 shots, both feet.',ef:()=>{fatAdd(9);setPre('🎯 Sharp finishing',{g:1.12});}},
+  {t:'Ice bath & recovery',x:'Fresh legs.',ef:()=>{fatAdd(-15);}},
+  {t:'Video session',x:'Learn their weaknesses.',ef:()=>{favAdd(3);setPre('📼 Did the homework',{rt:.1,a:1.05});}}]})},
+ {id:'charity',w:()=>2,make:o=>({ic:'💙',t:'Children\'s Hospital Visit',s:'The day before '+o,sc:'The club is sending players to the local children\'s hospital. One kid in your shirt has asked for you by name.',q:'Will you go?',ch:[
+  {t:'Go in person',x:'Spend the afternoon there.',ef:()=>{fatAdd(4);repAdd(6,career.name+' surprises young fans in hospital');setPre('💙 Playing for someone',{rt:.08});}},
+  {t:'Send signed shirts',x:'A kind gesture from afar.',ef:()=>{repAdd(2);}}]})},
+ {id:'gaming',w:()=>career.age<=24?2:1,make:o=>({ic:'🎮',t:'One More Game',s:'11:40pm',sc:mateName()+' wants to keep grinding online until it is ranked. You have '+o+' tomorrow.',q:'Well?',ch:[
+  {t:'One more… (3am)',x:'You will feel it.',ef:()=>{fatAdd(12);setPre('🎮 Up till 3am',{rt:-.2});}},
+  {t:'Stream it for an hour',x:'Fans get to see the real you.',ef:()=>{fatAdd(5);repAdd(4,career.name+'\'s late-night stream goes viral');}},
+  {t:'Bed',x:'Controller down.',ef:()=>{setPre('😴 Proper sleep',{rt:.05});}}]})},
+ {id:'family',w:()=>1,make:o=>({ic:'📞',t:'Family Call',s:'Home',sc:'It is your little brother\'s birthday tonight — a three-hour drive away. He has been telling his whole class you might come.',q:'What do you do?',ch:[
+  {t:'Drive up and surprise him',x:'Late night, but worth it.',ef:()=>{fatAdd(12);career.sp+=1;setPre('❤️ Family first',{rt:.12});}},
+  {t:'Video call',x:'Sing happy birthday from your hotel room.',ef:()=>{}}]})}];
+const ONCE=new Set(['party','charity','family','gaming','sponsor','podcast','oldpost']),seenY=id=>(career.medY||{})[id]===career.year,markY=id=>{career.medY=career.medY||{};career.medY[id]=career.year;};
+function queuePre(){if(bulk||!career||career.retired)return;if(career.medCD>0||career.pre)return;
+ const nx=curEvent();if(!nx)return;let P;try{P=prepare(nx);}catch(e){return;}
+ const big=(nx.t==='C'&&nx.round==='Final')||(nx.t==='I'&&nx.stage==='Final')||(nx.t!=='I'&&!!derbyOf(P.me.n,P.opp.n))||(nx.t==='C'&&nx.comp==='ucl');
+ if(Math.random()>(big?.55:.2))return;
+ const pool=PRE_EVENTS.filter(e=>e.w()>0&&!(ONCE.has(e.id)&&seenY(e.id)));if(!pool.length)return;const ev=pickW(pool,pool.map(e=>e.w()));markY(ev.id);
+ const star=((career.leaders||[]).filter(p=>p.club===P.opp.n).sort((a,b)=>b.g-a.g)[0]||{}).n;
+ career.medCD=3;cs(ev.make(P.opp.n,big,star));}
+// post-match media
+function mediaPost(P,rt,won,dr,played,myG){if(bulk||!career)return;career.medCD=(career.medCD||0)-1;
+ const tb=career.pre&&career.pre.bet==='trash';
+ if(tb&&played){if(myG>0){repAdd(8,career.name+' silences '+P.opp.n+' — and lets everyone know');toast('🔥 You backed it up. The internet is yours.','g');}else{repAdd(-6,career.name+' quiet after pre-match war of words');toast('😬 You talked the talk… the memes are brutal.','bad');}}
+ if(career.medCD>0)return;
+ const mk=d=>{career.medCD=3;cs(d);};
+ if(played&&!won&&!dr&&Math.random()<.35)return mk({ic:'🎤',t:'Mixed Zone',s:P.me.n+' '+P.e.res.ys+'-'+P.e.res.os+' '+P.opp.n,sc:'Microphones in your face as you walk to the bus. "What went wrong out there?"',q:'Answer?',ch:[
+  {t:'"The referee cost us."',x:'The FA will be watching.',ef:()=>{repAdd(-3,career.name+' blasts referee after defeat');favAdd(-2);toast('💸 The FA opens an investigation into your comments.','bad');}},
+  {t:'"That\'s on us. On me."',x:'Own it.',ef:()=>{favAdd(4);repAdd(3,'Honest '+career.name+' takes responsibility');}},
+  {t:'"Some players need to look at themselves."',x:'The dressing room will hear about this.',ef:()=>{favAdd(-9);repAdd(-5,'RIFT? '+career.name+' calls out teammates');}},
+  {t:'Walk past in silence',x:'Headphones on.',ef:()=>{repAdd(-1);}}]});
+ if(played&&(rt>=8.3||myG>=2)&&Math.random()<.4)return mk({ic:'📸',t:'You\'re Trending',s:'#'+career.name.replace(/\s/g,''),sc:'Your '+(myG>=2?'brace':'performance')+' against '+P.opp.n+' is everywhere. Your phone has not stopped buzzing.',q:'What do you post?',ch:[
+  {t:'The clip + a caption',x:'Own the moment.',ef:()=>{repAdd(6,career.name+' sets social media alight');}},
+  {t:'Team photo, credit the lads',x:'Dressing room approves.',ef:()=>{favAdd(3);repAdd(3);}},
+  {t:'Nothing',x:'Let others talk.',ef:()=>{favAdd(1);}}]});
+ if(played&&rt<5.6&&Math.random()<.4)return mk({ic:'📰',t:'Player Ratings: 3/10',s:'Sunday papers',sc:'"Anonymous. Lost the ball eleven times. Needs a rest." The ratings are brutal, and fans are piling on.',q:'Response?',ch:[
+  {t:'Reply on social media',x:'Defend yourself.',ef:()=>{if(Math.random()<.5){repAdd(3,'Fans rally behind '+career.name);}else{repAdd(-5,career.name+' in online spat with fans');}}},
+  {t:'Extra training',x:'Answer it on the pitch.',ef:()=>{fatAdd(8);favAdd(3);setPre('😤 Point to prove',{rt:.1});}},
+  {t:'Log off',x:'Protect your head.',ef:()=>{}}]});
+ const r=Math.random();
+ if(repOf()>=55&&r<.07&&!seenY('sponsor')){markY('sponsor');return mk({ic:'👟',t:'Sponsorship Offer',s:'Your agent, '+career.agent,sc:'Two brands want you. A boot company offering a signature line — or a betting app offering three times as much.',q:'Who do you sign with?',ch:[
+  {t:'Boot deal',x:'+'+money(Math.round(career.salary*.2/100)*100)+'/wk, image boost',ef:()=>{career.endorse=(career.endorse||0)+Math.round(career.salary*.2/100)*100;repAdd(4,career.name+' signs signature boot deal');}},
+  {t:'Betting app',x:'+'+money(Math.round(career.salary*.6/100)*100)+'/wk, fans won\'t like it',ef:()=>{career.endorse=(career.endorse||0)+Math.round(career.salary*.6/100)*100;repAdd(-9,career.name+' criticised for betting sponsorship');}},
+  {t:'Turn both down',x:'Not now.',ef:()=>{}}]});}
+ if(r<.12&&!seenY('podcast')){markY('podcast');return mk({ic:'🎧',t:'Podcast Invite',s:'The biggest football podcast',sc:'Two hosts, three hours, no PR team. They want stories from the dressing room.',q:'Go on?',ch:[
+  {t:'Go on and tell everything',x:'Huge reach. Loose lips.',ef:()=>{repAdd(6,career.name+'\'s podcast appearance breaks records');if(Math.random()<.35){favAdd(-6);toast('😬 A clip about the manager\'s tactics is doing the rounds.','bad');}}},
+  {t:'Go on, keep it clean',x:'Safe, charming.',ef:()=>{repAdd(3);}},
+  {t:'Decline',x:'Not your thing.',ef:()=>{}}]});}
+ if(r<.16&&!seenY('oldpost')){markY('oldpost');return mk({ic:'📱',t:'Old Post Resurfaces',s:'Social media',sc:'A joke you posted at 15 has been dug up and is spreading fast. It has not aged well.',q:'How do you handle it?',ch:[
+  {t:'Apologise properly',x:'Take the hit.',ef:()=>{repAdd(-2,career.name+' apologises for old post');}},
+  {t:'Delete and ignore',x:'Hope it dies down.',ef:()=>{if(Math.random()<.5)repAdd(-8,'Fury as '+career.name+' stays silent');}},
+  {t:'Make a joke of it',x:'Could go either way.',ef:()=>{if(Math.random()<.45)repAdd(5,career.name+' wins internet with self-roast');else repAdd(-8,career.name+' slammed for tone-deaf response');}}]});}}
+function preNote(){const p=career&&career.pre;if(!p)return '';const bits=[];if(p.rt)bits.push((p.rt>0?'+':'')+p.rt.toFixed(2)+' rating');if(p.g&&p.g!==1)bits.push('goals '+(p.g>1?'+':'')+Math.round((p.g-1)*100)+'%');if(p.a&&p.a!==1)bits.push('assists '+(p.a>1?'+':'')+Math.round((p.a-1)*100)+'%');
+ return '<div class="nf-meta" style="color:var(--gold)">'+esc(p.label)+(bits.length?' · '+bits.join(' · '):'')+'</div>';}
+
+// ═════════ BALLON D'OR: anticipation score ═════════
+function ballonMusic(at,T,stops){const c=AU.ctx;
+ // suspense: chromatic low ostinato, tremolo strings, accelerating clock, timpani swell, sudden silence
+ const spic=(t,f,v)=>{const o=c.createOscillator(),lp=c.createBiquadFilter(),g=vca(t,v,.005,.16);o.type='sawtooth';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=900;o.connect(lp);lp.connect(g);o.start(t);o.stop(t+.22);};
+ const seq=[38,38,38,38,39,39,39,39,40,40,40,40,41,41,42];seq.forEach((m,i)=>at(.2+i*.25,()=>{spic(T(),nf(m),.22);spic(T(),nf(m+12),.1);}));
+ at(.3,()=>{const t=T(),lp=c.createBiquadFilter(),g=c.createGain();lp.type='lowpass';lp.frequency.setValueAtTime(500,t);lp.frequency.exponentialRampToValueAtTime(4000,t+3.6);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+3.5);g.gain.linearRampToValueAtTime(0,t+3.66);lp.connect(g);g.connect(AU.sfx);g.connect(AU.rev);
+  const trem=c.createOscillator(),tg=c.createGain();trem.frequency.value=11;tg.gain.value=.5;trem.connect(tg);
+  [62,65,69,74].forEach(m=>[.997,1.003].forEach(d=>{const o=c.createOscillator(),og=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(nf(m)*d,t);o.frequency.linearRampToValueAtTime(nf(m+1)*d,t+3.6);og.gain.value=.5;tg.connect(og.gain);o.connect(og);og.connect(lp);o.start(t);o.stop(t+3.7);}));trem.start(t);trem.stop(t+3.7);});
+ let tt=.4,gap=.5;while(tt<3.9){const a=tt;at(a,()=>I.tek(T(),.2));tt+=gap;gap=Math.max(.11,gap*.86);}
+ for(let i=0;i<22;i++){const a=2.4+i*.068;at(a,()=>tom(T(),.12+i*.018,62));}
+ at(2.55,()=>{const t=T(),s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=AU.noise;f.type='bandpass';f.Q.value=1.5;f.frequency.setValueAtTime(300,t);f.frequency.exponentialRampToValueAtTime(7000,t+1.35);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.3,t+1.33);g.gain.linearRampToValueAtTime(0,t+1.38);s.connect(f);f.connect(g);g.connect(AU.sfx);s.start(t);s.stop(t+1.4);});
+ // the name: orchestral hit in D major with choir
+ at(4.3,()=>{const t=T();[38,45,50,54,57,62,66].forEach(m=>I.brass(t,nf(m),1.4,.09));I.crash(t,.6);I.boom(t,1);I.boom(t+.02,.6);[74,78,81,86].forEach(m=>singSyl(t+.02,'ah',m,3.6,.34));I.pad(t,[50,57,62,66,69].map(nf),4.4,.24);[74,78,81,86].forEach((m,i)=>I.bell(t+i*.09,nf(m),.18));});
+ // the walk: noble theme over strings and timpani pulse
+ const th=[[69,.5],[74,.5],[78,.75],[76,.25],[74,.5],[69,.5],[71,.5],[73,.5],[74,1]];let ts=5.0;th.forEach(([m,d])=>{const a=ts;at(a,()=>{I.brass(T(),nf(m),d*.95,.12);I.brass(T(),nf(m-12),d*.95,.06);});ts+=d*.72;});
+ [[50,57,62,66],[47,54,59,62],[43,50,55,59],[45,52,57,61]].forEach((ch,i)=>at(4.9+i*.9,()=>I.pad(T(),ch.map(nf),1.1,.16)));
+ for(let i=0;i<6;i++)at(5+i*.6,()=>tom(T(),.28,55));
+ at(7.4,()=>{for(let i=0;i<18;i++)tom(T()+i*.07,.1+i*.02,60);I.whoosh(T()+.2,.3);});
+ // the lift: plagal amen + choir + bells
+ at(8.7,()=>{const t=T();[43,55,59,62,67].forEach(m=>I.brass(t,nf(m),.6,.09));[38,50,54,57,62,66].forEach(m=>I.brass(t+.62,nf(m),2.6,.1));I.crash(t+.62,.6);I.boom(t+.62,.9);[78,81,86,90].forEach(m=>singSyl(t+.62,'ah',m,3.6,.36));I.pad(t+.62,[50,57,62,66,74].map(nf),4,.26);for(let i=0;i<8;i++)I.bell(t+.62+i*.12,nf([86,81,78,74][i%4]),.14);});}
+
 // ═════════ CINEMATIC LAYER: grading, transitions, dialogue, new story moments ═════════
 const GRADE={triumph:['#ffb347',.3,'rgba(60,30,0,.35)'],setback:['#2a5a9a',.38,'rgba(0,10,30,.55)'],rivalry:['#c0182a',.32,'rgba(40,0,0,.5)'],tension:['#1c4a5a',.28,'rgba(0,10,15,.5)'],dawn:['#ff8a5c',.26,'rgba(40,10,0,.35)']};
 function cineGrade(x,W,H,mood){const g=GRADE[mood];if(!g)return;x.save();x.globalCompositeOperation='soft-light';x.globalAlpha=g[1];x.fillStyle=g[0];x.fillRect(0,0,W,H);
@@ -2353,7 +2627,7 @@ SCENES.derby={dur:9.2,trans:'wipe',mood:'rivalry',draw(x,W,H,t,dt,d,st){const hi
  x.fillStyle='#05050a';for(let i=0;i<40;i++){const cx0=(i+.5)*W/40,hh=H*.05+Math.sin(i*3.1)*H*.012+Math.abs(Math.sin(t*7+i))*H*.012;x.beginPath();x.arc(cx0,H-hh,H*.022,0,Math.PI*2);x.fill();x.fillRect(cx0-H*.025,H-hh+H*.015,H*.05,hh);}
  const ki=easeOut(ramp(t,.3,1.6)),kr=easeOut(ramp(t,.5,1.8));
  rig(x,-W*.2+W*.42*ki,H*1.04,H*.62,st.me,Object.assign({},POSE.hold,{ht:-.05,blink:(t%3.2)<.1}));
- rig(x,W*1.2-W*.42*kr,H*1.04,H*.62,Object.assign({},st.mates[3],{kit:d.rcol,num:9}),Object.assign({},POSE.hold,{ht:.05,mouth:t>4?'grin':null}));
+ rig(x,W*1.2-W*.42*kr,H*1.04,H*.62,Object.assign({},st.mates[3],{pat:null,sleeve:null,socks:null,shorts:null},kitOf(d.rival)||{kit:d.rcol},{num:9}),Object.assign({},POSE.hold,{ht:.05,mouth:t>4?'grin':null}));
  const bk=ramp(t,.4,hit),back=k=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(k-1,3)+c1*Math.pow(k-1,2);},bb=t<hit?back(bk):1,r=Math.min(W,H)*.13;
  drawBadge(x,-r+(W*.5-r*1.05+r)*bb,H*.42,r,d.col,d.abbr);drawBadge(x,W+r-(W*.5-r*1.05+r)*bb,H*.42,r,d.rcol,d.rabbr);
  if(t>hit){if(!st.sp){st.sp=1;for(let i=0;i<70;i++){const an=Math.random()*Math.PI*2,v=200+Math.random()*500;st.P.push({x:W/2,y:H*.42,vx:Math.cos(an)*v,vy:Math.sin(an)*v,life:0});}}
@@ -2412,9 +2686,9 @@ SCENES.negotiate={dur:9,trans:'fade',mood:'tension',draw(x,W,H,t,dt,d,st){
  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#10182a');g.addColorStop(1,'#070b14');x.fillStyle=g;x.fillRect(0,0,W,H);
  const wx=W*.12,wy=H*.08,ww=W*.76,wh=H*.36,sk=x.createLinearGradient(0,wy,0,wy+wh);sk.addColorStop(0,'#2b2550');sk.addColorStop(1,'#d27a4a');x.fillStyle=sk;x.fillRect(wx,wy,ww,wh);SEED=33;landmark(x,'towers',wx+ww*.3,wy+wh,wh*.7);landmark(x,'towers',wx+ww*.75,wy+wh,wh*.6);
  x.strokeStyle='#05070d';x.lineWidth=6;x.strokeRect(wx,wy,ww,wh);[1,2,3].forEach(i=>{x.beginPath();x.moveTo(wx+ww*i/4,wy);x.lineTo(wx+ww*i/4,wy+wh);x.stroke();});
- const sut={kit:'#1b1d2a',shorts:'#1b1d2a',boot:'#0d0d0d',num:'',suit:true};
+ const sut={kit:'#1b1d2a',shorts:'#1b1d2a',boot:'#0d0d0d',num:'',suit:true,pat:null,sleeve:null,socks:null};
  rig(x,W*.34,H*1.0,H*.62,Object.assign({},st.mates[2],sut),{aL:.3,bL:-1.4,aR:.3,bR:-1.5,mouth:st.speaking==='agent'&&Math.floor(t*8)%2?'o':null,blink:(t%3.4)<.1,ht:st.speaking==='director'?.08:0});
- rig(x,W*.5,H*1.02,H*.6,Object.assign({},st.me,{kit:'#2a2f3a',num:''}),{aL:.3,bL:-1.5,aR:.3,bR:-1.5,blink:(t%2.9)<.1,look:st.speaking==='director'?1.5:st.speaking==='agent'?-1.5:0});
+ rig(x,W*.5,H*1.02,H*.6,Object.assign({},st.me,{kit:'#2a2f3a',num:'',pat:null,sleeve:null,socks:null,shorts:'#2a2f3a'}),{aL:.3,bL:-1.5,aR:.3,bR:-1.5,blink:(t%2.9)<.1,look:st.speaking==='director'?1.5:st.speaking==='agent'?-1.5:0});
  rig(x,W*.68,H*1.0,H*.64,Object.assign({},st.mates[5],sut),{aL:.3,bL:-1.4,aR:.3,bR:-1.4,mouth:st.speaking==='director'&&Math.floor(t*8)%2?'o':null,blink:(t%3.8)<.1});
  const ty=H*.66,tg=x.createLinearGradient(0,ty,0,H);tg.addColorStop(0,'#4a3020');tg.addColorStop(1,'#1e130b');x.fillStyle=tg;x.beginPath();x.moveTo(W*.1,ty);x.lineTo(W*.9,ty);x.lineTo(W*1.05,H);x.lineTo(-W*.05,H);x.fill();x.fillStyle='#6a4630';x.fillRect(W*.1,ty,W*.8,4);
  x.fillStyle='#f2efe6';x.save();x.translate(W*.5,ty+H*.06);x.rotate(-.04);x.fillRect(-W*.06,-H*.03,W*.12,H*.07);x.fillStyle='#111';x.font='700 '+Math.round(H*.018)+'px DM Mono, monospace';x.textAlign='center';x.fillText(money(d.sal)+' → '+money(d.fair),0,0);x.restore();
@@ -2465,8 +2739,9 @@ function playCine(d,done){
  let fin=false,raf,W,H;const st={fw:[],P:[],dpr:1};
  const fit=()=>{st.dpr=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=Math.round(W*st.dpr);cv.height=Math.round(H*st.dpr);};fit();
  const base=Object.assign({},av,{num:career?career.num:10,kit:d.col||av.kit,name:career?career.name:''});
- if(d.suit)Object.assign(base,{kit:'#1b1d2a',shorts:'#1b1d2a',boot:'#0d0d0d',num:'',suit:true});
- st.me=base;st.mates=MODELS.map((m,i)=>Object.assign({},m,{kit:base.kit,num:SNUM[(i*3+1)%11],name:NAMES_L[(i*7)%NAMES_L.length]}));
+ {const kn=d.team||d.club||(career&&!career.retired&&d.col===activeClub().p?activeName():null),kk=kn&&!d.suit?kitOf(kn):null;if(kk&&(!d.col||kk.kit===d.col))Object.assign(base,kk);st.flagImg=kn&&FLAG_SVG[kn]?flagImg(kn):null;}
+ if(d.suit)Object.assign(base,{kit:'#1b1d2a',shorts:'#1b1d2a',boot:'#0d0d0d',num:'',suit:true,pat:null,sleeve:null,socks:null});
+ st.me=base;st.mates=MODELS.map((m,i)=>Object.assign({},m,{kit:base.kit,kit2:base.kit2,pat:base.pat,shorts:base.shorts,socks:base.socks,sleeve:base.sleeve,num:SNUM[(i*3+1)%11],name:NAMES_L[(i*7)%NAMES_L.length]}));
  const A=sceneAudio(d.type,d),dur=sc.dur,dlg=$('cdlg'),dWho=$('cdWho'),dTxt=$('cdTxt');let endAt=dur,T=0,last=performance.now(),li=-1,cur=null,typed=0,nextAt=0,doneAt=0;
  dlg.classList.remove('on');const mute=$('cineMute');mute.textContent=AU.on?'🔊':'🔇';mute.onclick=e=>{e.stopPropagation();toggleSound();mute.textContent=AU.on?'🔊':'🔇';};
  const advance=()=>{if(!cur)return;if(typed<cur.text.length){typed=cur.text.length;dTxt.textContent=cur.text;doneAt=performance.now();}else{cur=null;dlg.classList.remove('on');}};
@@ -2504,8 +2779,11 @@ function stinger(t,v){const c=AU.ctx,s=c.createBufferSource(),f=c.createBiquadFi
 function tom(t,v,f){f=f||110;osc(t,'sine',f,.35,vca(t,v,.002,.3),f*.55);nz(t,.08,vca(t,v*.3,.001,.06),'lowpass',900);}
 function gasp(t,v){const c=AU.ctx,g=c.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.12);g.gain.exponentialRampToValueAtTime(.0001,t+1.1);g.connect(AU.sfx);nz(t,1.2,g,'bandpass',900,.7,AU.pink);}
 function sceneAudio(type,d){const c=auReady();
+ if(type==='ballon'&&c){const cues=[],stops=[],at=(t,f)=>cues.push([t,f]),T=()=>c.currentTime;const room=loopNoise('lowpass',500,.5,.05);stops.push(room.stop);
+  at(.4,()=>heartbeat(T(),5,76,.4));ballonMusic(at,T,stops);at(4.35,()=>{applause(T(),4.5,45,.5);for(let i=0;i<8;i++)I.shutter(T()+Math.random()*2.5,.3);});at(9.3,()=>{applause(T(),3.5,55,.65);for(let i=0;i<10;i++)I.shutter(T()+Math.random()*3,.35);});
+  cues.sort((a,b)=>a[0]-b[0]);return{cues,caps:[],stop(){stops.forEach(f=>{try{f();}catch(e){}});}};}
  if(!['debut','derby','final','injury','comeback','negotiate'].includes(type)){const A=sceneAudioBase(type,d);if(!c)return A;
-  const hit={walkout:6.6,siu:4.1,trophy:4.4,ballon:4.3,bigwin:4.4}[type];if(hit)A.cues.push([hit-1.35,()=>stinger(c.currentTime,.45)]);
+  const hit={walkout:6.6,siu:4.1,trophy:4.4,bigwin:4.4}[type];if(hit)A.cues.push([hit-1.35,()=>stinger(c.currentTime,.45)]);
   if(type==='ballon')A.cues.push([.4,()=>heartbeat(c.currentTime,4,70,.45)]);
   if(type==='retire')A.onDone=()=>{const T=c.currentTime;applause(T,5,40,.5);I.pad(T,[48,55,64,67,72].map(nf),4,.22);I.boom(T,.5);};
   A.cues.sort((a,b)=>a[0]-b[0]);return A;}
@@ -2532,6 +2810,7 @@ function sceneAudio(type,d){const c=auReady();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('cine').classList.contains('open'))$('cineSkip').click();});
 
 // ═════════ BOOT ═════════
+{const nfl=()=>{$('natFlag').innerHTML=flagSVG($('nat').value,24,16);};$('nat').addEventListener('change',nfl);setTimeout(nfl,0);}
 $('nat').innerHTML=NATIONS.map(n=>'<option'+(n==='England'?' selected':'')+'>'+n+'</option>').join('');
 $('sndBtn').textContent=AU.on?'🔊':'🔇';
 load();go('menu');
