@@ -1,0 +1,13 @@
+Third-party 3D assets used by Football Legacy (all CC BY 4.0 — http://creativecommons.org/licenses/by/4.0/)
+
+lib/player.glb — footballer model and run animation:
+  "Slow Run" by arow102 — https://sketchfab.com/3d-models/slow-run-011d9a589311491390c3b7a8e4ad1149
+  plus the idle animation retargeted from
+  "Standing Man" by zhuoyi0904 — https://sketchfab.com/3d-models/standing-man-8401da7cb2564fc08681836cbeff39bc
+  Changes: mesh welded and simplified, unused UV sets removed, translation tracks removed,
+  idle clip retargeted onto the same skeleton. Kit, skin, hair and boot colours are repainted in-game.
+
+lib/stadium.glb — stadium:
+  "Vinh Stadium" by NGUYENNGHIAKK — https://sketchfab.com/3d-models/vinh-stadium-32f76b7be2f24eb4a5d1e827f2285c50
+  Changes: welded, simplified, merged by material, textures resized to 1024px, quantized.
+  In-game the original pitch surface is replaced and an animated crowd is placed on the tiers.
