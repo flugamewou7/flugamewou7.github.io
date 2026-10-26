@@ -14,3 +14,7 @@ lib/stadium.glb — stadium:
 
 lib/player.glb animation clips "dribble", "strike" and "spin" — Mixamo animations (Dribble, Strike Forward Jog,
 Soccer Spin) supplied by the project owner, retargeted onto the player skeleton with root motion removed.
+
+lib/grass_detail.jpg, lib/crowd_a.jpg, lib/crowd_b.jpg — AI-generated for this project on RunComfy
+(FLUX.2 Klein 9B for grass, Z-Image Turbo for crowds), then processed (detail extraction, seam blending).
+lib/RoomEnvironment.js — three.js r170 example (MIT), import path rewritten.
