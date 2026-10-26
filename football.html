@@ -328,7 +328,7 @@ body{background:radial-gradient(1100px 600px at 85% -10%,rgba(232,184,75,.07),tr
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v18</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v19</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -3824,7 +3824,7 @@ function plGoal(team){const b=PM.ball,P=M.P;b.inNet=team===0?1:-1;b.owner=null;i
  else{M.os++;M.evOpp.push({m:M.min,s:sid(sc),a:sid(as)});const U=PM.user;if(U&&!U.off&&!PM.userOff){M.rt-=U.gk?.3:isDef()?.2:.05;if(PM.lostT&&PM.t-PM.lostT<10){M.rt-=.3;}}}
  const who=og?'Own goal!':sc.name+(as?' (assist: '+as.name+')':'');
  mlog('⚽ '+M.min+"' GOAL "+(team?P.opp.n:P.me.n)+' — '+who,team===0&&((sc&&sc.user)||(as&&as.user))?'e':team===0?'g':'r');
- PM.goalInfo={team,sc,as,og,min:M.min};PM.celStyle=plPick(['arms','knee','plane','siu','point','shush','heart','arms']);plBanner('GOAL!',(og?'Own goal':sc.user?'YOU — '+career.name:sc.name)+'  '+M.min+"'"+(as?'  ·  assist '+(as.user?'YOU':lname(as.name)):''),team===0?'#e8b84b':'#ff5252',3.2);
+ PM.goalInfo={team,sc,as,og,min:M.min};PM.celStyle=plPick(['arms','knee','plane','siu','point','shush','heart','flip','arms']);plBanner('GOAL!',(og?'Own goal':sc.user?'YOU — '+career.name:sc.name)+'  '+M.min+"'"+(as?'  ·  assist '+(as.user?'YOU':lname(as.name)):''),team===0?'#e8b84b':'#ff5252',3.2);
  plFeed((team?P.opp.n:P.me.n)+' score! '+who,false);plSay(plPick(PL_LINES[team===0?'goalUs':'goalThem'])+(team===0&&sc?' '+(sc.user?lname(career.name):lname(sc.name))+'!':''),3);plSnd('net');if(PM.crowd)PM.crowd.cheer(team===0===P.home?1.35:1.05,.3,3);
  const ch=chantFor(team?P.opp.n:P.me.n);if(ch&&AU.ctx&&auReady())setTimeout(()=>{if(PM&&PM.state==='goal'||PM&&PM.state==='replay')crowdChant(AU.ctx.currentTime,ch,1,.9);},1600);
  PM.state='goal';PM.stT=0;PM.repFrames=PM.rep.slice(-150);head();PM.goalCine=PM.g3on&&team===0&&!!sc&&!og?{a0:null,conf:false}:null;
@@ -4183,7 +4183,7 @@ function plTogglePause(force){if(!PM||PM.over||PM.cine)return;PM.paused=force!=n
 function plPauseMenu(){const cyc=(o,k)=>{const ks=Object.keys(o),i=ks.indexOf(k);return ks[(i+1)%ks.length];};
  $('plPause').innerHTML='<div class="pl-pm"><div class="pl-pmh">PAUSED · '+Math.min(90+(PM.half===2?PM.stop[1]:0),Math.floor(PM.gs/60))+"'</div><div class=\"pl-pms\">"+esc(M.P.me.n)+' '+M.ys+' – '+M.os+' '+esc(M.P.opp.n)+' · '+PM.diff.n+'</div>'+
  '<button class="btn gold" id="pmRes">▶ Resume</button><button class="btn" id="pmHelp">🎮 Controls</button><button class="btn" id="pmCam">🎥 Camera: '+PL_CAM[PM.camMode||plPref('cam','pro')][1]+'</button><button class="btn" id="pmVoice">🎙️ Commentary: '+(PM.voice?'On':'Off')+'</button><button class="btn" id="pmFps">📈 FPS counter: '+(PM.fps?'On':'Off')+'</button><button class="btn" id="pmStad">🏟️ Stadium: '+(plPref('stadium','vinh')==='classic'?'Classic':'Vinh Stadium')+'</button><button class="btn" id="pmGfx">✨ Graphics: '+({auto:'Auto 3D',high:'High 3D',lite:'Lite 3D',classic:'Classic 2D'})[PM.gfx]+'</button>'+
- (document.fullscreenEnabled?'<button class="btn" id="pmFs">⛶ Fullscreen</button>':'')+'<button class="btn" id="pmSim">⏩ Sim to full time</button>'+((PLBODY||PLGLTF)&&PM.g3on?'<div style="font-size:.55rem;opacity:.45;margin-top:10px;font-family:DM Mono,monospace">'+(PLGLTF?'Models: "Slow Run" by arow102 · "Standing Man" (idle) by zhuoyi0904'+(G3&&G3.stadOn?' · "Vinh Stadium" by NGUYENNGHIAKK':'')+' — CC BY 4.0':'Player model: '+esc(PLBODY.credit))+'</div>':'')+'</div>';
+ (document.fullscreenEnabled?'<button class="btn" id="pmFs">⛶ Fullscreen</button>':'')+'<button class="btn" id="pmSim">⏩ Sim to full time</button>'+((PLBODY||PLGLTF)&&PM.g3on?'<div style="font-size:.55rem;opacity:.45;margin-top:10px;font-family:DM Mono,monospace">'+(PLGLTF?'Models: '+(PLHERO?'"3D Rigged Cristiano Ronaldo Al Nassr" by Lean_Lo1786 · ':'')+'"Slow Run" by arow102 · "Standing Man" (idle) by zhuoyi0904'+(G3&&G3.stadOn?' · "Vinh Stadium" by NGUYENNGHIAKK':'')+' — CC BY 4.0':'Player model: '+esc(PLBODY.credit))+'</div>':'')+'</div>';
  $('pmRes').onclick=()=>plTogglePause(false);$('pmHelp').onclick=()=>{PM.help=25;if(PM.touch)toast('Touch: stick to move · SHOOT hold for power · PASS / THROUGH / LOB · SPRINT hold · SKILL','g');plTogglePause(false);};
  $('pmCam').onclick=()=>{const n=cyc(PL_CAM,PM.camMode||plPref('cam','pro'));plSet('cam',n);PM.camMode=n;PM.camZ=PL_CAM[n][0];plPauseMenu();};
  $('pmGfx').onclick=()=>{PM.gfx=cyc({auto:1,high:1,lite:1,classic:1},PM.gfx);plSet('gfx',PM.gfx);PM.lite=PM.gfx==='lite';PM.dprCap=PM.gfx==='lite'?1:2;PM.ft=[];PM.g3low=false;
@@ -4263,7 +4263,7 @@ function plBoard(){const cv=$('lbBoard');if(!cv)return;const W=cv.offsetWidth||6
 let T3=null,T3P=null,G3=null;
 // ═════════ MOCAP PLAYERS: rigged footballer (Mixamo skeleton) + motion-captured idle/run, blended with procedural actions ═════════
 // Player model: "Slow Run" by arow102, idle clip from "Standing Man" by zhuoyi0904 — both CC BY 4.0 (see lib/player.LICENSE.txt)
-let PLIMG={},PLGLTF=null,PLSU=null,PLSTAD=null,PLGL=null,PLSTADP=null;
+let PLIMG={},PLHERO=null,PLGLTF=null,PLSU=null,PLSTAD=null,PLGL=null,PLSTADP=null;
 function plLoadStad(){if(PLSTAD||PLSTADP||!PLGL)return;PLSTADP=new PLGL.GLTFLoader().loadAsync('./lib/stadium.glb').then(s=>{s.scene.traverse(o=>{if(o.isMesh){if(!o.geometry.attributes.normal)o.geometry.computeVertexNormals();o.matrixAutoUpdate=false;o.updateMatrix();}});PLSTAD=s;if(PM&&PM.g3on&&G3&&!G3.stadOn&&!PM.over&&!PM.noStad){try{plBuild3D();plResize();}catch(e){console.error(e);}}}).catch(e=>{console.warn('stadium unavailable',e);PLSTADP=null;});}
 const MX_MAP=[['Hips','hips'],['Spine','spine'],['Spine1','spine'],['Spine2','spine'],['Neck','head'],['Head','head'],
  ['LeftShoulder','spine'],['LeftArm','shL'],['LeftForeArm','elL'],['LeftHand','elL'],['RightShoulder','spine'],['RightArm','shR'],['RightForeArm','elR'],['RightHand','elR'],
@@ -4271,7 +4271,7 @@ const MX_MAP=[['Hips','hips'],['Spine','spine'],['Spine1','spine'],['Spine2','sp
 const mxKey=n=>n.replace(/^mixamorig:?/,'').replace(/_\d+$/,'');
 function mxBones(obj){const B={};obj.traverse(o=>{if(o.isBone)B[mxKey(o.name)]=o;});return B;}
 // one-off measurements on the prototype: scale, foot offset, reference pose for retargeting
-function mxProto(){const THREE=T3,g=G3;if(g.mx)return g.mx;const G=PLGLTF,sc=G.scene;
+function mxProto(G){const THREE=T3,g=G3;G=G||PLGLTF;if(!g.mxP)g.mxP=new Map();if(g.mxP.has(G))return g.mxP.get(G);const sc=G.scene;
  const box=new THREE.Box3().setFromObject(sc),s=1.8/(box.max.y-box.min.y),y0=-box.min.y*s;
  const run=G.animations.find(a=>a.name==='run'),idle=G.animations.find(a=>a.name==='idle'),drib=G.animations.find(a=>a.name==='dribble'),strike=G.animations.find(a=>a.name==='strike'),spin=G.animations.find(a=>a.name==='spin');
  const tmp=PLSU.clone(sc),hold=new THREE.Group();hold.add(tmp);tmp.scale.setScalar(s);tmp.position.y=y0;hold.updateMatrixWorld(true);
@@ -4281,9 +4281,9 @@ function mxProto(){const THREE=T3,g=G3;if(g.mx)return g.mx;const G=PLGLTF,sc=G.s
  const ref={},wq=new THREE.Quaternion();MX_MAP.forEach(([b])=>{if(B0[b]){B0[b].getWorldQuaternion(wq);ref[b]=wq.clone();}});
  const hipRest=B0.Hips.position.clone(),hipUp=new THREE.Vector3(0,1/hs.y,0).applyQuaternion(hq.clone().invert());
  const hipH=new THREE.Vector3();B0.Hips.getWorldPosition(hipH);const fy={},tv=new THREE.Vector3();['LeftFoot','RightFoot','LeftToeBase','RightToeBase'].forEach(k=>{B0[k].getWorldPosition(tv);fy[k]=tv.y;});
- return(g.mx={s,y0,run,idle,drib,strike,spin,bind,ref,hipParQ:hq.clone(),hipRest,hipUp,hipH:hipH.y,fy});}
+ const clips={};G.animations.forEach(a=>clips[a.name]=a);const P={G,s,y0,run,idle,drib,strike,spin,clips,bind,ref,hipParQ:hq.clone(),hipRest,hipUp,hipH:hipH.y,fy};g.mxP.set(G,P);if(G===PLGLTF)g.mx=P;return P;}
 // ── kit painting on the PES-style templates ──
-function mxImg(name){let im=null;PLGLTF.scene.traverse(o=>{if(o.isMesh&&o.material&&o.material.name===name&&o.material.map)im=o.material.map.image;});return im;}
+function mxImg(name,G){let im=null;(G||PLGLTF).scene.traverse(o=>{if(o.isMesh&&o.material&&o.material.name===name&&o.material.map)im=o.material.map.image;});return im;}
 function mxTexOf(cv){const THREE=T3,t=new THREE.CanvasTexture(cv);t.flipY=false;t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(8,G3.renderer.capabilities.getMaxAnisotropy());return t;}
 function mxShirt(c,name){const[cv,x]=plCv(512,512),k=c.kit,k2=c.kit2||darken(k,30);x.fillStyle=k;x.fillRect(0,0,512,512);
  if(c.kit2&&c.pat){x.fillStyle=c.kit2;switch(c.pat){
@@ -4307,13 +4307,41 @@ function mxShirt(c,name){const[cv,x]=plCv(512,512),k=c.kit,k2=c.kit2||darken(k,3
  x.fillStyle=tc;x.strokeStyle=sc;x.lineWidth=3;x.font='700 34px Oswald, sans-serif';x.strokeText(num,256,338);x.fillText(num,256,338);
  x.fillStyle='#e8b84b';x.beginPath();x.arc(228,290,9,0,6.3);x.fill();x.fillStyle=k2;x.beginPath();x.arc(228,290,5.5,0,6.3);x.fill();
  return mxTexOf(cv);}
+// hero model (Valve-biped footballer, CC BY 4.0): shirt UV = front panel x 384-640 / y 0(hem)-512(collar), back panel y 512(collar)-1024(hem) mirrored
+function heroShirt(c,name){const[cv,x]=plCv(1024,1024),k=c.kit,k2=c.kit2||darken(k,30),sl=c.sleeve||k;x.fillStyle=k;x.fillRect(0,0,1024,1024);
+ if(c.kit2&&c.pat){x.fillStyle=c.kit2;switch(c.pat){
+  case 'stripes':for(let i=-6;i<8;i++)x.fillRect(496+i*64,0,32,1024);break;
+  case 'hoops':for(let i=0;i<8;i++){x.fillRect(0,i*64+20,1024,30);x.fillRect(0,1024-i*64-50,1024,30);}break;
+  case 'halves':x.fillRect(512,0,512,1024);break;
+  case 'band':x.fillRect(430,0,22,1024);x.fillRect(572,0,22,1024);break;
+  case 'hband':x.fillRect(0,330,1024,60);x.fillRect(0,634,1024,60);break;
+  case 'sash':x.save();x.beginPath();x.rect(0,0,1024,512);x.clip();x.translate(512,256);x.rotate(.75);x.fillRect(-500,-35,1000,70);x.restore();x.save();x.beginPath();x.rect(0,512,1024,512);x.clip();x.translate(512,768);x.rotate(-.75);x.fillRect(-500,-35,1000,70);x.restore();break;
+  case 'diag':x.beginPath();x.moveTo(380,0);x.lineTo(650,512);x.lineTo(1024,512);x.lineTo(1024,0);x.fill();x.beginPath();x.moveTo(380,1024);x.lineTo(650,512);x.lineTo(1024,512);x.lineTo(1024,1024);x.fill();break;
+  case 'checks':for(let i=0;i<32;i++)for(let j=0;j<32;j++)if((i+j)%2)x.fillRect(i*32,j*32,32,32);break;}}
+ // sleeves
+ x.fillStyle=sl;x.fillRect(0,0,362,1024);x.fillRect(662,0,362,1024);if(c.pat==='stripes'&&c.kit2){x.fillStyle=c.kit2;}x.fillStyle=k2;x.fillRect(0,0,362,18);x.fillRect(662,0,362,18);x.fillRect(0,1006,362,18);x.fillRect(662,1006,362,18);
+ const g=x.createLinearGradient(380,0,644,0);g.addColorStop(0,'rgba(0,0,0,.10)');g.addColorStop(.5,'rgba(255,255,255,.05)');g.addColorStop(1,'rgba(0,0,0,.10)');x.fillStyle=g;x.fillRect(362,0,300,1024);
+ // collar
+ x.strokeStyle=k2;x.lineWidth=14;x.beginPath();x.ellipse(512,503,52,40,0,0,6.3);x.stroke();
+ const light=isLight(c.pat==='stripes'||c.pat==='halves'?mixHex(k,c.kit2||k):k),tc=light?'#111':'#fff',sc=light?'rgba(255,255,255,.55)':'rgba(0,0,0,.6)',num=String(c.num??''),nm=String(name||'').split(' ').pop().toUpperCase().slice(0,12);
+ x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';
+ // back: name + number (mirrored horizontally in UV space)
+ x.save();x.translate(512,0);x.scale(-1,1);x.fillStyle=tc;x.strokeStyle=sc;x.lineWidth=6;x.font='700 40px Oswald, sans-serif';if(nm){x.strokeText(nm,0,600,220);x.fillText(nm,0,600,220);}
+ x.font='700 190px Oswald, sans-serif';x.strokeText(num,0,745,230);x.fillText(num,0,745,230);x.restore();
+ // front: small number + crest (flipped vertically in UV space)
+ x.save();x.translate(0,512);x.scale(1,-1);x.fillStyle=tc;x.strokeStyle=sc;x.lineWidth=4;x.font='700 64px Oswald, sans-serif';x.strokeText(num,512,200);x.fillText(num,512,200);
+ x.fillStyle='#e8b84b';x.beginPath();x.arc(452,105,17,0,6.3);x.fill();x.fillStyle=k2;x.beginPath();x.arc(452,105,10,0,6.3);x.fill();x.restore();
+ return mxTexOf(cv);}
+function heroSocks(c,G){const im=mxImg('texture_8',G);const[cv,x]=plCv(512,256),sk=c.socks||c.kit,tr=c.kit2&&c.kit2!==sk?c.kit2:(isLight(sk)?darken(sk,40):'#f2f2f2');
+ if(!im){x.fillStyle=sk;x.fillRect(0,0,512,256);return mxTexOf(cv);}x.drawImage(im,0,0,512,256);const d=x.getImageData(0,0,512,256),D=d.data,a=[1,3,5].map(i=>parseInt(sk.slice(i,i+2),16)),b=[1,3,5].map(i=>parseInt(tr.slice(i,i+2),16));
+ for(let i=0;i<D.length;i+=4){const L=(D[i]+D[i+1]+D[i+2])/3,blue=D[i+2]>D[i]+30,f=blue?a:b,sh=blue?clamp(L/60,.6,1.25):clamp(L/150,.7,1.15);D[i]=Math.min(255,f[0]*sh);D[i+1]=Math.min(255,f[1]*sh);D[i+2]=Math.min(255,f[2]*sh);}x.putImageData(d,0,0);return mxTexOf(cv);}
 function mixHex(a,b){const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),A=p(a),B=p(b);return '#'+A.map((v,i)=>Math.round((v+B[i])/2).toString(16).padStart(2,'0')).join('');}
 function mxShorts(c){const key='sh|'+c.shorts+'|'+c.socks+'|'+c.kit+'|'+c.kit2;const C=G3.mxTex;if(C[key])return C[key];const[cv,x]=plCv(1024,512),sk=c.socks||c.kit,trim=c.kit2&&c.kit2!==sk?c.kit2:(isLight(sk)?darken(sk,40):'#f2f2f2');
  x.fillStyle=sk;x.fillRect(0,0,1024,240);x.fillStyle=trim;x.fillRect(0,192,1024,40);x.fillStyle='rgba(0,0,0,.18)';for(let i=0;i<1024;i+=6)x.fillRect(i,192,2,40);
  x.fillStyle=c.shorts||'#fff';x.fillRect(0,236,1024,276);x.fillStyle=isLight(c.shorts||'#fff')?'rgba(0,0,0,.12)':'rgba(255,255,255,.14)';x.fillRect(0,236,1024,6);
  const st=c.kit===c.shorts?(c.kit2||'#fff'):c.kit;x.fillStyle=st;[300,690].forEach(cx=>x.fillRect(cx,240,10,240));
  return(C[key]=mxTexOf(cv));}
-function mxTint(name,col,mode){const key=name+'|'+col+'|'+mode,C=G3.mxTex;if(C[key])return C[key];const im=mxImg(name);if(!im)return null;const w=im.width,h=im.height,[cv,x]=plCv(w,h);x.drawImage(im,0,0,w,h);
+function mxTint(name,col,mode,G){const key=name+'|'+col+'|'+mode+(G?'|h':''),C=G3.mxTex;if(C[key])return C[key];const im=mxImg(name,G);if(!im)return null;const w=im.width,h=im.height,[cv,x]=plCv(w,h);x.drawImage(im,0,0,w,h);
  if(mode==='skin'){const base=[200,160,128],t=[1,3,5].map(i=>parseInt(col.slice(i,i+2),16)),lt=(t[0]+t[1]+t[2])/(base[0]+base[1]+base[2]);
   if(lt<.97){x.globalCompositeOperation='multiply';const v=Math.round(255*Math.max(.25,lt));x.fillStyle='rgb('+v+','+Math.round(v*.96)+','+Math.round(v*.92)+')';x.fillRect(0,0,w,h);}
   else if(lt>1.03){x.globalCompositeOperation='screen';const v=Math.round(255*Math.min(.35,(lt-1)*.9));x.fillStyle='rgb('+v+','+v+','+v+')';x.fillRect(0,0,w,h);}
@@ -4324,49 +4352,71 @@ function mxTint(name,col,mode){const key=name+'|'+col+'|'+mode,C=G3.mxTex;if(C[k
  return(C[key]=mxTexOf(cv));}
 function mxMat(map,rough){const THREE=T3,lite=PM&&(PM.gfx==='lite'||PM.touch);return lite?new THREE.MeshLambertMaterial({map}):new THREE.MeshStandardMaterial({map,roughness:rough||.75,metalness:0});}
 const MX_SHORT_HAIR=['Buzz Cut','Short Fade','Cornrows','Bald','Textured Crop'];
-function plMkMixamo(c,name,gk){const THREE=T3,g=G3,P=mxProto();if(!g.mxTex)g.mxTex={};if(!g.mxMats)g.mxMats={};
+function plMkMixamo(c,name,gk,G){const THREE=T3,g=G3,P=mxProto(G),hero=!!G&&G===PLHERO;if(!g.mxTex)g.mxTex={};if(!g.mxMats)g.mxMats={};
  const root=new THREE.Group(),body=new THREE.Group();root.add(body);const h=plHash(name||c.name||c.num),ht=.95+(h%11)*.01,bw=.96+((h>>4)%9)*.012;body.scale.set(bw,ht,bw);
- const model=PLSU.clone(PLGLTF.scene);model.scale.setScalar(P.s);model.position.y=P.y0;body.add(model);
+ const model=PLSU.clone(P.G.scene);model.scale.setScalar(P.s);model.position.y=P.y0;body.add(model);
  const skinC=c.skin||SKINS[2],hairC=c.hairCol||'#222222',bootHue=(h>>6)%360;
  model.traverse(o=>{if(!o.isMesh)return;o.castShadow=g.shadows;o.receiveShadow=false;o.frustumCulled=false;const n=o.material.name;let mat=null;
+  if(hero){if(n==='texture_6')mat=mxMat(heroShirt(c,name),.8);else if(n==='texture_7'){mat=new THREE.MeshStandardMaterial({color:new THREE.Color(c.shorts||'#ffffff'),roughness:.82});}else if(n==='texture_8')mat=mxMat(heroSocks(c,G),.85);
+   else if(/^texture_[134]$/.test(n))mat=mxMat(mxTint(n,skinC,'skin',G),.55);else if(n==='texture_2')mat=mxMat(mxTint(n,hairC,'hair',G),.7);else{o.material=o.material.clone();o.material.roughness=n==='texture_9'?.35:.6;}if(mat){mat.name=n;o.material=mat;}return;}
   if(n==='argentina')mat=mxMat(mxShirt(c,name),.82);
   else if(n==='katok'){const k='m|sh|'+c.shorts+c.socks+c.kit+c.kit2;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxShorts(c),.85));}
   else if(n==='tangan'||n==='yuniwi120905'){const k='m|'+n+skinC;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTint(n,skinC,'skin'),.6));}
   else if(n==='rambut'){if(MX_SHORT_HAIR.includes(c.hair)){o.visible=false;return;}const k='m|hair'+hairC;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTint(n,hairC,'hair'),.7));}
   else if(n==='sepatu'){const hb=Math.round(bootHue/45)*45,k='m|boot'+hb;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTint(n,hb,'boot'),.35));}
   if(mat)o.material=mat;});
- const B=mxBones(model),mixer=new THREE.AnimationMixer(model),aI=mixer.clipAction(P.idle),aR=mixer.clipAction(P.run);aI.play();aR.play();aI.time=(h%97)/97*P.idle.duration;aR.time=(h%53)/53*P.run.duration;
+ const B=mxBones(model),mixer=new THREE.AnimationMixer(model),act={};if(hero)for(const k in P.clips){const a=mixer.clipAction(P.clips[k]);if(['idle','run','strafeL','strafeR','runBackDiag','gkSide'].includes(k)){a.play();a.setEffectiveWeight(0);a.timeScale=0;}else{a.setLoop(T3.LoopOnce,1);a.clampWhenFinished=true;}act[k]=a;}
+ const aI=mixer.clipAction(P.idle),aR=mixer.clipAction(P.run);aI.play();aR.play();aI.time=(h%97)/97*P.idle.duration;aR.time=(h%53)/53*P.run.duration;
  const aD=P.drib?mixer.clipAction(P.drib):null,aS=P.strike?mixer.clipAction(P.strike):null,aSp=P.spin?mixer.clipAction(P.spin):null;if(aD){aD.play();aD.setEffectiveWeight(0);}[aS,aSp].forEach(a=>{if(a){a.setLoop(T3.LoopOnce,1);a.clampWhenFinished=true;}});aR.setEffectiveWeight(0);
  // invisible procedural rig: the existing pose solver drives it, then it is transferred onto the skeleton
- const gb=new THREE.Group(),G=(par,x,y,z)=>{const o=new THREE.Group();o.position.set(x,y,z);par.add(o);return o;};
- const hips=G(gb,0,.975,0),spine=G(hips,0,.06,0),head=G(spine,0,.63,0),shL=G(spine,.19,.47,0),shR=G(spine,-.19,.47,0),elL=G(shL,0,-.3,0),elR=G(shR,0,-.3,0),
-  hipL=G(hips,.084,-.04,0),hipR=G(hips,-.084,-.04,0),knL=G(hipL,0,-.43,0),knR=G(hipR,0,-.43,0),anL=G(knL,0,-.425,0),anR=G(knR,0,-.425,0);
+ const gb=new THREE.Group(),GG=(par,x,y,z)=>{const o=new THREE.Group();o.position.set(x,y,z);par.add(o);return o;};
+ const hips=GG(gb,0,.975,0),spine=GG(hips,0,.06,0),head=GG(spine,0,.63,0),shL=GG(spine,.19,.47,0),shR=GG(spine,-.19,.47,0),elL=GG(shL,0,-.3,0),elR=GG(shR,0,-.3,0),
+  hipL=GG(hips,.084,-.04,0),hipR=GG(hips,-.084,-.04,0),knL=GG(hipL,0,-.43,0),knR=GG(hipR,0,-.43,0),anL=GG(knL,0,-.425,0),anR=GG(knR,0,-.425,0);
  const blob=new THREE.Mesh(g.geo.blob,g.blobM);blob.rotation.x=-Math.PI/2;blob.position.y=.015;root.add(blob);
- return{mx:true,root,body,model,B,mixer,aI,aR,aD,aS,aSp,gb,hips,spine,head,shL,shR,elL,elR,hipL,hipR,knL,knR,anL,anR,blob,ry:0,ht,sty:.85+((h>>8)%7)*.05,kf:1,wp:0,wl:0,gq:{}};}
+ return{mx:true,hero,P,act,root,body,model,B,mixer,aI,aR,aD,aS,aSp,gb,hips,spine,head,shL,shR,elL,elR,hipL,hipR,knL,knR,anL,anR,blob,ry:0,ht,sty:.85+((h>>8)%7)*.05,kf:1,wp:0,wl:0,gq:{}};}
+// hero: event-timed mocap one-shots (contact frame lands on the game event)
+function heroActions(m,p,st,rep){if(rep){if(m.one){m.one.a.stop();m.one=null;}m.pst2=st;return;}const A=m.act,P=m.P;
+ const go=(k,t0,dur,ts,mir)=>{const a=A[k];if(!a)return;if(m.one&&m.one.a!==a)m.one.a.stop();a.reset();a.time=t0;a.timeScale=0;a.setEffectiveWeight(1);a.play();m.one={a,t0,until:PM.t+dur,ts:ts||1};m.body.scale.x=Math.abs(m.body.scale.x)*(mir?-1:1);};
+ if(st!==m.pst2){
+  if(st==='kick'){const pen=PM.restart&&PM.restart.type==='pen'||PM.sp&&PM.sp.pen,pass=PM.pass&&PM.pass.from===p&&PM.t-PM.pass.t0<.2;if(pen)go('penalty',.62,.6,1.1);else if(pass)go('pass',.36,.55,1.15);else go('strike',.39,.6,1.15);}
+  else if(st==='head')go('header',.98,.55,1.3);
+  else if(st==='throw')go('throwIn',1.0,1.1,1.4);
+  else if(st==='skill')go('spin',0,.85,1.5);
+  else if(st==='down')go('trip',.42,1.1,1.25);
+  else if(st==='dive'){const lat=Math.sign(-Math.sin(m.ry)*(p.diveDir||1))||1;go('gkDive',.85,1.0,1.35,lat<0);}
+  else if(st==='celebrate'&&PM.celStyle==='flip')go('flip',0,1.6,1.05);
+  else if(m.pst2==='down'&&(st===''||!st))go('getUp',1.15,.75,1.9);}
+ m.pst2=st;if(m.one&&PM.t>m.one.until){m.one.a.stop();m.one=null;m.body.scale.x=Math.abs(m.body.scale.x);}}
 const MX_FULL=['tackle','drag','feint','kick','head','slide','down','dive','hold','throw','wall','jump','skill','stumble'];
-function plMxDrive(m,p,s,rep,dt,extra){const THREE=T3,P=G3.mx,st=rep?s.st:p.st;if(!m.q){m.q=new THREE.Quaternion();m.q2=new THREE.Quaternion();m.qp=new THREE.Quaternion();}
+function plMxDrive(m,p,s,rep,dt,extra){const THREE=T3,P=m.P||G3.mx,st=rep?s.st:p.st;if(!m.q){m.q=new THREE.Quaternion();m.q2=new THREE.Quaternion();m.qp=new THREE.Quaternion();}
  // effective speed from actual motion (also right in slow-motion replays)
  const dm=m.lx==null?0:Math.hypot(s.x-m.lx,s.y-m.ly);m.lx=s.x;m.ly=s.y;const spE=dt>0?Math.min(11,dm/Math.max(dt,1/240)):0;m.spE=(m.spE||0)+(spE-(m.spE||0))*Math.min(1,dt*10);const sp=m.spE;
  const vx=s.vx||0,vy=s.vy||0,cr=Math.cos(m.ry),sr=Math.sin(m.ry),vf=vx*sr+vy*cr,vl=vx*cr-vy*sr,vs=Math.hypot(vx,vy)||1;
  const back=vf<-.35*vs&&vs>.8,side=vs>.8?clamp((Math.abs(vl)-Math.abs(vf)*.7)/vs*1.8,0,1):0,ready=!rep&&PM.state==='play'&&PM.ball.owner!==p&&Math.hypot(PM.ball.x-s.x,PM.ball.y-s.y)<(p.gk?30:13)&&sp<1.2;
  const ow=PM.ball.owner===p&&!rep;
  // one-shot mocap: strike on kicks, roulette on skill moves
- if(st!==m.pst2){if(st==='kick'&&m.aS){m.one={a:m.aS,t0:.36,until:PM.t+.62,ts:1.25};}else if(st==='skill'&&m.aSp){m.one={a:m.aSp,t0:0,until:PM.t+.85,ts:1.5};}if(m.one&&(st==='kick'||st==='skill')){const a=m.one.a;a.reset();a.time=m.one.t0;a.timeScale=m.one.ts;a.setEffectiveWeight(1);a.play();}}m.pst2=st;
- if(m.one&&(PM.t>m.one.until||rep||st==='down'||st==='slide')){m.one.a.stop();m.one=null;}
+ if(m.hero)heroActions(m,p,st,rep);else if(st!==m.pst2){if(st==='kick'&&m.aS){m.one={a:m.aS,t0:.36,until:PM.t+.62,ts:1.25};}else if(st==='skill'&&m.aSp){m.one={a:m.aSp,t0:0,until:PM.t+.85,ts:1.5};}if(m.one&&(st==='kick'||st==='skill')){const a=m.one.a;a.reset();a.time=m.one.t0;a.timeScale=m.one.ts;a.setEffectiveWeight(1);a.play();}}m.pst2=st;
+ if(!m.hero&&m.one&&(PM.t>m.one.until||rep||st==='down'||st==='slide')){m.one.a.stop();m.one=null;}
  const oneW=m.one?Math.min(1,(m.one.until-PM.t)/.15):0;
- const cel=st==='celebrate',full=!m.one&&MX_FULL.includes(st)||(cel&&sp<2.4)||extra||(!rep&&p.user&&PM.charge&&PM.ball.owner===p);
- const tgt=full?1:Math.max(back?.85:0,side*.85,ready?.55:0,p.gk&&!rep&&sp<2?.7:0);m.wp+=((m.one?0:tgt)-m.wp)*Math.min(1,dt*(tgt>m.wp?14:m.one?20:7));
+ const cel=st==='celebrate',full=!m.one&&MX_FULL.includes(st)&&!(m.hero&&['kick','head','throw','dive','down','skill'].includes(st))||(cel&&sp<2.4)||extra||(!rep&&p.user&&PM.charge&&PM.ball.owner===p);
+ const tgt=full?1:m.hero?(ready&&sp<.6?.45:0):Math.max(back?.85:0,side*.85,ready?.55:0,p.gk&&!rep&&sp<2?.7:0);m.wp+=((m.one?0:tgt)-m.wp)*Math.min(1,dt*(tgt>m.wp?14:m.one?20:7));
  const touch=!rep&&!m.one&&!(m.dw>.3)&&p.touchT&&PM.t-p.touchT<.16&&PM.ball.owner===p;m.wl+=((touch?.55:0)-m.wl)*Math.min(1,dt*30);
  // mocap locomotion
  const run=clamp((sp-.45)/1.6,0,1),dr=m.aD&&ow&&p.dph!=null&&p.st!=='skill'?clamp((6.6-sp)/.6,0,1)*run:0;m.dw=(m.dw||0)+(dr-(m.dw||0))*Math.min(1,dt*10);const lw=1-oneW;
- m.aR.setEffectiveWeight(run*(1-m.dw)*lw);m.aI.setEffectiveWeight((1-run)*lw);m.aR.timeScale=clamp(sp/3.25,.6,1.75);m.aI.timeScale=1;
+ if(m.hero){const A=m.act,a=Math.atan2(vl,vf),cf=Math.cos(a),sf=Math.sin(a),gkS=p.gk&&Math.abs(sf)>.55;let wF=Math.max(0,cf)**2,wB=Math.max(0,-cf)**2,wL=Math.max(0,sf)**2,wR=Math.max(0,-sf)**2;const tot=wF+wB+wL+wR||1;wF/=tot;wB/=tot;wL/=tot;wR/=tot;
+  if(sp<.3){wF=1;wB=wL=wR=0;}const loco=run*(1-m.dw)*lw,stride=wF*2.15+wB*1.67+(wL+wR)*2.1;m.lph=((m.lph||0)+sp*dt/Math.max(stride,.5))%1;
+  const setL=(k,w,dur)=>{const ac=A[k];if(!ac)return;ac.setEffectiveWeight(w);ac.time=m.lph*P.clips[k].duration;};
+  setL('run',loco*wF);setL('runBackDiag',loco*wB);setL(gkS?'gkSide':'strafeL',loco*wL);setL(gkS?'gkSide':'strafeR',loco*wR);if(!gkS&&A.gkSide)A.gkSide.setEffectiveWeight(0);if(gkS)A.strafeL.setEffectiveWeight(0),A.strafeR.setEffectiveWeight(0);
+  if(A.gkSide&&gkS){A.gkSide.setEffectiveWeight(loco*(wL+wR));A.gkSide.time=m.lph*P.clips.gkSide.duration;}
+  const ia=A.idle;ia.setEffectiveWeight((1-run)*lw);ia.timeScale=1;if(!ia.isRunning())ia.play();ia.time=(ia.time+dt)%P.clips.idle.duration;}
+ else{m.aR.setEffectiveWeight(run*(1-m.dw)*lw);m.aI.setEffectiveWeight((1-run)*lw);m.aR.timeScale=clamp(sp/3.25,.6,1.75);m.aI.timeScale=1;}
  if(m.aD){m.aD.setEffectiveWeight(m.dw*lw);m.aD.timeScale=0;if(ow&&p.dph!=null)m.aD.time=(((p.dph%1)+1)%1)*P.drib.duration;}
- if(m.one)m.one.a.setEffectiveWeight(oneW);m.mixer.update(dt);
- const B=m.B,amp=1+.32*clamp((sp-5)/3,0,1);if(amp>1.01)['LeftUpLeg','RightUpLeg','LeftLeg','RightLeg'].forEach(k=>{const b=B[k];if(b){m.qp.copy(b.quaternion);b.quaternion.copy(P.bind[k]).slerp(m.qp,amp);}});
+ if(m.one)m.one.a.setEffectiveWeight(oneW);m.mixer.update(m.hero?0:dt);if(m.hero&&m.one){m.one.a.time=Math.min(m.one.a.getClip().duration,m.one.a.time+dt*m.one.ts);m.mixer.update(0);}
+ const B=m.B,amp=1+(m.hero?.45:.32)*clamp((sp-(m.hero?4:5))/3,0,1);if(amp>1.01)['LeftUpLeg','RightUpLeg','LeftLeg','RightLeg'].forEach(k=>{const b=B[k];if(b){m.qp.copy(b.quaternion);b.quaternion.copy(P.bind[k]).slerp(m.qp,amp);}});
  // procedural layer: transfer ghost-rig orientations onto the skeleton, per-bone weights
  m.gb.updateMatrixWorld(true);const gq=m.gq;['hips','spine','head','shL','shR','elL','elR','hipL','hipR','knL','knR','anL','anR'].forEach(k=>{(gq[k]||(gq[k]=new THREE.Quaternion()));m[k].getWorldQuaternion(gq[k]);});
  const wp=m.wp,legW=Math.max(wp,m.wl),tf=m.touchFoot!=null?m.touchFoot:0,qf=m.qf||(m.qf={});let parQ=P.hipParQ;
- MX_MAP.forEach(([bn,gk])=>{const b=B[bn];if(!b)return;const par=bn==='Hips'?P.hipParQ:qf[mxKey(b.parent.name)]||P.hipParQ;
+ MX_MAP.forEach(([bn,gk])=>{const b=B[bn];if(!b)return;let par=bn==='Hips'?P.hipParQ:qf[mxKey(b.parent.name)];if(!par){const gp=b.parent.parent&&qf[mxKey(b.parent.parent.name)];par=gp?(m.qx||(m.qx=new THREE.Quaternion())).copy(gp).multiply(b.parent.quaternion):P.hipParQ;}
   let w=wp;if(bn==='Neck'||bn==='Head')w=Math.max(wp,.7);else if(/Spine/.test(bn))w=Math.max(wp,.22);else if(/UpLeg|Leg$|Foot|Toe/.test(bn))w=legW;
   if(w>.002){m.q.copy(gq[gk]).multiply(P.ref[bn]);m.q2.copy(par).invert().multiply(m.q);if(m.q2.dot(b.quaternion)<0){m.q2.x*=-1;m.q2.y*=-1;m.q2.z*=-1;m.q2.w*=-1;}b.quaternion.slerp(m.q2,Math.min(1,w));}
   (qf[bn]||(qf[bn]=new THREE.Quaternion())).copy(par).multiply(b.quaternion);});
@@ -4381,7 +4431,8 @@ let PLBODY=null;
 function plLoad3D(){if(T3)return Promise.resolve(T3);if(!T3P)T3P=(location.protocol==='file:'?Promise.reject(new Error('file://')):Promise.all([import('./lib/three.module.min.js'),import('./lib/GLTFLoader.js'),import('./lib/SkeletonUtils.js'),import('./lib/RoomEnvironment.js').catch(()=>null),...['grass_detail.jpg','crowd_a.jpg','crowd_b.jpg'].map(f=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src='./lib/'+f;}))]).then(([m,GL,SU,RE,gI,cA,cB])=>{T3=m;PLSU=SU;PLIMG={grass:gI,crowdA:cA,crowdB:cB,RE};
   const L=new GL.GLTFLoader(),wantSt=!(window.matchMedia&&matchMedia('(pointer:coarse)').matches)&&plPref('gfx','auto')!=='lite'&&plPref('stadium','vinh')!=='classic';
   PLGL=GL;if(wantSt)plLoadStad();
-  return L.loadAsync('./lib/player.glb').then(g=>{PLGLTF=g;}).catch(e=>{console.warn('player model unavailable',e);return fetch('./lib/player_body'+((window.matchMedia&&matchMedia('(pointer:coarse)').matches)||plPref('gfx','auto')==='lite'?'_lo':'')+'.json').then(r=>r.ok?r.json():null).then(b=>{PLBODY=b;}).catch(()=>null);}).then(()=>m);})).catch(e=>{console.warn('3D renderer unavailable — classic view',e);T3=null;T3P=null;return null;});return T3P;}
+  const heroP=L.loadAsync('./lib/player_hero.glb').then(g=>{PLHERO=g;}).catch(e=>console.warn('hero model unavailable',e));
+  return Promise.all([heroP,L.loadAsync('./lib/player.glb').then(g=>{PLGLTF=g;})]).then(()=>{}).catch(e=>{console.warn('player model unavailable',e);return fetch('./lib/player_body'+((window.matchMedia&&matchMedia('(pointer:coarse)').matches)||plPref('gfx','auto')==='lite'?'_lo':'')+'.json').then(r=>r.ok?r.json():null).then(b=>{PLBODY=b;}).catch(()=>null);}).then(()=>m);})).catch(e=>{console.warn('3D renderer unavailable — classic view',e);T3=null;T3P=null;return null;});return T3P;}
 function plGLRenderer(){if(G3&&G3.renderer)return G3;const THREE=T3;let r;try{r=new THREE.WebGLRenderer({canvas:$('playGl'),antialias:true,powerPreference:'high-performance'});}catch(e){console.warn(e);return null;}r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.18;r.shadowMap.type=THREE.PCFSoftShadowMap;
  r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;r.shadowMap.type=THREE.PCFSoftShadowMap;G3={renderer:r};return G3;}
 function plDispose3D(obj){obj.traverse(o=>{if(o.geometry)o.geometry.dispose();const ms=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];ms.forEach(m=>{['map','alphaMap','emissiveMap'].forEach(k=>{if(m[k])m[k].dispose();});m.dispose();});});}
@@ -4506,7 +4557,7 @@ function plBuild3D(){const THREE=T3,g=plGLRenderer();if(!g)return false;const r=
  g.geo=plPlayerGeo();g.bodyGeo=PLBODY&&!PLGLTF?plBodyGeo(PLBODY):null;g.mx=null;g.mxTex={};g.mxMats={};g.hairShell=null;g.eyeW=null;
  g.blobM=new THREE.MeshBasicMaterial({map:plBlobTex(),transparent:true,depthWrite:false});
  // players & referee
- g.pl=PM.pl.map(p=>{const m=plMkPlayer3D(p.cfg,p.name,p.gk);S.add(m.root);return m;});
+ g.pl=PM.pl.map(p=>{const m=plMkPlayer3D(p.cfg,p.name,p.gk,p);S.add(m.root);return m;});
  const rc={skin:SKINS[1],hair:'Buzz Cut',hairCol:'#1a1a1a',boot:'#111111',kit:'#FFD400',shorts:'#111111',socks:'#111111',num:''};g.ref=plMkPlayer3D(rc,'',false);S.add(g.ref.root);
  // ball
  g.ball=new THREE.Mesh(new THREE.SphereGeometry(BALLR,28,18),new THREE.MeshStandardMaterial({map:plBallTex(),roughness:.32,metalness:0,envMapIntensity:.8}));g.ball.castShadow=g.shadows;S.add(g.ball);
@@ -4600,7 +4651,7 @@ function plMkSkinned(c,name,gk){const THREE=T3,g=G3,B=PLBODY,lite=PM&&(PM.gfx===
   B.eyes.forEach(e=>{const w=new THREE.Mesh(g.eyeW,plMat3('#f2eee6','eye'));w.position.set(e[0],e[1],e[2]);hd.add(w);const ir=new THREE.Mesh(g.eyeI,plMat3('#2a1a10','eye'));ir.position.set(e[0],e[1],e[2]+.0055);hd.add(ir);});}
  const blob=new THREE.Mesh(g.geo.blob,g.blobM);blob.rotation.x=-Math.PI/2;blob.position.y=.015;root.add(blob);
  return{root,body,hips:bones.hips,spine:bones.spine,head:bones.head,shL:bones.shL,shR:bones.shR,elL:bones.elL,elR:bones.elR,hipL:bones.hipL,hipR:bones.hipR,knL:bones.knL,knR:bones.knR,anL:bones.anL,anR:bones.anR,blob,ry:0,ht,sty:.85+((h>>8)%7)*.05,kf:1};}
-function plMkPlayer3D(c,name,gk){if(PLGLTF)return plMkMixamo(c,name,gk);if(G3.bodyGeo&&PLBODY)return plMkSkinned(c,name,gk);const THREE=T3,g=G3,G=g.geo,lite=PM&&(PM.gfx==='lite'||PM.touch);
+function plMkPlayer3D(c,name,gk,pl){if(PLHERO&&pl&&pl.user)return plMkMixamo(c,name,gk,PLHERO);if(PLGLTF)return plMkMixamo(c,name,gk);if(G3.bodyGeo&&PLBODY)return plMkSkinned(c,name,gk);const THREE=T3,g=G3,G=g.geo,lite=PM&&(PM.gfx==='lite'||PM.touch);
  const skin=plMat3(c.skin||'#e0ac69','skin'),shorts=plMat3(c.shorts||'#ffffff'),socks=plMat3(c.socks||c.kit),boot=plMat3(c.boot||'#111111','boot'),hair=plMat3(c.hairCol||'#222222','hair'),sleeve=plMat3(c.sleeve||c.kit),glove=gk?plMat3('#f4f4f4'):skin;
  const shirt=lite?new THREE.MeshLambertMaterial({map:plShirtTex(c,name)}):new THREE.MeshStandardMaterial({map:plShirtTex(c,name),roughness:.8,metalness:0});
  const trim=plMat3(c.kit2&&c.kit2!==c.kit?c.kit2:isLight(c.kit)?darken(c.kit,45):'#f2f2f2'),sole=plMat3(darken(c.boot||'#111111',30),'boot');

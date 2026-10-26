@@ -18,3 +18,12 @@ Soccer Spin) supplied by the project owner, retargeted onto the player skeleton 
 lib/grass_detail.jpg, lib/crowd_a.jpg, lib/crowd_b.jpg — AI-generated for this project on RunComfy
 (FLUX.2 Klein 9B for grass, Z-Image Turbo for crowds), then processed (detail extraction, seam blending).
 lib/RoomEnvironment.js — three.js r170 example (MIT), import path rewritten.
+
+lib/player_hero.glb — your player's model (Step 1 of the model upgrade):
+  "3D Rigged Cristiano Ronaldo Al Nassr" by Lean_Lo1786 — https://sketchfab.com/3d-models/3d-rigged-cristiano-ronaldo-al-nassr-1424fba6eedb4d54a2621284f149a96c
+  CC BY 4.0. Changes: spec-gloss materials converted to metal/rough, textures resized and WebP-compressed,
+  Valve-biped bones renamed to Mixamo names, kit repainted in-game per team.
+  Animation clips: Mixamo animations supplied by the project owner (Offensive Idle, Jog Forward, Jog Forward/
+  Backward Diagonal, Jog Strafe Left (+ mirrored right), Dribble, Strike Forward Jog, Soccer Penalty Kick,
+  Soccer Pass, Soccer Header, Soccer Spin, Throw In, Soccer Trip, Getting Up, Front Flip, Goalkeeper Diving
+  Save, Goalkeeper Sidestep), retargeted from the Mixamo skeleton onto this rig, root motion removed.
