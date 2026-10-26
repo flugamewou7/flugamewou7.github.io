@@ -11,3 +11,6 @@ lib/stadium.glb — stadium:
   "Vinh Stadium" by NGUYENNGHIAKK — https://sketchfab.com/3d-models/vinh-stadium-32f76b7be2f24eb4a5d1e827f2285c50
   Changes: welded, simplified, merged by material, textures resized to 1024px, quantized.
   In-game the original pitch surface is replaced and an animated crowd is placed on the tiers.
+
+lib/player.glb animation clips "dribble", "strike" and "spin" — Mixamo animations (Dribble, Strike Forward Jog,
+Soccer Spin) supplied by the project owner, retargeted onto the player skeleton with root motion removed.
