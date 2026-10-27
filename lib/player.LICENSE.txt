@@ -27,3 +27,4 @@ lib/player_hero.glb — your player's model (Step 1 of the model upgrade):
   Backward Diagonal, Jog Strafe Left (+ mirrored right), Dribble, Strike Forward Jog, Soccer Penalty Kick,
   Soccer Pass, Soccer Header, Soccer Spin, Throw In, Soccer Trip, Getting Up, Front Flip, Goalkeeper Diving
   Save, Goalkeeper Sidestep), retargeted from the Mixamo skeleton onto this rig, root motion removed.
+lib/player_hero_lod.glb — lighter version of player_hero.glb (mesh simplified to ~15k triangles) for the other 21 players and the referee.
