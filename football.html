@@ -328,7 +328,7 @@ body{background:radial-gradient(1100px 600px at 85% -10%,rgba(232,184,75,.07),tr
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v20</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v21</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -3465,7 +3465,19 @@ function plBallSim(b,dt){
 const DRB_TP=[.115,.375,.617,.866],DRB_STRIDE=5,DRB_KF=1.6;
 // solve the roll so the ball peaks `lead` ahead of a runner at speed sp and comes back to the foot after T seconds
 function plDribSolve(D,T,sp,a0,lead){let lo=.15,hi=6,k=1.2,v0=D/T;for(let it=0;it<22;it++){k=(lo+hi)/2;v0=D*k/(1-Math.exp(-k*T));const r=Math.max(1.0001,v0/Math.max(sp,.3)),pk=(v0-sp-sp*Math.log(r))/k+a0;if(pk>lead)hi=k;else lo=k;}return[k,v0];}
-function plDribble(p,b,dt){const s=Math.hypot(p.vx,p.vy),spr=s>6.1,U=p.user,ctl=p.a.drib||.5,kf=p.dkf||1.2;
+function plUserDribble(p,b,dt){const s=Math.hypot(p.vx,p.vy),I=PM.inp,agile=!!I.jockey,spr=s>6.1&&!agile;
+ const stride=spr?DRB_STRIDE*1.45:DRB_STRIDE,prev=p.dph||0;p.dph=prev+s*dt/stride;
+ const every=agile||s<2.4?4:s<4.6?2:1;let hit=false;
+ for(let k=0;k<4;k++){if(every===2&&k%2||every===1&&k)continue;if(Math.floor(prev-DRB_TP[k])!==Math.floor(p.dph-DRB_TP[k]))hit=true;}
+ if(hit&&s>.4){p.touchT=PM.t;p.touchFoot=p.touchFoot?0:1;plSnd('touch',spr?.32:.14);}
+ const since=PM.t-(p.touchT||-9),intv=Math.max(.18,stride/every/Math.max(s,.8)),u=clamp(since/intv,0,1);
+ const base=agile?.3:.34+.035*Math.min(s,6),amp=spr?.85+(s-6.1)*.35:agile?.04:s<2.4?.1:.26,ahead=s<.4?.33:base+amp*Math.sin(Math.PI*u)*(1-.25*u);
+ const side=s<.4?0:(p.touchFoot?1:-1)*.08*(1-u),tx=p.x+p.fx*ahead-p.fy*side+p.vx*.03,ty=p.y+p.fy*ahead+p.fx*side+p.vy*.03;
+ const k=1-Math.exp(-dt*(spr?15:22)),nx=b.x+(tx-b.x)*k,ny=b.y+(ty-b.y)*k;b.vx=(nx-b.x)/dt;b.vy=(ny-b.y)/dt;b.x=nx;b.y=ny;b.z=0;b.vz=0;b.rot+=Math.hypot(b.vx,b.vy)*dt*3;
+ // a long sprint touch can be nicked by a defender who gets to the ball first
+ const d=Math.hypot(b.x-p.x,b.y-p.y);if(d>1.05){const q=PM.pl.find(o=>!o.off&&o.team!==p.team&&!o.gk&&o.st!=='down'&&Math.hypot(o.x-b.x,o.y-b.y)<.65&&Math.hypot(o.x-b.x,o.y-b.y)<d-.3);if(q&&Math.random()<dt*6){b.owner=null;plGain(q);PM.me.lost++;PM.lostT=PM.t;plFeed(lname(q.name)+' nips in on the long touch!');}}
+ return true;}
+function plDribble(p,b,dt){if(p.user&&p.st!=='skill')return plUserDribble(p,b,dt);const s=Math.hypot(p.vx,p.vy),spr=s>6.1,U=p.user,ctl=p.a.drib||.5,kf=p.dkf||1.2;
  const fr=Math.exp(-kf*dt);b.vx*=fr;b.vy*=fr;b.x+=b.vx*dt;b.y+=b.vy*dt;b.z=0;b.vz=0;b.rot+=Math.hypot(b.vx,b.vy)*dt*3;
  const rx=b.x-p.x,ry=b.y-p.y,d=Math.hypot(rx,ry),ah=rx*p.fx+ry*p.fy,lat=-rx*p.fy+ry*p.fx,since=PM.t-(p.touchT||-9);
  if(!U&&(d>3.6&&ah>0||d>4.5)){b.owner=null;return true;}
@@ -3557,8 +3569,8 @@ function plShoot(p,aimY,power,fin,kind){
 function plPlanSave(onT,pr0){const s=PM.shot,dt=1-s.team,gk=PM.gk[dt];if(!gk||gk.off)return;if(gk.user){s.userGK=true;return;}
  const gp=plPredict({},3,gk.x),T=gp.hit?gp.t:pr0.t;if(!onT&&!(gp.hit&&Math.abs(gp.y-gk.y)<1.6&&gp.z<2.4)){s.saved=false;gk.watch=PM.t+T;return;}
  const ty=gp.hit?gp.y:pr0.y,tz=gp.hit?gp.z:pr0.z,d=Math.abs(ty-gk.y)+(tz>1.9?.5:0)+(tz<.35&&Math.abs(ty-gk.y)>1.2?.25:0),spd=Math.hypot(PM.ball.vx,PM.ball.vy);
- const avail=Math.max(0,T-gk.a.react),cover=gk.a.reach+avail*(4.2+2.2*gk.a.gkq);
- const margin=cover-d-(spd>27?.4:0)-(spd>31?.3:0);let p=1/(1+Math.exp(-margin*2.4));p*=.45+.55*gk.a.gkq;
+ const avail=Math.max(0,T-gk.a.react),cover=gk.a.reach+avail*(3+1.6*gk.a.gkq);
+ const margin=cover-d-(spd>27?.4:0)-(spd>31?.3:0);let p=1/(1+Math.exp(-margin*2.1));p*=.45+.55*gk.a.gkq;
  if(s.kind==='head')p*=1.05;if(s.pw<.35)p=Math.max(p,.85);p=clamp(p,.03,.97);
  s.saved=Math.random()<p;s.pSave=p;s.gy=ty;s.gz=tz;s.T=T;
  gk.dive={t:PM.t+Math.min(gk.a.react,T*.6)+(s.saved?0:.1),y:s.saved?ty:gk.y+Math.sign(ty-gk.y)*Math.max(0,Math.min(Math.abs(ty-gk.y)-.9,cover-.4)),z:tz,save:s.saved,until:PM.t+T+.6};}
@@ -3759,8 +3771,10 @@ function plSkill(p,kind,sx,sy){const b=PM.ball,fx=p.fx,fy=p.fy;p.skillT=PM.t+.6;
  else{p.st='feint';p.stT=.45;p.vx*=.6;p.vy*=.6;}
  if(Math.random()<.5)plSay(plPick(PL_LINES.skill),1);
  plFeed(plPick({roulette:['A gorgeous roulette!','Spins away from his man!'],drag:['Drags it back — clever.','Sole roll, changes direction.'],knock:['Knocks it past and goes!','Pure pace!'],feint:['Step-over…','Shows him the ball…']}[kind]),false);}
+function plWindup(p,kind,fn){p.wind={kind,fn,t:PM.t+(kind==='shot'?.22:.1)};p.st='windup';p.stT=.4;}
 function plUserStep(p,dt){const I=PM.inp,b=PM.ball;if(p.cool>0)p.cool-=dt;plStateTick(p,dt);
  if(p.gk)return plUserGK(p,dt);
+ if(p.wind){if(b.owner!==p){p.wind=null;if(p.st==='windup')p.st='';}else{plMove(p,dt,p.vx*.55,p.vy*.55);if(PM.t>=p.wind.t){const f=p.wind.fn;p.wind=null;p.st='';f();}return;}}
  if(p.st==='slide'){const sp=Math.max(2,Math.hypot(p.vx,p.vy)-dt*9);const d=Math.hypot(p.vx,p.vy)||1;p.vx=p.vx/d*sp;p.vy=p.vy/d*sp;p.x+=p.vx*dt;p.y+=p.vy*dt;
   if(!p.slideDone){const fx=p.x+p.vx/d*.7,fy=p.y+p.vy/d*.7,bd=Math.hypot(b.x-fx,b.y-fy);const c=b.owner;
    if(bd<1.05&&b.z<.6&&(!c||c.team!==p.team)){p.slideDone=true;const won=!c||Math.random()<clamp(.5+(p.a.slide||.5)*.4+PM.diff.tackle-(c&&c.skillT>PM.t?.3:0),.15,.95);
@@ -3781,13 +3795,14 @@ function plUserStep(p,dt){const I=PM.inp,b=PM.ball;if(p.cool>0)p.cool-=dt;plStat
   else if(I.dragHit)plSkill(p,'drag',0,0);else if(I.knockHit)plSkill(p,'knock',0,0);}
  if(['skill','drag','feint'].includes(p.st)){plMove(p,dt,p.vx*.96,p.vy*.96);p.ph+=0;return;}
  // jockey / contain: face the carrier, side-step at controlled speed
- const car=b.owner&&b.owner.team!==p.team?b.owner:null,jk=!has&&car&&(I.jockey||(PM.contain&&PM.t<PM.contain));
+ const car=b.owner&&b.owner.team!==p.team?b.owner:null,jk=!has&&car&&(I.jockey||(PM.contain&&PM.t<PM.contain)),ag=has&&I.jockey;
+ if(ag){if(!p.agF){const gx=plGoalX(p.team),dx=gx-p.x,dy=34-p.y,dd=Math.hypot(dx,dy)||1,fx=p.fx*.5+dx/dd*.5,fy=p.fy*.5+dy/dd*.5,fd=Math.hypot(fx,fy)||1;p.agF=[fx/fd,fy/fd];}const sp=Math.hypot(dvx,dvy),cap=3.2;if(sp>cap){dvx*=cap/sp;dvy*=cap/sp;}}else p.agF=null;
  if(jk){const ux=(p.team?PLW:0)-car.x,uy=34-car.y,ud=Math.hypot(ux,uy)||1;if(I.mag<.15){const tx=car.x+ux/ud*1.6,ty=car.y+uy/ud*1.6;[dvx,dvy]=plSeek(p,tx,ty,false,true);}
   const sp=Math.hypot(dvx,dvy),cap=3.6;if(sp>cap){dvx*=cap/sp;dvy*=cap/sp;}}
  if(p.burstT>PM.t){dvx*=1.08;dvy*=1.08;}
- plMove(p,dt,dvx,dvy);if(jk){const dx=car.x-p.x,dy=car.y-p.y,dd=Math.hypot(dx,dy)||1;p.fx=dx/dd;p.fy=dy/dd;p.jockT=PM.t;}
- if(has){if(PM.pcharge){const c=PM.pcharge;c.pw=clamp((PM.t-c.t)/.8,.12,1);if(I[c.kind==='ground'?'passUp':c.kind==='thru'?'thruUp':'lobUp']||PM.t-c.t>1.1){PM.pcharge=null;plUserPass(p,c.kind,c.pw);}return;}
-  if(PM.charge){const c=PM.charge;c.pw=clamp((PM.t-c.t)/.85,0,1.06);if((c.fin?I.finUp:I.shootUp)||c.pw>=1.06){PM.charge=null;plUserShoot(p,Math.min(1,c.pw),c.fin);}return;}
+ plMove(p,dt,dvx,dvy);if(ag&&p.agF){p.fx=p.agF[0];p.fy=p.agF[1];}if(jk){const dx=car.x-p.x,dy=car.y-p.y,dd=Math.hypot(dx,dy)||1;p.fx=dx/dd;p.fy=dy/dd;p.jockT=PM.t;}
+ if(has){if(PM.pcharge){const c=PM.pcharge;c.pw=clamp((PM.t-c.t)/.8,.12,1);if(I[c.kind==='ground'?'passUp':c.kind==='thru'?'thruUp':'lobUp']||PM.t-c.t>1.1){PM.pcharge=null;plWindup(p,c.kind==='lob'?'lob':'pass',()=>plUserPass(p,c.kind,c.pw));}return;}
+  if(PM.charge){const c=PM.charge;c.pw=clamp((PM.t-c.t)/.85,0,1.06);if((c.fin?I.finUp:I.shootUp)||c.pw>=1.06){PM.charge=null;const pw=Math.min(1,c.pw),fin=c.fin;plWindup(p,'shot',()=>plUserShoot(p,pw,fin));}return;}
   if(I.passHit)PM.pcharge={kind:'ground',t:PM.t,pw:.12};else if(I.thruHit)PM.pcharge={kind:'thru',t:PM.t,pw:.12};else if(I.lobHit)PM.pcharge={kind:'lob',t:PM.t,pw:.12};else if(I.shootHit)PM.charge={t:PM.t,fin:false,pw:0};else if(I.finHit)PM.charge={t:PM.t,fin:true,pw:0};return;}
  PM.charge=null;PM.pcharge=null;const own=b.owner;const d=Math.hypot(b.x-p.x,b.y-p.y);
  if(!own&&p.cool<=0){if(b.z>.85&&b.z<2.8&&d<1.35&&(I.shootHit||I.passHit)){if(I.shootHit&&plA(0,p.x)>60){plShoot(p,I.my<-.35?GY0+.6:I.my>.35?GY1-.6:(p.y<34?GY1-.7:GY0+.7),.8,false,'head');}else{const r=plUserTarget(p,'ground');if(r){b.owner=p;plPassTo(p,r,'lob');PM.ball.vz*=.6;}else{b.vx=p.fx*9;b.vy=p.fy*9;b.vz=3;b.last=p;}p.st='head';p.stT=.35;}return;}
@@ -4378,7 +4393,9 @@ function plMkMixamo(c,name,gk,G){const THREE=T3,g=G3,P=mxProto(G),hero=!!G&&(G==
 function heroActions(m,p,st,rep){if(rep){if(m.one){m.one.a.stop();m.one=null;}m.pst2=st;return;}const A=m.act,P=m.P;
  const go=(k,t0,dur,ts,mir)=>{const a=A[k];if(!a)return;if(m.one&&m.one.a!==a)m.one.a.stop();a.reset();a.time=t0;a.timeScale=0;a.setEffectiveWeight(1);a.play();m.one={a,t0,until:PM.t+dur,ts:ts||1};m.body.scale.x=Math.abs(m.body.scale.x)*(mir?-1:1);};
  if(st!==m.pst2){
-  if(st==='kick'){const pen=PM.restart&&PM.restart.type==='pen'||PM.sp&&PM.sp.pen,pass=PM.pass&&PM.pass.from===p&&PM.t-PM.pass.t0<.2;if(pen)go('penalty',.62,.6,1.1);else if(pass)go('pass',.36,.55,1.15);else go('strike',.39,.6,1.15);}
+  if(st==='windup'&&p.wind){if(p.wind.kind==='shot')go('strike',.2,.75,1.15);else go('pass',.31,.6,1.15);}
+  else if(st==='kick'&&m.pst2==='windup'&&m.one){m.one.until=PM.t+.45;}
+  else if(st==='kick'){const pen=PM.restart&&PM.restart.type==='pen'||PM.sp&&PM.sp.pen,pass=PM.pass&&PM.pass.from===p&&PM.t-PM.pass.t0<.2;if(pen)go('penalty',.62,.6,1.1);else if(pass)go('pass',.36,.55,1.15);else go('strike',.39,.6,1.15);}
   else if(st==='head')go('header',.98,.55,1.3);
   else if(st==='throw')go('throwIn',1.0,1.1,1.4);
   else if(st==='skill')go('spin',0,.85,1.5);
@@ -4398,11 +4415,11 @@ function plMxDrive(m,p,s,rep,dt,extra){const THREE=T3,P=m.P||G3.mx,st=rep?s.st:p
  if(m.hero)heroActions(m,p,st,rep);else if(st!==m.pst2){if(st==='kick'&&m.aS){m.one={a:m.aS,t0:.36,until:PM.t+.62,ts:1.25};}else if(st==='skill'&&m.aSp){m.one={a:m.aSp,t0:0,until:PM.t+.85,ts:1.5};}if(m.one&&(st==='kick'||st==='skill')){const a=m.one.a;a.reset();a.time=m.one.t0;a.timeScale=m.one.ts;a.setEffectiveWeight(1);a.play();}}m.pst2=st;
  if(!m.hero&&m.one&&(PM.t>m.one.until||rep||st==='down'||st==='slide')){m.one.a.stop();m.one=null;}
  const oneW=m.one?Math.min(1,(m.one.until-PM.t)/.15):0;
- const cel=st==='celebrate',full=!m.one&&MX_FULL.includes(st)&&!(m.hero&&['kick','head','throw','dive','down','skill'].includes(st))||(cel&&sp<2.4)||extra||(!rep&&p.user&&PM.charge&&PM.ball.owner===p);
+ const cel=st==='celebrate',full=!m.one&&MX_FULL.includes(st)&&!(m.hero&&['kick','head','throw','dive','down','skill','windup'].includes(st))||(cel&&sp<2.4)||extra||(!rep&&p.user&&PM.charge&&PM.ball.owner===p);
  const tgt=full?1:m.hero?(ready&&sp<.6?.45:0):Math.max(back?.85:0,side*.85,ready?.55:0,p.gk&&!rep&&sp<2?.7:0);m.wp+=((m.one?0:tgt)-m.wp)*Math.min(1,dt*(tgt>m.wp?14:m.one?20:7));
  const touch=!rep&&!m.one&&!(m.dw>.3)&&p.touchT&&PM.t-p.touchT<.16&&PM.ball.owner===p;m.wl+=((touch?.55:0)-m.wl)*Math.min(1,dt*30);
  // mocap locomotion
- const run=clamp((sp-.45)/1.6,0,1),dr=m.aD&&ow&&p.dph!=null&&p.st!=='skill'?clamp((6.6-sp)/.6,0,1)*run:0;m.dw=(m.dw||0)+(dr-(m.dw||0))*Math.min(1,dt*10);const lw=1-oneW;
+ const run=clamp((sp-.45)/1.6,0,1),dr=m.aD&&ow&&p.dph!=null&&p.st!=='skill'&&!(p.user&&p.agF)?clamp((6.6-sp)/.6,0,1)*run:0;m.dw=(m.dw||0)+(dr-(m.dw||0))*Math.min(1,dt*10);const lw=1-oneW;
  if(m.hero){const A=m.act,a=Math.atan2(vl,vf),cf=Math.cos(a),sf=Math.sin(a),gkS=p.gk&&Math.abs(sf)>.55;let wF=Math.max(0,cf)**2,wB=Math.max(0,-cf)**2,wL=Math.max(0,sf)**2,wR=Math.max(0,-sf)**2;const tot=wF+wB+wL+wR||1;wF/=tot;wB/=tot;wL/=tot;wR/=tot;
   if(sp<.3){wF=1;wB=wL=wR=0;}const loco=run*(1-m.dw)*lw,stride=wF*2.15+wB*1.67+(wL+wR)*2.1;m.lph=((m.lph||0)+sp*dt/Math.max(stride,.5))%1;
   const setL=(k,w,dur)=>{const ac=A[k];if(!ac)return;ac.setEffectiveWeight(w);ac.time=m.lph*P.clips[k].duration;};
@@ -4570,7 +4587,7 @@ function plBuild3D(){const THREE=T3,g=plGLRenderer();if(!g)return false;const r=
   g.conf=new THREE.Points(geo,new THREE.PointsMaterial({size:.13,vertexColors:true,sizeAttenuation:true,transparent:true,opacity:.95,depthWrite:false}));g.conf.frustumCulled=false;g.conf.visible=false;g.confV=new Float32Array(N*4);S.add(g.conf);}
  g.tgt=new THREE.Mesh(new THREE.RingGeometry(.5,.6,32),new THREE.MeshBasicMaterial({color:0xffd54f,transparent:true,opacity:.85,depthWrite:false}));g.tgt.rotation.x=-Math.PI/2;S.add(g.tgt);
  g.v=new THREE.Vector3();g.q=new THREE.Quaternion();g.ax=new THREE.Vector3();
- PM.g3=g;PM.g3on=true;$('playGl').style.display='block';PM.ft=[];return true;}
+ PM.g3=g;PM.g3on=true;$('playGl').style.display='block';$('playGl').style.filter=PM.gfx==='lite'||PM.touch?'':'contrast(1.07) saturate(1.12) brightness(.98)';PM.ft=[];return true;}
 // ── player models: anatomical lathe meshes, merged per bone/material ──
 const plProf=a=>y=>{if(y<=a[0][0])return a[0][1];for(let i=1;i<a.length;i++)if(y<=a[i][0]){const k=(y-a[i-1][0])/(a[i][0]-a[i-1][0]),s=k*k*(3-2*k);return a[i-1][1]+(a[i][1]-a[i-1][1])*s;}return a[a.length-1][1];};
 function plLathe(a,n,seg){const T=T3,f=plProf(a),y0=a[0][0],y1=a[a.length-1][0],pts=[];for(let i=0;i<=n;i++){const y=y0+(y1-y0)*i/n;pts.push(new T.Vector2(Math.max(.001,f(y)),y));}return new T.LatheGeometry(pts,seg||16);}
