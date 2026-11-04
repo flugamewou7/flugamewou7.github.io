@@ -390,11 +390,66 @@ body:has(#s-menu.active) .snd-btn{display:none;}
  .jug{top:auto;bottom:22px;right:auto;left:20px;}
 }
 @media(prefers-reduced-motion:reduce){.jug.pop b{animation:none;}}
+
+/* ── create-a-player ── */
+.cr-wrap{max-width:1120px;}
+.cr-lay{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:28px;align-items:start;}
+.cr-card{position:sticky;top:20px;background:linear-gradient(180deg,#14203b,#0c1322 70%);border:1px solid var(--b2);border-top:3px solid #e8b84b;border-radius:16px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.35);}
+.crc-top{display:flex;align-items:center;gap:10px;}
+.crc-pos{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:600;color:#e8b84b;line-height:1;}
+.crc-flag{display:flex;}.crc-flag svg{border-radius:3px;}
+.crc-num{margin-left:auto;font-family:'Oswald',sans-serif;font-size:1.2rem;color:#d5dcf0;font-variant-numeric:tabular-nums;}
+.crc-av{position:relative;display:flex;justify-content:center;margin:8px 0 4px;padding:6px 0 22px;border-radius:12px;background:radial-gradient(ellipse at 50% 85%,rgba(232,184,75,.12),transparent 60%);}
+#crcCv{cursor:grab;touch-action:none;}#crcCv:active{cursor:grabbing;}
+.crc-tip{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:.72rem;color:#7f8bab;}
+.crc-name{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:12px;line-height:1.05;}
+.crc-name span{font-size:.9rem;color:#b7c1db;}
+.crc-name b{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.7rem;letter-spacing:.3px;color:#f0f0f8;text-transform:uppercase;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.crc-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px;border-top:1px solid var(--b1);padding-top:12px;margin:0;}
+.crc-facts div{min-width:0;}.crc-facts .w{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;align-items:center;}
+.crc-facts dt{font-size:.72rem;color:#8d99b8;}.crc-facts dd{margin:0;font-size:.9rem;font-weight:600;color:#f0f0f8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.crc-facts dd.none{color:#66729a;font-weight:500;}
+.crc-club{display:inline-flex;align-items:center;gap:6px;}
+.wp-row{gap:6px;margin-bottom:28px;}
+.wp{all:unset;box-sizing:border-box;flex:1;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--b1);background:transparent;color:#7f8bab;font-size:.82rem;font-weight:500;height:auto;cursor:default;min-width:0;}
+.wp i{font-style:normal;flex:0 0 22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;border:1px solid var(--b2);}
+.wp span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wp.cur{border-color:#e8b84b;color:#f0f0f8;background:rgba(232,184,75,.08);}.wp.cur i{background:#e8b84b;border-color:#e8b84b;color:#111;}
+.wp.done{color:#c9d2ea;cursor:pointer;background:transparent;}.wp.done i{background:rgba(232,184,75,.18);border-color:rgba(232,184,75,.5);color:#e8b84b;}
+.wp.done:hover{border-color:var(--b2);background:rgba(255,255,255,.03);}.wp:focus-visible{outline:2px solid #e8b84b;outline-offset:2px;}
+.pos-pitch{position:relative;height:170px;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(90deg,#0f3720 0 10%,#123f22 10% 20%);border:1px solid #1d5a33;}
+.pos-pitch .pp-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.22);}
+.pos-pitch .pp-circ{position:absolute;left:50%;top:50%;width:70px;height:70px;margin:-35px 0 0 -35px;border:2px solid rgba(255,255,255,.22);border-radius:50%;}
+.pos-pitch .pp-box{position:absolute;top:22%;bottom:22%;width:13%;border:2px solid rgba(255,255,255,.22);}
+.pos-pitch .pp-box.l{left:-2px;border-left:none;}.pos-pitch .pp-box.r{right:-2px;border-right:none;}
+.pp-dot{position:absolute;transform:translate(-50%,-50%);min-width:40px;height:26px;padding:0 7px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(6,12,26,.72);color:#e8eefc;font:600 .72rem 'Inter',sans-serif;cursor:pointer;transition:transform .12s,background .12s,border-color .12s;}
+.pp-dot:hover{background:rgba(6,12,26,.92);border-color:#fff;transform:translate(-50%,-50%) scale(1.08);}
+.pp-dot.on{background:#e8b84b;border-color:#e8b84b;color:#111;transform:translate(-50%,-50%) scale(1.12);box-shadow:0 4px 12px rgba(0,0,0,.4);}
+.pp-dot:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+.chip{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;padding:6px 12px;color:#b7c1db;}
+.info{font-family:'Inter',sans-serif;font-size:.84rem;line-height:1.55;color:#c9d2ea;background:rgba(255,255,255,.03);border-color:var(--b2);border-radius:10px;padding:12px 14px;}
+.info b{color:#f0f0f8;}
+.ccard .clg{font-family:'Inter',sans-serif;font-size:.74rem;color:#8d99b8;}
+.pick{border-width:1px;}.pick.sel{box-shadow:inset 0 0 0 1px #e8b84b;}
+.mgrid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));}
+#st2 .av-lay{grid-template-columns:1fr;}#st2 .av-bg{display:none;}
+.sw{transition:transform .12s;}.sw:hover{transform:scale(1.12);}
+@media(max-width:900px){
+ .cr-lay{grid-template-columns:1fr;gap:16px;}
+ .cr-card{position:relative;top:0;order:-1;display:grid;grid-template-columns:96px 1fr;column-gap:14px;padding:12px;}
+ .cr-card .crc-top{grid-column:2;}.cr-card .crc-av{grid-column:1;grid-row:1/4;margin:0;padding:0;}
+ .cr-card #crcCv{width:96px!important;height:144px!important;}.crc-tip{display:none;}
+ .cr-card .crc-name{grid-column:2;align-items:flex-start;text-align:left;margin:4px 0 6px;}.crc-name b{font-size:1.3rem;}
+ .cr-card .crc-facts{grid-column:2;grid-template-columns:repeat(3,1fr);gap:6px;padding-top:8px;}
+ .cr-card .crc-facts .w{display:none;}
+ .wp span{display:none;}.wp{justify-content:center;flex:1;padding:8px 6px;}.wp.cur{flex:3;}.wp.cur span{display:inline;}
+}
+@media(prefers-reduced-motion:reduce){.pp-dot,.sw{transition:none;}}
 </style>
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v23</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v24</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -413,8 +468,9 @@ body:has(#s-menu.active) .snd-btn{display:none;}
 </div><canvas id="introFg" aria-hidden="true"></canvas><div class="jug" id="jugHud" aria-live="polite"><b id="jugN">0</b><span>keep-ups</span><i id="jugBest"></i></div><div class="jug-hint" id="jugHint">Tap the ball</div></div>
 
 <!-- CREATE -->
-<div class="screen" id="s-create"><div class="wrap" style="max-width:820px;">
+<div class="screen" id="s-create"><div class="wrap cr-wrap">
   <div class="wp-row" id="wprog"></div>
+  <div class="cr-lay"><div class="cr-main">
   <div class="step on" id="st1">
     <div class="h2">Create Your Player</div><div class="sub2">Step 1 of 5 — Identity</div>
     <div class="g2"><div class="fg"><label class="fl">First Name</label><input class="fi" id="fn" maxlength="16" placeholder="First name"></div><div class="fg"><label class="fl">Last Name</label><input class="fi" id="ln" maxlength="16" placeholder="Last name"></div></div>
@@ -430,6 +486,7 @@ body:has(#s-menu.active) .snd-btn{display:none;}
       <div class="fg"><label class="fl">Preferred Foot</label><select class="fi" id="foot"><option value="Right">Right</option><option value="Left">Left</option><option value="Both">Both</option></select></div>
       <div class="fg"><label class="fl">Shirt Number</label><input class="fi" id="num" type="number" min="1" max="99" placeholder="Auto (1–99)"></div>
     </div>
+    <div class="fg"><label class="fl">Position on the pitch</label><div class="pos-pitch" id="posPitch" role="radiogroup" aria-label="Position"></div></div>
     <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;"><input type="checkbox" id="crStart" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">Creative Mode</b> · edit your stats freely during the career. You can switch it any time in Training.</span></label>
     <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;"><input type="checkbox" id="crNoCine" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">No cutscenes</b> · skip story cinematics, goal celebrations and in-match replays.</span></label>
     <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;"><input type="checkbox" id="crNoPop" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">No pop-up messages</b> · skip story decisions (the first, default choice is taken for you) and notifications.</span></label>
@@ -467,8 +524,17 @@ body:has(#s-menu.active) .snd-btn{display:none;}
     <div class="fg"><input class="fi" id="clubQ" placeholder="Search clubs..."></div>
     <div class="club-grid" id="clubGrid"></div>
     <div class="info" id="clubInfo" style="margin-top:10px;">Select a club.</div>
-    <div class="wnav"><button class="btn" data-w="back">← Back</button><button class="btn gold" id="beginBtn">Begin Career ⚽</button></div>
+    <div class="wnav"><button class="btn" data-w="back">← Back</button><button class="btn gold" id="beginBtn">Begin career</button></div>
   </div>
+  </div><aside class="cr-card" id="crCard" aria-label="Player preview">
+    <div class="crc-top"><div class="crc-pos" id="crcPos">CM</div><div class="crc-flag" id="crcFlag"></div><div class="crc-num" id="crcNum">#—</div></div>
+    <div class="crc-av"><canvas id="crcCv" width="150" height="225"></canvas><div class="crc-tip">Drag to turn · tap to celebrate</div></div>
+    <div class="crc-name"><span id="crcFirst">Your</span><b id="crcLast">Name</b></div>
+    <dl class="crc-facts">
+      <div><dt>Age</dt><dd id="crcAge">18</dd></div><div><dt>Height</dt><dd id="crcHt">180 cm</dd></div><div><dt>Foot</dt><dd id="crcFoot">Right</dd></div>
+      <div class="w"><dt>PlayStyle</dt><dd id="crcPs">Not chosen</dd></div><div class="w"><dt>Academy</dt><dd id="crcAc">Not chosen</dd></div><div class="w"><dt>Club</dt><dd id="crcClub">Not chosen</dd></div>
+    </dl>
+  </aside></div>
 </div></div>
 
 <!-- HUB -->
@@ -729,42 +795,42 @@ const SLOT_FIT={GK:['GK'],CB:['CB','CDM'],LB:['LB','LWB'],RB:['RB','RWB'],LWB:['
 const POS_FIT={GK:['GK'],CB:['CB','CDM'],LB:['LB','LWB','CB'],RB:['RB','RWB','CB'],LWB:['LWB','LB','LM'],RWB:['RWB','RB','RM'],CDM:['CDM','CM','CB'],CM:['CM','CDM','CAM'],CAM:['CAM','CM','LW','RW','ST'],LM:['LM','LW','LWB','CM'],RM:['RM','RW','RWB','CM'],LW:['LW','LM','CAM','ST'],RW:['RW','RM','CAM','ST'],CF:['ST','CAM'],ST:['ST','CAM']};
 const NUM_POOL={GK:[1],LB:[3],RB:[2],LWB:[3],RWB:[2],CB:[4,5,15],CDM:[6,16],CM:[8,14,18],CAM:[10,20],LM:[11],RM:[7],LW:[11],RW:[7],ST:[9,19]};
 const REAL_RAW={
-'Real Madrid':'GK Thibaut Courtois 1;RB Trent Alexander-Arnold 12;CB Éder Militão 3;CB Dean Huijsen 24;LB Álvaro Carreras 18;CDM Aurélien Tchouaméni 14;CM Federico Valverde 8;CM Jude Bellingham 5;LW Vinícius Júnior 7;ST Kylian Mbappé 10;RW Rodrygo 11;CAM Arda Güler 15;CB Antonio Rüdiger 22',
-'Barcelona':'GK Joan García 13;RB Jules Koundé 23;CB Pau Cubarsí 5;CB Ronald Araújo 4;LB Alejandro Balde 3;CDM Pedri 8;CDM Frenkie de Jong 21;RW Lamine Yamal 10;CAM Fermín López 16;LW Raphinha 11;ST Robert Lewandowski 9;CAM Dani Olmo 20',
-'Atletico Madrid':'GK Jan Oblak 13;RB Nahuel Molina 16;CB José María Giménez 2;CB Robin Le Normand 24;LB Javi Galán 21;RM Giuliano Simeone 20;CM Koke 6;CM Pablo Barrios 8;LM Thiago Almada 11;ST Julián Álvarez 19;ST Antoine Griezmann 7',
-'Manchester City':'GK Gianluigi Donnarumma 25;RB Matheus Nunes 27;CB Rúben Dias 3;CB Joško Gvardiol 24;LB Rayan Aït-Nouri 21;CDM Rodri 16;CDM Tijjani Reijnders 4;CAM Phil Foden 47;LW Jérémy Doku 11;RW Rayan Cherki 10;ST Erling Haaland 9;CM Bernardo Silva 20',
-'Liverpool':'GK Alisson 1;RB Jeremie Frimpong 30;CB Ibrahima Konaté 5;CB Virgil van Dijk 4;LB Milos Kerkez 6;CDM Ryan Gravenberch 38;CDM Alexis Mac Allister 10;CAM Florian Wirtz 7;RW Mohamed Salah 11;LW Cody Gakpo 18;ST Alexander Isak 9;ST Hugo Ekitiké 22',
-'Arsenal':'GK David Raya 1;RB Jurriën Timber 12;CB William Saliba 2;CB Gabriel Magalhães 6;LB Riccardo Calafiori 33;CDM Martín Zubimendi 36;CM Declan Rice 41;CM Martin Ødegaard 8;RW Bukayo Saka 7;ST Viktor Gyökeres 14;LW Gabriel Martinelli 11;CAM Eberechi Eze 10',
-'Chelsea':'GK Robert Sánchez 1;RB Reece James 24;CB Wesley Fofana 29;CB Levi Colwill 6;LB Marc Cucurella 3;CDM Moisés Caicedo 25;CDM Enzo Fernández 8;CAM Cole Palmer 10;RW Pedro Neto 7;LW Jamie Gittens 11;ST João Pedro 20',
-'Manchester United':'GK André Onana 24;CB Leny Yoro 15;CB Matthijs de Ligt 4;CB Lisandro Martínez 6;RWB Amad Diallo 16;CM Bruno Fernandes 8;CM Casemiro 18;LWB Patrick Dorgu 13;CAM Bryan Mbeumo 19;CAM Matheus Cunha 10;ST Benjamin Šeško 30',
-'Tottenham Hotspur':'GK Guglielmo Vicario 1;RB Pedro Porro 23;CB Cristian Romero 17;CB Micky van de Ven 37;LB Destiny Udogie 13;CDM João Palhinha 6;CM Rodrigo Bentancur 30;CM Lucas Bergvall 15;RW Mohammed Kudus 20;ST Dominic Solanke 19;LW Xavi Simons 7',
-'Newcastle United':'GK Nick Pope 22;RB Kieran Trippier 2;CB Fabian Schär 5;CB Sven Botman 4;LB Lewis Hall 3;CDM Bruno Guimarães 39;CM Sandro Tonali 8;CM Joelinton 7;LW Anthony Gordon 10;ST Nick Woltemade 27;RW Jacob Murphy 23',
-'Aston Villa':'GK Emiliano Martínez 23;RB Matty Cash 2;CB Ezri Konsa 4;CB Pau Torres 14;LB Lucas Digne 12;CDM Boubacar Kamara 44;CDM Youri Tielemans 8;CAM Morgan Rogers 27;LW John McGinn 7;RW Jadon Sancho 19;ST Ollie Watkins 11',
-'Nottingham Forest':'GK Matz Sels 26;CB Murillo 5;CB Nikola Milenković 31;CB Morato 4;RWB Ola Aina 34;CM Elliot Anderson 8;CM Ibrahim Sangaré 6;LWB Neco Williams 3;CAM Morgan Gibbs-White 10;CAM Callum Hudson-Odoi 7;ST Chris Wood 11',
-'Crystal Palace':'GK Dean Henderson 1;CB Maxence Lacroix 5;CB Marc Guéhi 6;CB Chris Richards 26;RWB Daniel Muñoz 2;CM Adam Wharton 20;CM Will Hughes 19;LWB Tyrick Mitchell 3;CAM Ismaïla Sarr 7;CAM Yeremy Pino 10;ST Jean-Philippe Mateta 14',
-'Bayern Munich':'GK Manuel Neuer 1;RB Konrad Laimer 27;CB Dayot Upamecano 2;CB Jonathan Tah 4;LB Alphonso Davies 19;CDM Joshua Kimmich 6;CDM Aleksandar Pavlović 45;CAM Jamal Musiala 10;RW Michael Olise 17;LW Luis Díaz 14;ST Harry Kane 9;LW Serge Gnabry 7',
-'Borussia Dortmund':'GK Gregor Kobel 1;CB Waldemar Anton 3;CB Nico Schlotterbeck 4;CB Ramy Bensebaini 5;RWB Julian Ryerson 26;CM Pascal Groß 13;CM Felix Nmecha 8;LWB Daniel Svensson 24;CAM Julian Brandt 10;CAM Karim Adeyemi 27;ST Serhou Guirassy 9',
-'Bayer Leverkusen':'GK Mark Flekken 1;CB Edmond Tapsoba 12;CB Jarell Quansah 4;CB Loïc Badé 5;LWB Alejandro Grimaldo 20;CM Robert Andrich 8;CM Exequiel Palacios 25;CAM Malik Tillman 10;ST Patrik Schick 14',
-'RB Leipzig':'GK Péter Gulácsi 1;CB Willi Orbán 4;CB Castello Lukeba 23;CM Xaver Schlager 24;CM Christoph Baumgartner 14;ST Yussuf Poulsen 9',
-'Paris Saint-Germain':'GK Lucas Chevalier 30;RB Achraf Hakimi 2;CB Marquinhos 5;CB Willian Pacho 51;LB Nuno Mendes 25;CM Vitinha 17;CM João Neves 87;CDM Fabián Ruiz 8;RW Désiré Doué 14;ST Ousmane Dembélé 10;LW Khvicha Kvaratskhelia 7;LW Bradley Barcola 29',
-'Olympique Marseille':'GK Gerónimo Rulli 1;CB Leonardo Balerdi 5;CDM Pierre-Emile Højbjerg 23;RW Mason Greenwood 10;ST Pierre-Emerick Aubameyang 97;CAM Adrien Rabiot 25',
-'Inter Milan':'GK Yann Sommer 1;CB Yann Bisseck 31;CB Francesco Acerbi 15;CB Alessandro Bastoni 95;RWB Denzel Dumfries 2;CM Nicolò Barella 23;CDM Hakan Çalhanoğlu 20;CM Henrikh Mkhitaryan 22;LWB Federico Dimarco 32;ST Lautaro Martínez 10;ST Marcus Thuram 9',
-'AC Milan':'GK Mike Maignan 16;CB Fikayo Tomori 23;CB Strahinja Pavlović 31;CB Matteo Gabbia 46;RWB Alexis Saelemaekers 56;CM Luka Modrić 14;CDM Youssouf Fofana 19;CM Adrien Rabiot 12;LWB Pervis Estupiñán 2;ST Christian Pulisic 11;ST Rafael Leão 10',
-'Juventus':'GK Michele Di Gregorio 29;CB Pierre Kalulu 15;CB Bremer 3;CB Lloyd Kelly 6;RWB Weston McKennie 16;CM Manuel Locatelli 5;CM Khéphren Thuram 19;LWB Andrea Cambiaso 27;CAM Kenan Yıldız 10;CAM Francisco Conceição 7;ST Dušan Vlahović 9;ST Jonathan David 30',
-'Napoli':'GK Alex Meret 1;RB Giovanni Di Lorenzo 22;CB Amir Rrahmani 13;CB Alessandro Buongiorno 4;LB Mathías Olivera 17;CDM Stanislav Lobotka 68;CM Scott McTominay 8;CM Kevin De Bruyne 11;RM Matteo Politano 21;LM Noa Lang 70;ST Rasmus Højlund 19;CM Frank Anguissa 99',
-'Atalanta':'GK Marco Carnesecchi 29;CB Isak Hien 4;CM Éderson 13;CAM Charles De Ketelaere 17;ST Gianluca Scamacca 9;CAM Ademola Lookman 11',
-'AS Roma':'GK Mile Svilar 99;CB Gianluca Mancini 23;CM Bryan Cristante 4;CAM Paulo Dybala 21;CAM Lorenzo Pellegrini 7;ST Artem Dovbyk 11',
-'Benfica':'GK Anatoliy Trubin 1;RB Amar Dedić 17;CB António Silva 4;CB Nicolás Otamendi 30;LB Samuel Dahl 26;CDM Richard Ríos 20;CDM Fredrik Aursnes 8;LW Andreas Schjelderup 21;CAM Georgiy Sudakov 10;ST Vangelis Pavlidis 14',
-'FC Porto':'GK Diogo Costa 99;CDM Alan Varela 22;CAM Rodrigo Mora 86;ST Samu Aghehowa 9;RW Pepê 11',
-'Sporting CP':'GK Rui Silva 1;CB Gonçalo Inácio 25;CB Ousmane Diomande 26;CM Morten Hjulmand 42;LWB Maximiliano Araújo 20;LW Pedro Gonçalves 8;RW Francisco Trincão 17;ST Luis Suárez 97',
+'Real Madrid':'GK Thibaut Courtois 1;RB Trent Alexander-Arnold 12;CB Éder Militão 3;CB Dean Huijsen 4;LB Marc Cucurella 17;CDM Aurélien Tchouaméni 14;CM Federico Valverde 8;CM Jude Bellingham 5;LW Vinícius Júnior 7;ST Kylian Mbappé 10;RW Yan Diomande 25;CAM Arda Güler 15;CB Ibrahima Konaté 16;CB Antonio Rüdiger 22;RB Denzel Dumfries 24;CM Bernardo Silva 20;LB Álvaro Carreras 18;RW Rodrygo 11',
+'Barcelona':'GK Joan García 1;RB Jules Koundé 23;CB Pau Cubarsí 5;CB Ronald Araújo 4;LB Alejandro Balde 3;CDM Rodri 16;CM Pedri 8;CM Frenkie de Jong 21;RW Lamine Yamal 10;CAM Fermín López 7;LW Raphinha 11;ST Gabriel Jesus 9;LW Anthony Gordon 17;RW Karim Adeyemi 14;CAM Dani Olmo 20;RB João Cancelo 2',
+'Atletico Madrid':'GK Jan Oblak 13;RB Marcos Llorente 14;CB José María Giménez 2;CB Robin Le Normand 24;LB Alejandro Grimaldo 12;RM Giuliano Simeone 20;CDM Morten Hjulmand 16;CM Koke 6;CM Pablo Barrios 8;LM Lee Kang-in 11;ST Julián Álvarez 19;ST Antoine Griezmann 7',
+'Manchester City':'GK Gianluigi Donnarumma 1;RB Matheus Nunes 27;CB Rúben Dias 3;CB Marc Guéhi 6;CB Joško Gvardiol 24;LB Rayan Aït-Nouri 21;CDM Enzo Fernández 8;CM Elliot Anderson 5;CAM Phil Foden 47;LW Jérémy Doku 11;RW Rayan Cherki 10;ST Erling Haaland 9;LW Iliman Ndiaye 7;CM Ayyoub Bouaddi 18',
+'Liverpool':'GK Alisson 1;RB Jeremie Frimpong 30;CB Giovanni Leoni 15;CB Virgil van Dijk 4;LB Milos Kerkez 6;CDM Ryan Gravenberch 38;CDM Alexis Mac Allister 10;CAM Florian Wirtz 7;RW Mohamed Salah 11;LW Bradley Barcola 29;LW Cody Gakpo 18;ST Alexander Isak 9;ST Hugo Ekitiké 22',
+'Arsenal':'GK David Raya 1;RB Jurriën Timber 12;CB William Saliba 2;CB Gabriel Magalhães 6;LB Riccardo Calafiori 33;CDM Martín Zubimendi 36;CM Declan Rice 41;CM Bruno Guimarães 39;CM Martin Ødegaard 8;RW Bukayo Saka 7;ST Viktor Gyökeres 14;LW Gabriel Martinelli 11;CAM Eberechi Eze 10;CB Ezri Konsa 4;CB Piero Hincapié 5',
+'Chelsea':'GK Robert Sánchez 1;RB Reece James 24;RB Marco Palestra 2;CB Levi Colwill 6;CB Maxence Lacroix 5;LB Valentín Barco 4;LB Pep Chavarría 29;CDM Moisés Caicedo 25;CM Jordan Henderson 14;CAM Cole Palmer 10;LW Morgan Rogers 17;RW Pedro Neto 7;RW Geovany Quenda 23;ST João Pedro 9;ST Danny Welbeck 18;ST Emmanuel Emegha 22;LW Jamie Gittens 11;GK Emiliano Martínez 12',
+'Manchester United':'GK Senne Lammens 31;CB Leny Yoro 15;CB Matthijs de Ligt 4;CB Lisandro Martínez 6;RWB Amad Diallo 16;CM Bruno Fernandes 8;CDM Carlos Baleba 17;CM Youri Tielemans 18;CDM Andrey Santos 21;LWB Patrick Dorgu 13;CAM Bryan Mbeumo 19;CAM Matheus Cunha 10;ST Benjamin Šeško 30',
+'Tottenham Hotspur':'GK Antonín Kinský 31;RB Pedro Porro 23;CB Cristian Romero 17;CB Micky van de Ven 37;CB Jan Paul van Hecke 6;LB Destiny Udogie 13;CM Sandro Tonali 16;CM Mateus Fernandes 18;CM Conor Gallagher 8;CM Lucas Bergvall 15;RW Mohammed Kudus 20;ST Dominic Solanke 19;LW Xavi Simons 7;RW Savinho 26;ST Omar Marmoush 22',
+'Newcastle United':'GK Nick Pope 22;RB Amar Dedić 17;CB Fabian Schär 5;CB Sven Botman 4;LB Lewis Hall 3;CM Joelinton 7;CM Jacob Ramsey 41;CM Lewis Miley 67;LW Harvey Barnes 11;RW Matías Fernández-Pardo 10;ST Yoane Wissa 9;RW Jacob Murphy 23',
+'Aston Villa':'GK Marco Bizot 40;RB Matty Cash 2;CB Pau Torres 14;CB Tyrone Mings 5;LB Ian Maatsen 22;CDM Boubacar Kamara 44;CM João Gomes 8;CAM Johan Manzambi 27;LW John McGinn 7;RW Ibrahim Mbaye 19;LW Alejandro Garnacho 17;ST Ollie Watkins 11;ST Nicolas Jackson 15',
+'Nottingham Forest':'GK Matz Sels 26;CB Murillo 5;CB Nikola Milenković 31;CB Ousmane Diomande 24;RWB Ola Aina 34;CM Xaver Schlager 8;CM Ibrahim Sangaré 6;LWB Neco Williams 3;CAM Morgan Gibbs-White 10;CAM Callum Hudson-Odoi 7;ST Chris Wood 11',
+'Crystal Palace':'GK Dean Henderson 1;CB Chris Richards 26;CB Takehiro Tomiyasu 18;CB Jefferson Lerma 8;RWB Daniel Muñoz 2;CM Adam Wharton 20;CM Will Hughes 19;LWB Tyrick Mitchell 3;CAM Ismaïla Sarr 7;CAM Yeremy Pino 10;LW Evann Guessand 29;LW Dwight McNeil 11;ST Jean-Philippe Mateta 14',
+'Bayern Munich':'GK Manuel Neuer 1;RB Konrad Laimer 27;CB Dayot Upamecano 2;CB Jonathan Tah 4;LB Alphonso Davies 19;LB Nathaniel Brown 21;CDM Joshua Kimmich 6;CDM Aleksandar Pavlović 45;CAM Jamal Musiala 10;CAM Ismael Saibari 20;RW Michael Olise 17;LW Luis Díaz 14;ST Harry Kane 9;LW Serge Gnabry 7',
+'Borussia Dortmund':'GK Gregor Kobel 1;CB Waldemar Anton 3;CB Nico Schlotterbeck 4;CB Ramy Bensebaini 5;RWB Julian Ryerson 26;CM Pascal Groß 13;CM Felix Nmecha 8;CM Joey Veerman 23;LWB Daniel Svensson 24;CAM Julian Brandt 10;CAM Konstantinos Karetsas 20;ST Serhou Guirassy 9',
+'Bayer Leverkusen':'GK Mark Flekken 1;CB Edmond Tapsoba 12;CB Jarell Quansah 4;CB Facundo Medina 32;LWB Miguel Gutiérrez 3;CM Robert Andrich 8;CM Exequiel Palacios 25;CAM Malik Tillman 10;LW Moussa Diaby 19;ST Patrik Schick 14',
+'RB Leipzig':'GK Péter Gulácsi 1;CB Willi Orbán 4;CB Castello Lukeba 23;CB Maxime Estève 5;CM Rocco Reitz 27;CM Christoph Baumgartner 14;ST Yussuf Poulsen 9',
+'Paris Saint-Germain':'GK Lucas Chevalier 30;RB Achraf Hakimi 2;CB Marquinhos 5;CB Willian Pacho 51;LB Nuno Mendes 25;CM Vitinha 17;CM João Neves 87;CDM Fabián Ruiz 8;RW Désiré Doué 14;ST Ousmane Dembélé 10;LW Khvicha Kvaratskhelia 7;RW Maghnes Akliouche 11;ST Ferran Torres 9;LW Mika Godts 29;LB Lucas Digne 3',
+'Olympique Marseille':'GK Gerónimo Rulli 1;CB Leonardo Balerdi 5;CDM Pierre-Emile Højbjerg 23;ST Pierre-Emerick Aubameyang 97',
+'Inter Milan':'GK Yann Sommer 1;CB Manuel Akanji 25;CB Francesco Acerbi 15;CB Alessandro Bastoni 95;CB John Stones 5;RWB Djed Spence 2;CM Nicolò Barella 23;CDM Hakan Çalhanoğlu 20;CM Curtis Jones 17;CM Aleksandar Stanković 8;LWB Federico Dimarco 32;ST Lautaro Martínez 10;ST Marcus Thuram 9',
+'AC Milan':'GK Mike Maignan 16;CB Fikayo Tomori 23;CB Strahinja Pavlović 31;CB Mario Gila 4;RWB Alexis Saelemaekers 56;CM Luka Modrić 14;CDM Youssouf Fofana 19;CM Adrien Rabiot 12;LWB Pervis Estupiñán 2;ST Christian Pulisic 11;ST Gonçalo Ramos 9;LW Diego Moreira 7',
+'Juventus':'GK Michele Di Gregorio 29;CB Pierre Kalulu 15;CB Bremer 3;CB Lloyd Kelly 6;CB Jhon Lucumí 26;RWB Weston McKennie 16;CM Manuel Locatelli 5;CM Khéphren Thuram 19;CM Pape Matar Sarr 8;LWB Andrea Cambiaso 27;CAM Kenan Yıldız 10;CAM Francisco Conceição 7;ST Randal Kolo Muani 20;ST Nick Woltemade 11;ST Jonathan David 30',
+'Napoli':'GK Alex Meret 1;RB Giovanni Di Lorenzo 22;CB Amir Rrahmani 13;CB Alessandro Buongiorno 4;LB Mathías Olivera 17;CDM Stanislav Lobotka 68;CM Scott McTominay 8;CM Kevin De Bruyne 11;RM Matteo Politano 21;LM Noa Lang 70;LW Alisson Santos 77;ST Rasmus Højlund 19;CM Frank Anguissa 99',
+'Atalanta':'GK Marco Carnesecchi 29;CB Isak Hien 4;CM Éderson 13;CM Franck Kessié 79;CAM Charles De Ketelaere 17;CAM Gianluca Gaetano 10;CAM Eljif Elmas 7;ST Gianluca Scamacca 9;CAM Ademola Lookman 11',
+'AS Roma':'GK Mile Svilar 99;CB Gianluca Mancini 23;RB Nahuel Molina 16;CM Bryan Cristante 4;CM Marten de Roon 15;CAM Paulo Dybala 21;CAM Rodrigo Mora 86;RW Donyell Malen 14;ST Santiago Castro 9;ST Artem Dovbyk 11',
+'Benfica':'GK Anatoliy Trubin 1;CB Tomás Araújo 44;CB Nicolás Otamendi 30;LB Samuel Dahl 26;CDM João Palhinha 6;CDM Richard Ríos 20;CDM Fredrik Aursnes 8;LW Andreas Schjelderup 21;CAM Georgiy Sudakov 10;CAM Claudio Echeverri 31;ST Vangelis Pavlidis 14',
+'FC Porto':'GK Diogo Costa 99;CB Jakub Kiwior 4;CDM Alan Varela 22;ST Samu Aghehowa 9;RW Pepê 11',
+'Sporting CP':'GK Rui Silva 1;CB Gonçalo Inácio 25;LWB Maximiliano Araújo 20;LW Pedro Gonçalves 8;CAM Rodrigo Zalazar 18;ST Luis Suárez 97',
 'Ajax':'GK Remko Pasveer 22;CB Josip Šutalo 37;CM Kenneth Taylor 8;ST Wout Weghorst 25',
 'Celtic':'GK Kasper Schmeichel 1;CB Cameron Carter-Vickers 20;CM Callum McGregor 42;CM Arne Engels 27;LW Daizen Maeda 38;ST Kyogo Furuhashi 8',
-'Galatasaray':'GK Uğurcan Çakır 1;CB Davinson Sánchez 6;CDM Lucas Torreira 34;CM İlkay Gündoğan 20;RW Leroy Sané 10;LW Barış Alper Yılmaz 53;ST Victor Osimhen 45;ST Mauro Icardi 9',
-'Fenerbahce':'GK Ederson 31;CB Milan Škriniar 37;CM Fred 35;CAM Marco Asensio 21;ST Youssef En-Nesyri 19;ST Jhon Durán 9',
+'Galatasaray':'GK Uğurcan Çakır 1;CB Davinson Sánchez 6;CDM Lucas Torreira 34;CM İlkay Gündoğan 20;RW Leroy Sané 10;LW Rafael Leão 17;LW Barış Alper Yılmaz 53;ST Victor Osimhen 45;ST Mauro Icardi 9',
+'Fenerbahce':'GK Ederson 31;CB Milan Škriniar 37;CB Nathan Aké 4;CM Fred 35;CAM Marco Asensio 21;RW Mason Greenwood 10;ST Romelu Lukaku 90;ST Youssef En-Nesyri 19;ST Jhon Durán 9',
 'Al-Nassr':'GK Bento 24;CB Íñigo Martínez 26;CDM Marcelo Brozović 77;CAM João Félix 79;LW Sadio Mané 10;RW Kingsley Coman 21;ST Cristiano Ronaldo 7',
-'Al-Hilal':'GK Yassine Bounou 37;RB João Cancelo 20;CB Kalidou Koulibaly 3;LB Theo Hernández 19;CDM Rúben Neves 8;CM Sergej Milinković-Savić 22;RW Malcom 77;ST Darwin Núñez 9',
-'Al-Ittihad':'ST Karim Benzema 9;CDM N\'Golo Kanté 7;LW Moussa Diaby 19',
-'Inter Miami':'LB Jordi Alba 18;CDM Sergio Busquets 5;CM Rodrigo De Paul 7;RM Lionel Messi 10;ST Luis Suárez 9',
+'Al-Hilal':'GK Yassine Bounou 37;CB Kalidou Koulibaly 3;LB Theo Hernández 19;CDM Rúben Neves 8;CM Sergej Milinković-Savić 22;RW Malcom 77',
+'Al-Ittihad':'ST Karim Benzema 9;CDM N\'Golo Kanté 7',
+'Inter Miami':'CDM Casemiro 5;CM Rodrigo De Paul 7;RM Lionel Messi 10;ST Luis Suárez 9',
 'Flamengo':'GK Agustín Rossi 1;LB Alex Sandro 26;CDM Jorginho 21;CAM Giorgian de Arrascaeta 10;ST Pedro 9',
 'Palmeiras':'GK Weverton 21;CB Gustavo Gómez 15;ST Vitor Roque 9',
 'River Plate':'GK Franco Armani 1;LB Marcos Acuña 21;CB Germán Pezzella 6;CAM Juan Fernando Quintero 10',
@@ -791,7 +857,7 @@ Switzerland:'CM Granit Xhaka 10;GK Gregor Kobel 1',Austria:'CM Marcel Sabitzer 9
 Wales:'RW Brennan Johnson 20',Ireland:'GK Caoimhín Kelleher 1',Canada:'LB Alphonso Davies 19;ST Jonathan David 20',Algeria:'RW Riyad Mahrez 7',Cameroon:'GK André Onana 24',Ecuador:'CDM Moisés Caicedo 23;CB Willian Pacho 6',Mexico:'ST Santiago Giménez 11'};
 const parseSquad=raw=>raw?raw.split(';').map(s=>{const m=s.trim().match(/^(\S+) (.+) (\d+)$/);return m?{pos:m[1],n:m[2],num:+m[3]}:null;}).filter(Boolean):[];
 // real Ballon d'Or contenders (born, club, position)
-const BDO_STARS='Kylian Mbappé|1998|Real Madrid|ST;Erling Haaland|2000|Manchester City|ST;Lamine Yamal|2007|Barcelona|RW;Vinícius Júnior|2000|Real Madrid|LW;Mohamed Salah|1992|Liverpool|RW;Harry Kane|1993|Bayern Munich|ST;Ousmane Dembélé|1997|Paris Saint-Germain|RW;Raphinha|1996|Barcelona|LW;Jude Bellingham|2003|Real Madrid|CAM;Pedri|2002|Barcelona|CM;Vitinha|2000|Paris Saint-Germain|CM;Cole Palmer|2002|Chelsea|CAM;Bukayo Saka|2001|Arsenal|RW;Lautaro Martínez|1997|Inter Milan|ST;Florian Wirtz|2003|Liverpool|CAM;Jamal Musiala|2003|Bayern Munich|CAM;Rodri|1996|Manchester City|CDM;Achraf Hakimi|1998|Paris Saint-Germain|RB;Declan Rice|1999|Arsenal|CM;Michael Olise|2001|Bayern Munich|RW;Désiré Doué|2005|Paris Saint-Germain|RW;Khvicha Kvaratskhelia|2001|Paris Saint-Germain|LW;Viktor Gyökeres|1998|Arsenal|ST;Federico Valverde|1998|Real Madrid|CM;Virgil van Dijk|1991|Liverpool|CB;Alexander Isak|1999|Liverpool|ST;Scott McTominay|1996|Napoli|CM;Gianluigi Donnarumma|1999|Manchester City|GK;Nuno Mendes|2002|Paris Saint-Germain|LB;Joshua Kimmich|1995|Bayern Munich|CDM'.split(';').map(s=>{const p=s.split('|');return{n:p[0],b:+p[1],c:p[2],p:p[3]};});
+const BDO_STARS='Kylian Mbappé|1998|Real Madrid|ST;Erling Haaland|2000|Manchester City|ST;Lamine Yamal|2007|Barcelona|RW;Vinícius Júnior|2000|Real Madrid|LW;Mohamed Salah|1992|Liverpool|RW;Harry Kane|1993|Bayern Munich|ST;Ousmane Dembélé|1997|Paris Saint-Germain|RW;Raphinha|1996|Barcelona|LW;Jude Bellingham|2003|Real Madrid|CAM;Pedri|2002|Barcelona|CM;Vitinha|2000|Paris Saint-Germain|CM;Cole Palmer|2002|Chelsea|CAM;Bukayo Saka|2001|Arsenal|RW;Lautaro Martínez|1997|Inter Milan|ST;Florian Wirtz|2003|Liverpool|CAM;Jamal Musiala|2003|Bayern Munich|CAM;Rodri|1996|Barcelona|CDM;Achraf Hakimi|1998|Paris Saint-Germain|RB;Declan Rice|1999|Arsenal|CM;Michael Olise|2001|Bayern Munich|RW;Désiré Doué|2005|Paris Saint-Germain|RW;Khvicha Kvaratskhelia|2001|Paris Saint-Germain|LW;Viktor Gyökeres|1998|Arsenal|ST;Federico Valverde|1998|Real Madrid|CM;Virgil van Dijk|1991|Liverpool|CB;Alexander Isak|1999|Liverpool|ST;Scott McTominay|1996|Napoli|CM;Gianluigi Donnarumma|1999|Manchester City|GK;Nuno Mendes|2002|Paris Saint-Germain|LB;Joshua Kimmich|1995|Bayern Munich|CDM'.split(';').map(s=>{const p=s.split('|');return{n:p[0],b:+p[1],c:p[2],p:p[3]};});
 const NAT_ABBR={England:'ENG',Germany:'GER',Netherlands:'NED',Portugal:'POR',Spain:'ESP',Switzerland:'SUI',Croatia:'CRO','United States':'USA','South Korea':'KOR','Ivory Coast':'CIV','Saudi Arabia':'KSA','Czech Republic':'CZE','Northern Ireland':'NIR',Denmark:'DEN',Greece:'GRE',Algeria:'ALG',Uruguay:'URU',Chile:'CHI',Morocco:'MAR',Nigeria:'NGA',Scotland:'SCO',Wales:'WAL',Ireland:'IRL',Japan:'JPN',Mexico:'MEX',Brazil:'BRA',Argentina:'ARG',France:'FRA',Italy:'ITA',Belgium:'BEL',Sweden:'SWE',Norway:'NOR',Poland:'POL',Turkey:'TUR',Ukraine:'UKR',Austria:'AUT',Serbia:'SRB',Senegal:'SEN',Ghana:'GHA',Cameroon:'CMR',Egypt:'EGY',Colombia:'COL',Ecuador:'ECU',Canada:'CAN',Australia:'AUS',Jamaica:'JAM'};
 const CITY={'Real Madrid':['Madrid','gate'],'Atletico Madrid':['Madrid','gate'],'Barcelona':['Barcelona','cathedral'],'Chelsea':['London','bigben'],'Arsenal':['London','bigben'],'Tottenham Hotspur':['London','bigben'],'West Ham United':['London','bigben'],'Crystal Palace':['London','bigben'],'Fulham':['London','bigben'],'Brentford':['London','bigben'],'Manchester City':['Manchester','towers'],'Manchester United':['Manchester','towers'],'Liverpool':['Liverpool','towers'],'Everton':['Liverpool','towers'],'Newcastle United':['Newcastle','bridge'],'Aston Villa':['Birmingham','towers'],'Nottingham Forest':['Nottingham','cathedral'],'Paris Saint-Germain':['Paris','eiffel'],'Bayern Munich':['Munich','cathedral'],'Borussia Dortmund':['Dortmund','towers'],'Inter Milan':['Milan','cathedral'],'AC Milan':['Milan','cathedral'],'Juventus':['Turin','cathedral'],'Napoli':['Naples','volcano'],'AS Roma':['Rome','colosseum'],'Lazio':['Rome','colosseum'],'Benfica':['Lisbon','bridge'],'Sporting CP':['Lisbon','bridge'],'FC Porto':['Porto','bridge'],'Ajax':['Amsterdam','canal'],'Feyenoord':['Rotterdam','bridge'],'Celtic':['Glasgow','towers'],'Rangers':['Glasgow','towers'],'Galatasaray':['Istanbul','mosque'],'Fenerbahce':['Istanbul','mosque'],'Besiktas':['Istanbul','mosque'],'River Plate':['Buenos Aires','obelisk'],'Boca Juniors':['Buenos Aires','obelisk'],'Flamengo':['Rio de Janeiro','christ'],'Olympique Marseille':['Marseille','cathedral'],'Al-Hilal':['Riyadh','towers'],'Al-Nassr':['Riyadh','towers']};
 const NAT_CITY={England:['London','bigben'],France:['Paris','eiffel'],Portugal:['Lisbon','bridge'],Spain:['Madrid','gate'],Germany:['Berlin','gate'],Italy:['Rome','colosseum'],Brazil:['Rio de Janeiro','christ'],Argentina:['Buenos Aires','obelisk'],Netherlands:['Amsterdam','canal'],Turkey:['Istanbul','mosque'],Croatia:['Zagreb','cathedral'],Belgium:['Brussels','cathedral'],Morocco:['Casablanca','mosque'],Egypt:['Cairo','mosque'],'Saudi Arabia':['Riyadh','towers'],Scotland:['Glasgow','towers'],Uruguay:['Montevideo','obelisk'],Colombia:['Bogotá','cathedral'],'United States':['New York','towers'],Mexico:['Mexico City','cathedral']};
@@ -1323,10 +1389,45 @@ addEventListener('resize',()=>{if(curScreen()==='menu')introLayout();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&curScreen()==='menu')introStart();});
 document.addEventListener('pointerdown',introTap);
 
+
+// ═════════ CREATE: live player card + pitch position picker ═════════
+const POS_XY={GK:[6,50],CB:[22,50],LB:[25,14],RB:[25,86],LWB:[38,10],RWB:[38,90],CDM:[40,50],CM:[52,50],LM:[56,14],RM:[56,86],CAM:[66,50],LW:[78,16],RW:[78,84],CF:[80,50],ST:[90,50]};
+function renderPosPitch(){const el=$('posPitch');if(!el)return;const cur=$('pos').value;
+ el.innerHTML='<i class="pp-box l"></i><i class="pp-box r"></i><i class="pp-mid"></i><i class="pp-circ"></i>'+[...$('pos').options].map(o=>{const xy=POS_XY[o.value];if(!xy)return '';return '<button type="button" role="radio" aria-checked="'+(o.value===cur)+'" class="pp-dot'+(o.value===cur?' on':'')+'" style="left:'+xy[0]+'%;top:'+xy[1]+'%" data-pos="'+o.value+'" title="'+esc(o.textContent)+'">'+o.value+'</button>';}).join('');
+ el.querySelectorAll('[data-pos]').forEach(b=>b.onclick=()=>{const sel=$('pos');if(sel.value===b.dataset.pos)return;sel.value=b.dataset.pos;sel.dispatchEvent(new Event('change',{bubbles:true}));});}
+$('pos').addEventListener('change',()=>{renderPosPitch();crCardUpdate();});
+const CRC={ang:0,vel:0,drag:null,cel:0,raf:0,t:0};
+function crCardUpdate(){if(!$('crCard'))return;const fn=$('fn').value.trim(),ln=$('ln').value.trim(),nat=$('nat').value;
+ $('crcPos').textContent=$('pos').value;$('crcFlag').innerHTML=nat?flagSVG(nat,28,19):'';$('crcNum').textContent='#'+($('num').value||'—');
+ $('crcFirst').textContent=fn||'Your';$('crcLast').textContent=ln||'Name';
+ $('crcAge').textContent=$('age').value;$('crcHt').textContent=$('ht').value+' cm';$('crcFoot').textContent=$('foot').value;
+ const ps=wz.arch&&PS[wz.arch],ac=wz.acad&&ACADS.find(a=>a.id===wz.acad),cl=wz.club&&getClub(wz.club);
+ const set=(id,v)=>{const e=$(id);e.innerHTML=v||'Not chosen';e.classList.toggle('none',!v);};
+ set('crcPs',ps?esc(ps[1]):'');set('crcAc',ac?esc(ac.n):'');set('crcClub',cl?'<span class="crc-club">'+badge(cl,18)+esc(cl.n)+'</span>':'');
+ if(!CRC.raf)crcDraw();}
+function crcDraw(){const cv=$('crcCv');if(!cv)return;const dpr=Math.min(2,devicePixelRatio||1);
+ if(!cv._css){cv._css=[cv.width,cv.height];cv.style.width=cv.width+'px';cv.style.height=cv.height+'px';}
+ const w=cv._css[0],h=cv._css[1];if(cv.width!==Math.round(w*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+ const x=cv.getContext('2d');x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);x.setTransform(cv.width/120,0,0,cv.height/180,0,10*cv.height/180);
+ const cel=CRC.cel>0,k=cel?Math.sin(Math.min(1,CRC.cel)*Math.PI):0,breathe=Math.sin(CRC.t*2.2)*.6;
+ const n=+$('num').value;drawRig(x,Object.assign({},av,{num:n>0&&n<100?n:10}),Object.assign({},cel?POSE.up:POSE.stand,{sx:Math.cos(CRC.ang),jump:cel?k*16:breathe}));}
+function crcLoop(ts){if(curScreen()!=='create'){CRC.raf=0;return;}const dt=Math.min(.05,CRC.last?(ts-CRC.last)/1000:.016);CRC.last=ts;CRC.t+=dt;
+ if(!CRC.drag){CRC.vel*=Math.pow(.04,dt);CRC.ang+=CRC.vel*dt;if(Math.abs(CRC.vel)<.6){const tgt=Math.round(CRC.ang/(Math.PI*2))*Math.PI*2;CRC.ang+=(tgt-CRC.ang)*Math.min(1,dt*6);}}
+ if(CRC.cel>0)CRC.cel-=dt/1.1;crcDraw();CRC.raf=requestAnimationFrame(crcLoop);}
+function crcStart(){if(!CRC.raf){CRC.last=0;CRC.raf=requestAnimationFrame(crcLoop);}}
+(()=>{const cv=$('crcCv');if(!cv)return;
+ cv.addEventListener('pointerdown',e=>{CRC.drag={x:e.clientX,a:CRC.ang,moved:0,lx:e.clientX,lt:performance.now()};cv.setPointerCapture(e.pointerId);});
+ cv.addEventListener('pointermove',e=>{const d=CRC.drag;if(!d)return;const now=performance.now();CRC.ang=d.a+(e.clientX-d.x)/45;d.moved=Math.max(d.moved,Math.abs(e.clientX-d.x));CRC.vel=(e.clientX-d.lx)/45/Math.max(.008,(now-d.lt)/1000);d.lx=e.clientX;d.lt=now;});
+ const up=()=>{const d=CRC.drag;if(!d)return;CRC.drag=null;if(d.moved<6){CRC.cel=1;CRC.vel=0;}};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);})();
+document.addEventListener('input',e=>{if(e.target.closest&&e.target.closest('#s-create'))crCardUpdate();});
+document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('#s-create'))crCardUpdate();});
+
 // ═════════ WIZARD ═════════
 function renderWizard(){
  document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));$('st'+wz.step).classList.add('on');
- $('wprog').innerHTML=[1,2,3,4,5].map(i=>'<div class="wp'+(i<wz.step?' done':i===wz.step?' cur':'')+'"></div>').join('');
+ $('wprog').innerHTML=['Identity','Look','PlayStyle','Academy','Club'].map((t,k)=>{const i=k+1;return '<button type="button" class="wp'+(i<wz.step?' done':i===wz.step?' cur':'')+'"'+(i<wz.step?' data-wstep="'+i+'"':' disabled')+'><i>'+i+'</i><span>'+t+'</span></button>';}).join('');
+ $('wprog').querySelectorAll('[data-wstep]').forEach(b=>b.onclick=()=>{wz.step=+b.dataset.wstep;renderWizard();});crCardUpdate();
+ if(wz.step===1)renderPosPitch();crcStart();
  if(wz.step===2)renderAvatarStep();if(wz.step===3)renderArch();if(wz.step===4)renderAcad();if(wz.step===5)renderClubs();}
 document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{
  if(b.dataset.w==='back'){wz.step=Math.max(1,wz.step-1);return renderWizard();}
@@ -1339,23 +1440,23 @@ function renderAvatarStep(){
  const g=$('mgrid');g.innerHTML='';
  MODELS.forEach((m,i)=>{const d=document.createElement('div');d.className='mcard'+(wz.model===i?' sel':'');const c=document.createElement('canvas');c.width=80;c.height=120;drawPlayer(c,m);d.appendChild(c);const nm=document.createElement('div');nm.className='mn';nm.textContent=m.n;d.appendChild(nm);d.onclick=()=>{wz.model=i;Object.assign(av,m);renderAvatarStep();};g.appendChild(d);});
  const h=$('optHair');h.innerHTML='';HAIRS.forEach(s=>{const b=document.createElement('button');b.className='chip'+(av.hair===s?' sel':'');b.textContent=s;b.onclick=()=>{av.hair=s;renderAvatarStep();};h.appendChild(b);});
- swatches('optHairCol',HCOLS,'hairCol');swatches('optSkin',SKINS,'skin');swatches('optKit',KITS,'kit');swatches('optBoot',BOOTS,'boot');redrawAvatars();}
+ swatches('optHairCol',HCOLS,'hairCol');swatches('optSkin',SKINS,'skin');swatches('optKit',KITS,'kit');swatches('optBoot',BOOTS,'boot');redrawAvatars();crCardUpdate();}
 function renderArch(){
  const pos=$('pos').value,g=$('archGrid');g.innerHTML='';
  let lastG='';ARCH.filter(a=>(pos==='GK')===(a.grp==='Goalkeeper')).sort((a,b)=>['Forward','Mid/Wing','Def/CDM','Goalkeeper'].indexOf(a.grp)-['Forward','Mid/Wing','Def/CDM','Goalkeeper'].indexOf(b.grp)).forEach(a=>{if(a.grp!==lastG){lastG=a.grp;const hd=document.createElement('div');hd.className='archgrp';hd.textContent=a.grp;g.appendChild(hd);}const p=PS[a.id];const d=document.createElement('div');d.className='pick'+(wz.arch===a.id?' sel':'');d.innerHTML='<div class="i">'+p[0]+'</div><div class="n">'+p[1]+'</div><div class="d">'+p[2]+'</div>'+(BUILD_FX[a.id]?'<div class="d" style="color:var(--gold);margin-top:4px;">'+BUILD_FX[a.id][3]+'</div>':'');d.onclick=()=>{wz.arch=a.id;renderArch();};g.appendChild(d);});
- const a=ARCH.find(x=>x.id===wz.arch);const pv=$('archPrev');
+ crCardUpdate();const a=ARCH.find(x=>x.id===wz.arch);const pv=$('archPrev');
  if(a&&a.grp!=='Goalkeeper'){pv.style.display='block';pv.innerHTML='<div class="ph">Base profile</div>'+Object.keys(a.s).map(k=>'<div class="sr"><div class="sl">'+k+'</div><div class="sb"><i style="width:'+a.s[k]+'%"></i></div><div class="sv">'+a.s[k]+'</div></div>').join('');}else pv.style.display='none';
  if(wz.arch&&!ARCH.find(x=>x.id===wz.arch&&(pos==='GK')===(x.grp==='Goalkeeper')))wz.arch=null;}
-function renderAcad(){const g=$('acadGrid');g.innerHTML='';ACADS.forEach(a=>{const d=document.createElement('div');d.className='pick'+(wz.acad===a.id?' sel':'');d.innerHTML='<div class="i">'+a.ic+'</div><div class="n">'+a.n+'</div><div class="d">'+a.d+'</div>';d.onclick=()=>{wz.acad=a.id;renderAcad();};g.appendChild(d);});}
+function renderAcad(){const g=$('acadGrid');g.innerHTML='';ACADS.forEach(a=>{const d=document.createElement('div');d.className='pick'+(wz.acad===a.id?' sel':'');d.innerHTML='<div class="i">'+a.ic+'</div><div class="n">'+a.n+'</div><div class="d">'+a.d+'</div>';d.onclick=()=>{wz.acad=a.id;renderAcad();};g.appendChild(d);});crCardUpdate();}
 function renderClubs(){
  const leagues=[...new Set(CLUBS.map(c=>c.l))];const tb=$('lgTabs');tb.innerHTML='';
  leagues.forEach(l=>{const b=document.createElement('button');b.className='chip'+(wz.tab===l?' sel':'');b.textContent=l;b.onclick=()=>{wz.tab=l;$('clubQ').value='';renderClubs();};tb.appendChild(b);});
  const q=$('clubQ').value.toLowerCase();const list=CLUBS.filter(c=>q?c.n.toLowerCase().includes(q):c.l===wz.tab);
  const g=$('clubGrid');g.innerHTML='';
- list.forEach(c=>{const d=document.createElement('div');d.className='ccard'+(wz.club===c.n?' sel':'');d.innerHTML=badge(c,28)+'<div><div class="cname">'+esc(c.n)+'</div><div class="clg">'+esc(c.l)+' · '+'★'.repeat(c.t)+'</div></div>';d.onclick=()=>{wz.club=c.n;renderClubs();};g.appendChild(d);});
+ list.forEach(c=>{const d=document.createElement('div');d.className='ccard'+(wz.club===c.n?' sel':'');d.innerHTML=badge(c,28)+'<div><div class="cname">'+esc(c.n)+'</div><div class="clg">'+esc(c.l)+' · '+'★'.repeat(c.t)+'</div></div>';d.onclick=()=>{wz.club=c.n;renderClubs();};g.appendChild(d);});crCardUpdate();
  const c=getClub(wz.club);
  if(c){const ct=LC[c.l];const es=EURO_SPOTS[c.l],co=CONT_SPOTS[c.l];
-  $('clubInfo').innerHTML=esc(c.n)+' · '+esc(c.l)+' ('+ct+') · Club level '+'★'.repeat(c.t)+'<br>'+(c.t>=5?'Elite club — expect to start on the bench and earn your minutes.':c.t>=4?'Big club — minutes must be earned.':c.t>=3?'Solid club — rotation chances early.':'Smaller club — a clear path to regular football.')+'<br>Continental route: '+(es?'UEFA competitions via league finish':co?CUPF[co[0]].n+' via league finish':'none from this league')+'.';}
+  $('clubInfo').innerHTML='<b>'+esc(c.n)+'</b> · '+esc(c.l)+' ('+ct+') · Club level '+'★'.repeat(c.t)+'<br>'+(c.t>=5?'Elite club — expect to start on the bench and earn your minutes.':c.t>=4?'Big club — minutes must be earned.':c.t>=3?'Solid club — rotation chances early.':'Smaller club — a clear path to regular football.')+'<br>Continental route: '+(es?'UEFA competitions via league finish':co?CUPF[co[0]].n+' via league finish':'none from this league')+'.';}
 }
 $('clubQ').oninput=renderClubs;
 $('pos').onchange=()=>{wz.arch=null;};
