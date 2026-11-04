@@ -449,7 +449,7 @@ body:has(#s-menu.active) .snd-btn{display:none;}
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v24</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v25</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -1422,6 +1422,32 @@ function crcStart(){if(!CRC.raf){CRC.last=0;CRC.raf=requestAnimationFrame(crcLoo
 document.addEventListener('input',e=>{if(e.target.closest&&e.target.closest('#s-create'))crCardUpdate();});
 document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('#s-create'))crCardUpdate();});
 
+
+// ═════════ HIDDEN LOAN-TO-BUY (rare storyline) ═════════
+// Rolled once per career (1 in 9). The club loans a young academy player out
+// with a buy clause the player never hears about; if it is triggered, the
+// boyhood club has sold them by the end of the season.
+function secretLoanCheck(){
+ if(career.secretSale==null)career.secretSale=Math.random()<1/9;
+ if(career.secretSale!==true)return;
+ const home=career.club===career.firstClub&&!career.loan&&!career.freeAgent&&!career.summer;
+ if(!home||career.age>22){if(career.age>22||career.club!==career.firstClub)career.secretSale=false;return;}
+ if(career.age<21&&Math.random()<.5)return;
+ const cur=getClub(career.club);let pool=CLUBS.filter(c=>!c.u21&&c.n!==career.club&&c.t<=Math.max(1,cur.t-1)&&c.t>=Math.max(1,cur.t-2));
+ if(!pool.length)pool=CLUBS.filter(c=>!c.u21&&c.n!==career.club&&Math.abs(c.t-cur.t)<=1);if(!pool.length)return;
+ const c=pool[rng(0,pool.length-1)],o={club:c.n,type:'loan',fee:0,wage:Math.round(career.salary/100)*100,years:1};
+ career.secretSale='loan';career.offers.push(o);
+ cs({ic:'📋',t:'Loan Agreed',s:career.club+' → '+c.n,sc:career.manager+' calls you into the office. "We have agreed a season-long loan with '+c.n+'. Regular football, a manager who wants you. Go and play, come back a better player." The paperwork is already signed.',q:'Your reaction?',
+  ch:[{t:'Pack my bags',x:'A season of football.',ef:()=>{const i=career.offers.indexOf(o);if(i<0)return;acceptOffer(i);if(career.loan)career.loan.secret=1;}}]});}
+function secretSold(){
+ const nc=getClub(career.loan.club),from=career.club,fee=Math.max(250000,Math.round(marketValue()*.7/50000)*50000);
+ const oldSal=career.salary;career.club=nc.n;career.salary=Math.max(career.salary,wageFor(nc,career.ovr));career.contractEnd=career.year+5;career.captain=false;career.secretSale='done';
+ career.memo=Object.assign(career.memo||{},{prevClub:from});
+ cs({cine:{type:'sold',col:nc.p,club:nc.n,from,fee,sal:oldSal,fair:career.salary,mv:fee}});
+ cs({ic:'📞',t:'Sold',s:from+' → '+nc.n,sc:'It was never just a loan. '+from+' had agreed an option to buy with '+nc.n+' — '+money(fee)+' — and after the season you have had, '+nc.n+' triggered it. Nobody told you. The club you grew up supporting, the academy that made you, has sold you. Your locker there has already been cleared.',q:'How do you take it?',
+  ch:[{t:'Fresh start',x:'They wanted me here. Prove them right.',ef:()=>{career.fav=clamp(career.fav+8,0,100);}},{t:'Use the hurt',x:'One day '+from+' will regret this.',ef:()=>{career.sp+=2;career.stats[career.pos==='GK'?'gk_reflexes':'composure']=clamp((career.stats[career.pos==='GK'?'gk_reflexes':'composure']||50)+2,1,99);}}]});
+ cs({cine:{type:'walkout',club:nc.n,col:nc.p,l1:'#'+career.num+' '+career.name.toUpperCase(),l2:'SIGNED FROM '+from.toUpperCase()+' · '+nc.l.toUpperCase()}});}
+
 // ═════════ WIZARD ═════════
 function renderWizard(){
  document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));$('st'+wz.step).classList.add('on');
@@ -1469,7 +1495,7 @@ function beginCareer(){
  const stats=buildStats(arch,acad,pos,age,ht);
  const fn=$('fn').value.trim(),ln=$('ln').value.trim();
  career={first:fn,name:fn+' '+ln,pos,age,startAge:age,nat:$('nat').value,height:ht,foot:$('foot').value,ps:arch.id,acad:acad.id,num:(()=>{const v=parseInt($('num').value,10);return v>=1&&v<=99?v:pos==='GK'?1:pos==='ST'?9:pos==='CB'?4:pos==='CM'?8:pos==='CAM'?10:pos==='LW'?11:pos==='RW'?7:rng(14,30);})(),
-  club:club.n,firstClub:club.n,loan:null,stats,ovr:calcOvr(stats,pos),sp:3,xp:0,level:1,
+  club:club.n,firstClub:club.n,secretSale:Math.random()<1/9,loan:null,stats,ovr:calcOvr(stats,pos),sp:3,xp:0,level:1,
   year:2025,season:1,salary:Math.max(300,Math.round(wageFor(club,calcOvr(stats,pos)-4)/100)*100),contractEnd:2028,
   goals:0,assists:0,apps:0,ss:{apps:0,g:0,a:0,rs:0,cs:0},form:[],fav:45,
   history:[],trophies:[],offers:[],fillers:{},ov:{},creative:$('crStart').checked,noCine:$('crNoCine').checked,noPop:$('crNoPop').checked,manager:MGRS[rng(0,MGRS.length-1)],agent:MGRS[rng(0,MGRS.length-1)],retired:false};
@@ -1810,13 +1836,15 @@ function ballonDor(){
   sc+=won.filter(id=>(COUNTRY_CUPS[LC[club.l]]||[]).includes(id)).length*4;
   if(career.intl&&career.intl.year===yr)sc+=career.intl.bonus||0;
   sc*=clamp(((PRES[club.l]||2)+club.t)/9,.35,1.1)*(BDO_PM[pos]||.8);
-  if(!att&&avgR>=7.8&&won.includes('ucl')&&leaguePos()===1)sc*=1.25;sc+=(repOf()-50)*.3;}
- const nominated=elig&&sc>=45;
+  if(!att&&avgR>=7.8&&won.includes('ucl')&&leaguePos()===1)sc*=1.25;sc+=(repOf()-50)*.3;
+  // voters are fickle: a great season is a ticket to the shortlist, not a guarantee
+  sc*=.8*(.82+Math.random()*.24);}
+ const nominated=elig&&sc>=40;
  const real=BDO_STARS.filter(r=>career.year-r.b<=35&&career.year-r.b>=17);career.stars=(career.stars||[]).filter(r=>r.gen);while(career.stars.length<Math.max(2,10-real.length))career.stars.push(Object.assign(newStar(),{gen:1}));if(Math.random()<.2)career.stars[rng(0,career.stars.length-1)]=Object.assign(newStar(),{gen:1});
  const elite=CLUBS.filter(x=>x.t>=4&&!x.u21);
- const field=real.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(62,106)-Math.abs(career.year-r.b-27)*1.6})).concat(career.stars.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(66,104)})));
+ const field=real.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(70,112)-Math.abs(career.year-r.b-27)*1.6})).concat(career.stars.map(r=>({n:r.n,c:r.c,p:r.p,s:rng(72,110)})));
  for(let i=field.length;i<30;i++)field.push({n:rname(),c:elite[rng(0,elite.length-1)].n,p:pickW(['ST','LW','RW','CAM','CF','CM','CB','GK'],[5,4,4,4,2,3,2,1]),s:Math.max(15,96-i*3.2+rng(-8,6))});
- {const top=field.slice().sort((a,b)=>b.s-a.s).slice(0,4),hero=top[rng(0,top.length-1)];if(hero)hero.s=Math.max(hero.s,rng(106,145));}
+ {const top=shuffle(field.slice().sort((a,b)=>b.s-a.s).slice(0,6));if(top[0])top[0].s=Math.max(top[0].s,rng(108,152));if(top[1])top[1].s=Math.max(top[1].s,rng(98,132));}
  if(nominated)field.push({n:career.name,c:club.n,p:pos,s:sc,you:true});field.sort((a,b)=>b.s-a.s);
  const rank=nominated?field.findIndex(x=>x.you)+1:0;if(rank)career.bdoBest=Math.min(career.bdoBest||99,rank);
  const win=field[0];career.bdoHist=career.bdoHist||[];career.bdoHist.push({yr,w:win.n,c:win.c,you:rank||null});
@@ -1852,7 +1880,7 @@ function endSeason(){
  if(nl!==league){parent.l=nl;career.ov[parent.n]=nl;const up=hier.indexOf(nl)<hier.indexOf(league);
   cs({ic:up?'🚀':'💔',t:up?'PROMOTED!':'RELEGATED',s:parent.n+' → '+nl,sc:up?'The final whistle sparks a pitch invasion. '+parent.n+' are going up to the '+nl+'! Bigger stadiums, bigger names, bigger wages.':'It is over. '+parent.n+' drop into the '+nl+'. Grown men cry in the stands. The rebuild starts now.',q:'Your stance?',ch:up?[{t:'Ready for the step up',x:'I belong at this level.',ef:()=>{career.fav=clamp(career.fav+6,0,100);}}]:[{t:'Stay and fight',x:'I will take this club back up.',ef:()=>{career.fav=clamp(career.fav+12,0,100);}},{t:'Ask agent for options',x:'My career cannot stall.',ef:()=>{makeOffer('transfer');makeOffer('transfer');}}]});}
  const prevPos=nl===league?pPos:(hier.indexOf(nl)<hier.indexOf(league)?99:99);
- if(career.loan){toast('Loan spell over — back to '+career.club,'g');career.loan=null;}
+ if(career.loan){if(career.loan.secret&&career.secretSale==='loan')secretSold();else toast('Loan spell over — back to '+career.club,'g');career.loan=null;}
  career.age++;career.year++;career.season++;
  if(career.age>=45){doRetire();return;}
  // development
@@ -1865,6 +1893,7 @@ function endSeason(){
  if(career.contractEnd<=career.year){const c=getClub(career.club),nw=wageFor(c,career.ovr);
   cs({cine:negotiateCine('expire',nw)});cs({ic:'📝',t:'Contract Expiring',s:career.club,sc:'Your contract is up. '+career.club+' offer '+money(nw)+'/wk for three more years. '+career.agent+' says other clubs will want you on a free.',q:'Decision?',ch:[{t:'Sign the extension',x:money(nw)+'/wk until '+(career.year+3),ef:()=>{career.salary=nw;career.contractEnd=career.year+3;signCine();}},{t:'Test free agency',x:'Agent gathers free-transfer offers.',ef:()=>{career.contractEnd=career.year;career.freeAgent=true;career.offers=[];freeOffers();cs({cine:{type:'contract',mode:'free',col:c.p,club:c.n}});}}]});}
  else career.salary=Math.max(career.salary,Math.round(wageFor(getClub(career.club),career.ovr)*.9/100)*100);
+ secretLoanCheck();
  const cont=career.comps.filter(c=>CUPF[c.id]&&(CUPF[c.id].euro||CUPF[c.id].g6||c.id==='ccc'));
  save();toast('New season '+career.year+'/'+String(career.year+1).slice(2)+' · Age '+career.age+' · OVR '+old+' → '+career.ovr,'g');
  cs({ic:'📅',t:'Pre-Season '+career.year+'/'+String(career.year+1).slice(2),s:activeName(),sc:'Pre-season camp. You are '+career.age+' now, rated '+career.ovr+' as a '+career.pos+'. '+(cont.length?'This season you will play in the '+cont.map(c=>c.n).join(' & ')+'.':'No continental football this season.')+' '+career.manager+' gathers the squad: "New season. Same hunger."',q:'Your target?',ch:[{t:'Goals & assists',x:'Numbers that cannot be ignored.',ef:()=>{career.sp+=1;}},{t:'Earn the manager\'s trust',x:'Be the first name on the teamsheet.',ef:()=>{career.fav=clamp(career.fav+8,0,100);}},{t:'Stay fit all year',x:'Availability is the best ability.',ef:()=>{career.stats[career.pos==='GK'?'gk_positioning':'stamina']=clamp((career.stats[career.pos==='GK'?'gk_positioning':'stamina']||50)+3,1,99);career.ovr=calcOvr(career.stats,career.pos);}}]});
@@ -2888,6 +2917,10 @@ const LINES={
   L_(6.8,k.mgr,'manager',n>1?'Again. We\'ll build you back slower this time. Don\'t argue with me on it.':'Scan\'s in the morning. Don\'t read anything online tonight.')];},
  comeback(d){const k=cx_();return[L_(.8,'Club physio','physio','Ninety-four percent. The last six is in your head.'),L_(3.4,k.C.name||'You','you','Then let\'s go get the six.'),
   L_(7.0,k.mgr,'manager','You\'re on the bench Saturday. Want the shirt back? Take it off whoever\'s in it.')];},
+ sold(d){const k=cx_();return[L_(.6,'Sporting Director','director','Sit down. You did everything we hoped this season. That is exactly why we triggered the clause.'),
+  L_(3.0,k.C.name||'You','you','Clause? It was a loan. I go back to '+(d.from||'my club')+' in the summer.'),
+  L_(5.0,k.agent,'agent','Option to buy. '+(d.from||'Your club')+' agreed it last summer — '+money(d.fee||0)+'. Nobody told either of us.'),
+  L_(7.3,'Sporting Director','director','It is done. Welcome to '+(d.club||'the club')+'. Properly, this time.')];},
  negotiate(d){const k=cx_();return[L_(.6,'Sporting Director','director','We value what you\'ve given '+k.club+' — '+(k.C.apps||0)+' appearance'+(k.C.apps===1?'':'s')+'. We want this to be fair.'),
   L_(2.9,k.agent,'agent','Fair is '+money(d.fair)+' a week. You\'re paying '+money(d.sal)+'. '+(d.offers?d.offers+' club'+(d.offers>1?'s':'')+' already called me this week.':'And I haven\'t even started making calls.')),
   L_(5.3,'Sporting Director','director',d.apps>15?'Clubs who\'ll pay that, maybe. Clubs who\'ll start your client every week? '+d.apps+' games this season says we do.':d.apps+' game'+(d.apps===1?'':'s')+' this season. You\'re selling a player we barely saw.'),
@@ -2977,6 +3010,7 @@ SCENES.comeback={dur:10,trans:'wipe',mood:t=>t<6.2?'dawn':'triumph',draw(x,W,H,t
   x.font='700 '+Math.round(bh*.36)+'px DM Mono, monospace';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#ff3b30';x.fillText(String(d.offNum||'??'),bx+bw/2,by+bh*.3);x.fillStyle=Math.floor(t*3)%2?'#3fff6a':'#1fbf4a';x.fillText(String(career?career.num:''),bx+bw/2,by+bh*.72);
   x.restore();if(lt<.3){x.fillStyle='rgba(255,255,255,'+(1-lt/.3)+')';x.fillRect(0,0,W,H);}
   const a=ramp(lt,.5,1.1);title(x,W,'BACK.',W/2,H*.13,H*.11,{a,gold:true,pop:1+.3*(1-easeOut(a)),ls:8});title(x,W,(d.inj||'Injury')+' · '+d.out+' matches out',W/2,H*.22,H*.03,{a:ramp(lt,.9,1.5),w:500,ls:3});}}};
+SCENES.sold={dur:9,trans:'fade',mood:'tension',draw(...a){return SCENES.negotiate.draw(...a);}};
 SCENES.negotiate={dur:9,trans:'fade',mood:'tension',draw(x,W,H,t,dt,d,st){
  const foc={agent:W*.36,director:W*.66,you:W*.5}[st.speaking]||W*.5;st.cf=st.cf==null?W*.5:st.cf+(foc-st.cf)*(1-Math.exp(-dt*2.5));
  const z=1.06+ease(ramp(t,0,9))*.06;x.save();camOn(x,W,H,z,st.cf,H*.55,0,st);
@@ -3009,7 +3043,7 @@ SCENES.retire={dur:15,hold:5,trans:'fade',mood:'dawn',draw(x,W,H,t,dt,d,st){
  const a=ramp(t,pay,pay+.7);title(x,W,'THANK YOU, FOOTBALL',W/2,H*.13,H*.085,{a,gold:true,pop:1+.2*(1-easeOut(a)),ls:3});
  title(x,W,d.stats,W/2,H*.22,H*.03,{a:ramp(t,pay+.5,pay+1.2),w:500,ls:4});}};
 SCENES.walkout.mood='triumph';SCENES.walkout.trans='wipe';SCENES.siu.mood=t=>t>4.1?'triumph':null;SCENES.siu.trans='iris';SCENES.trophy.mood='triumph';SCENES.ballon.mood=t=>t>4.3?'triumph':'tension';SCENES.ballon.trans='iris';SCENES.contract.mood=(t,d)=>d.mode==='free'?'setback':'triumph';SCENES.bigwin.mood='triumph';
-GALLERY.push(['debut','🔔','Debut','Make your professional debut'],['derby','🔥','Derby Day','Play in a derby'],['final','🏟️','The Final','Reach a cup final'],['injury','🩹','Setback','Suffer an injury'],['comeback','💪','Comeback','Return from injury'],['negotiate','🤝','The Negotiation','Sit down for contract talks']);
+GALLERY.push(['debut','🔔','Debut','Make your professional debut'],['derby','🔥','Derby Day','Play in a derby'],['final','🏟️','The Final','Reach a cup final'],['injury','🩹','Setback','Suffer an injury'],['comeback','💪','Comeback','Return from injury'],['negotiate','🤝','The Negotiation','Sit down for contract talks'],['sold','📞','Sold','A rare storyline: your boyhood club sells you']);
 // ── derbies ──
 const DERBIES=[['Arsenal','Tottenham Hotspur','North London Derby'],['Liverpool','Everton','Merseyside Derby'],['Manchester United','Manchester City','Manchester Derby'],['Manchester United','Liverpool','North-West Derby'],['Chelsea','Tottenham Hotspur','London Derby'],['Chelsea','Arsenal','London Derby'],['Newcastle United','Sunderland','Tyne–Wear Derby'],['Aston Villa','Birmingham City','Second City Derby'],['Nottingham Forest','Derby County','East Midlands Derby'],['Leeds United','Manchester United','Roses Rivalry'],['West Ham United','Millwall','East London Derby'],['Real Madrid','Barcelona','El Clásico'],['Real Madrid','Atletico Madrid','Madrid Derby'],['Sevilla','Real Betis','Seville Derby'],['Athletic Bilbao','Real Sociedad','Basque Derby'],['Inter Milan','AC Milan','Derby della Madonnina'],['AS Roma','Lazio','Derby della Capitale'],['Juventus','Inter Milan',"Derby d'Italia"],['Bayern Munich','Borussia Dortmund','Der Klassiker'],['Borussia Dortmund','Schalke 04','Revierderby'],['Paris Saint-Germain','Olympique Marseille','Le Classique'],['Ajax','Feyenoord','De Klassieker'],['Ajax','PSV Eindhoven','Topper'],['Benfica','Sporting CP','Lisbon Derby'],['Benfica','FC Porto','O Clássico'],['Celtic','Rangers','Old Firm Derby'],['Galatasaray','Fenerbahce','Intercontinental Derby'],['Boca Juniors','River Plate','Superclásico'],['Flamengo','Fluminense','Fla-Flu'],['Palmeiras','Corinthians','Derby Paulista'],['Al-Hilal','Al-Nassr','Riyadh Derby'],['Club America','Chivas','Clásico Nacional'],['LA Galaxy','LAFC','El Tráfico'],['Inter Miami','Orlando City','Florida Derby']];
 function derbyOf(a,b){return DERBIES.find(x=>(x[0]===a&&x[1]===b)||(x[0]===b&&x[1]===a));}
@@ -3082,7 +3116,7 @@ function sceneAudio(type,d){const c=auReady();
  if(type==='ballon'&&c){const cues=[],stops=[],at=(t,f)=>cues.push([t,f]),T=()=>c.currentTime;const room=loopNoise('lowpass',500,.5,.05);stops.push(room.stop);
   at(.4,()=>heartbeat(T(),5,76,.4));ballonMusic(at,T,stops);at(4.35,()=>{applause(T(),4.5,45,.5);for(let i=0;i<8;i++)I.shutter(T()+Math.random()*2.5,.3);});at(9.3,()=>{applause(T(),3.5,55,.65);for(let i=0;i<10;i++)I.shutter(T()+Math.random()*3,.35);});
   cues.sort((a,b)=>a[0]-b[0]);return{cues,caps:[],stop(){stops.forEach(f=>{try{f();}catch(e){}});}};}
- if(!['debut','derby','final','injury','comeback','negotiate'].includes(type)){const A=sceneAudioBase(type,d);if(!c)return A;
+ if(!['debut','derby','final','injury','comeback','negotiate','sold'].includes(type)){const A=sceneAudioBase(type,d);if(!c)return A;
   const hit={walkout:6.6,siu:4.1,trophy:4.4,bigwin:4.4}[type];if(hit)A.cues.push([hit-1.35,()=>stinger(c.currentTime,.45)]);
   if(type==='ballon')A.cues.push([.4,()=>heartbeat(c.currentTime,4,70,.45)]);
   if(type==='retire')A.onDone=()=>{const T=c.currentTime;applause(T,5,40,.5);I.pad(T,[48,55,64,67,72].map(nf),4,.22);I.boom(T,.5);};
@@ -3102,7 +3136,7 @@ function sceneAudio(type,d){const c=auReady();
   at(5.6,()=>I.piano(T(),nf(57),2,.14));at(6.1,()=>I.piano(T(),nf(53),2.4,.12));at(7.6,()=>applause(T(),3,15,.25));}
  else if(type==='comeback'){at(.3,()=>I.pad(T(),[55,62,67,71].map(nf),6,.15));[67,71,74,79,74,71].forEach((m,i)=>at(.8+i*.75,()=>I.piano(T(),nf(m),1.4,.1)));for(let i=0;i<26;i++)at(.4+i*.22,()=>footstep(T(),.14));
   at(4.85,()=>stinger(T(),.55));at(6.2,()=>{const cr=crowdLayer(.2);stops.push(cr.stop);cr.set(1.1,.3);I.boom(T(),.8);I.whoosh(T(),.4);at2(2,()=>cr.set(.75,2));});at(8,()=>chantClaps(T(),2,.35));}
- else if(type==='negotiate'){const room=loopNoise('lowpass',600,.5,.04);stops.push(room.stop);const dr=live(()=>drone(nf(40),.08));for(let i=0;i<9;i++)at(.2+i,()=>nz(T(),.02,vca(T(),.12,.001,.02),'bandpass',2500,4));
+ else if(type==='negotiate'||type==='sold'){const room=loopNoise('lowpass',600,.5,.04);stops.push(room.stop);const dr=live(()=>drone(nf(40),.08));for(let i=0;i<9;i++)at(.2+i,()=>nz(T(),.02,vca(T(),.12,.001,.02),'bandpass',2500,4));
   at(.4,()=>I.piano(T(),nf(52),2,.12));at(2.9,()=>heartbeat(T(),6,70,.35));at(7.4,()=>{I.piano(T(),nf(45),2.6,.14);dr.stop(2);});}
  let dead=false;const at2=(dt,f)=>setTimeout(()=>{if(!dead)f();},dt*1000);stops.push(()=>{dead=true;});
  cues.sort((a,b)=>a[0]-b[0]);return{cues,caps,stop(){stops.forEach(f=>{try{f();}catch(e){}});}};}
