@@ -394,7 +394,7 @@ body:has(#s-menu.active) .snd-btn{display:none;}
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v22</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v23</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -431,6 +431,8 @@ body:has(#s-menu.active) .snd-btn{display:none;}
       <div class="fg"><label class="fl">Shirt Number</label><input class="fi" id="num" type="number" min="1" max="99" placeholder="Auto (1–99)"></div>
     </div>
     <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;"><input type="checkbox" id="crStart" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">Creative Mode</b> · edit your stats freely during the career. You can switch it any time in Training.</span></label>
+    <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;"><input type="checkbox" id="crNoCine" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">No cutscenes</b> · skip story cinematics, goal celebrations and in-match replays.</span></label>
+    <label style="font-size:.85rem;color:#b7c1db;display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;"><input type="checkbox" id="crNoPop" style="width:16px;height:16px;accent-color:#e8b84b;"> <span><b style="color:#f0f0f8;font-weight:600;">No pop-up messages</b> · skip story decisions (the first, default choice is taken for you) and notifications.</span></label>
     <div class="wnav"><button class="btn gold" data-w="next">Continue →</button></div>
   </div>
   <div class="step" id="st2">
@@ -860,14 +862,16 @@ function curScreen(){const s=document.querySelector('.screen.active');return s?s
 document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)return go(g.dataset.go);const a=e.target.closest('[data-act]');if(a){if(a.dataset.act==='u21')joinU21();else if(a.dataset.act==='recall'){recallFirstTeam(false);toast('Recalled to the first team.','ok');renderCareer();}}});
 
 // ═════════ TOAST & CUTSCENE ═════════
-function toast(m,t){if(bulk&&t!=='g'&&t!=='ok')return;const d=document.createElement('div');d.className='toast '+(t||'');d.textContent=m;$('toasts').appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),350);},3400);}
+const noCine=()=>!!(career&&career.noCine),noPop=()=>!!(career&&career.noPop);
+function toast(m,t){if(t==='err')t='bad';else{if(bulk&&t!=='g'&&t!=='ok')return;if(noPop())return;}const d=document.createElement('div');d.className='toast '+(t||'');d.textContent=m;$('toasts').appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),350);},3400);}
 const CSQ=[];let csOpen=false;
 function cs(d){CSQ.push(d);if(d&&d.cine&&(d.cine.type==='trophy'||d.cine.type==='bigwin')&&!d.cine.replay)CSQ.push({cine:partyCine(d.cine,d.cine.type==='bigwin')});if(!csOpen)csNext();}
-function ask(t,msg,yes,yesLbl){cs({ic:'⚠️',t,s:'Confirm',sc:msg,q:'',ch:[{t:yesLbl||'Yes, do it',x:'',ef:yes},{t:'Cancel',x:'',ef:()=>{}}]});}
+function ask(t,msg,yes,yesLbl){cs({confirm:true,ic:'⚠️',t,s:'Confirm',sc:msg,q:'',ch:[{t:yesLbl||'Yes, do it',x:'',ef:yes},{t:'Cancel',x:'',ef:()=>{}}]});}
 function csNext(){
  if(!CSQ.length){csOpen=false;$('csOv').classList.remove('open');const s=curScreen();if(s==='career')renderCareer();return;}
  csOpen=true;const d=CSQ.shift();
- if(d.cine){$('csOv').classList.remove('open');playCine(d.cine,csNext);return;}
+ if(d.cine){if(noCine()&&!d.cine.replay)return csNext();$('csOv').classList.remove('open');playCine(d.cine,csNext);return;}
+ if(noPop()&&!d.confirm){const c=d.ch&&d.ch[0];try{if(c&&c.ef)c.ef();}catch(err){console.error(err);}save();return csNext();}
  $('csI').textContent=d.ic;$('csT').textContent=d.t;$('csS').textContent=d.s||'';$('csSc').textContent=d.sc;$('csQ').textContent=d.q||'';
  const box=$('csC');box.innerHTML='';
  d.ch.forEach(c=>{const b=document.createElement('div');b.className='cs-c';b.innerHTML='<b>'+esc(c.t)+'</b><span>'+esc(c.x||'')+'</span>';b.onclick=()=>{try{if(c.ef)c.ef();}catch(err){console.error(err);}save();csNext();};box.appendChild(b);});
@@ -1326,9 +1330,9 @@ function renderWizard(){
  if(wz.step===2)renderAvatarStep();if(wz.step===3)renderArch();if(wz.step===4)renderAcad();if(wz.step===5)renderClubs();}
 document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{
  if(b.dataset.w==='back'){wz.step=Math.max(1,wz.step-1);return renderWizard();}
- if(wz.step===1&&(!$('fn').value.trim()||!$('ln').value.trim()))return toast('Enter your full name.','bad');
- if(wz.step===3&&!wz.arch)return toast('Pick a PlayStyle.','bad');
- if(wz.step===4&&!wz.acad)return toast('Pick an academy.','bad');
+ if(wz.step===1&&(!$('fn').value.trim()||!$('ln').value.trim()))return toast('Enter your full name.','err');
+ if(wz.step===3&&!wz.arch)return toast('Pick a PlayStyle.','err');
+ if(wz.step===4&&!wz.acad)return toast('Pick an academy.','err');
  wz.step++;renderWizard();});
 function swatches(id,arr,key){const r=$(id);r.innerHTML='';arr.forEach(c=>{const s=document.createElement('div');s.className='sw'+(av[key]===c?' sel':'');s.style.background=c;s.onclick=()=>{av[key]=c;swatches(id,arr,key);redrawAvatars();};r.appendChild(s);});}
 function renderAvatarStep(){
@@ -1358,7 +1362,7 @@ $('pos').onchange=()=>{wz.arch=null;};
 $('beginBtn').onclick=beginCareer;
 
 function beginCareer(){
- if(!wz.club)return toast('Choose a starting club.','bad');
+ if(!wz.club)return toast('Choose a starting club.','err');
  const pos=$('pos').value,age=+$('age').value,ht=+$('ht').value;
  const arch=ARCH.find(a=>a.id===wz.arch),acad=ACADS.find(a=>a.id===wz.acad),club=getClub(wz.club);
  const stats=buildStats(arch,acad,pos,age,ht);
@@ -1367,7 +1371,7 @@ function beginCareer(){
   club:club.n,firstClub:club.n,loan:null,stats,ovr:calcOvr(stats,pos),sp:3,xp:0,level:1,
   year:2025,season:1,salary:Math.max(300,Math.round(wageFor(club,calcOvr(stats,pos)-4)/100)*100),contractEnd:2028,
   goals:0,assists:0,apps:0,ss:{apps:0,g:0,a:0,rs:0,cs:0},form:[],fav:45,
-  history:[],trophies:[],offers:[],fillers:{},ov:{},creative:$('crStart').checked,manager:MGRS[rng(0,MGRS.length-1)],agent:MGRS[rng(0,MGRS.length-1)],retired:false};
+  history:[],trophies:[],offers:[],fillers:{},ov:{},creative:$('crStart').checked,noCine:$('crNoCine').checked,noPop:$('crNoPop').checked,manager:MGRS[rng(0,MGRS.length-1)],agent:MGRS[rng(0,MGRS.length-1)],retired:false};
  career.comps=buildComps(club,estPos(club),false);
  initSeason(0);fatigue=0;save();go('career');
  cs({cine:originCine()});
@@ -1624,7 +1628,7 @@ function u21Side(){
  u=ensureFiller(club.n+' U21',lg,1);Object.assign(u,{u21:true,parent:club.n,p:club.p,a:club.a.slice(0,2)+'21'});
  return u;}
 const U21_AGE=23;
-function joinU21(){const u=u21Side();if(!u||career.loan)return;if(career.age>U21_AGE)return toast('U21 pathway is for players aged '+U21_AGE+' or under.','bad');
+function joinU21(){const u=u21Side();if(!u||career.loan)return;if(career.age>U21_AGE)return toast('U21 pathway is for players aged '+U21_AGE+' or under.','err');
  career.parentSeason={teams:career.teams,rounds:career.rounds,table:career.table,tableLeague:career.tableLeague,leaders:career.leaders,ls:career.ls,schedule:career.schedule,comps:career.comps,mdPlayed:career.mdPlayed};
  const frac=career.mdPlayed/career.rounds.length;career.loan={club:u.n,u21:true};career.comps=[{id:'league',n:u.l,ic:'⚽',status:'active',stage:'',W:0,D:0,L:0,GF:0,GA:0}];
  career.prevFav=career.fav;career.fav=62;initSeason(frac);save();
@@ -1732,9 +1736,9 @@ function closeClubSeason(){
  const goals=[...career.leaders.map(x=>x.g),career.ls.g];if(career.ls.g>0&&career.ls.g>=Math.max(...goals))career.trophies.push(act.l+' Golden Boot ('+career.year+')');
  save();}
 function endSeason(){
- if(!career.summer&&nextEvent())return toast('Fixtures remain this season.','bad');
+ if(!career.summer&&nextEvent())return toast('Fixtures remain this season.','err');
  if(career.closedYear!==career.year){closeClubSeason();career.closedYear=career.year;const T=tourneyFor(career.year+1);if(T&&career.intlYear!==career.year){startSummer(T);return;}}
- if(career.summer&&!career.summer.done)return toast('Finish the summer tournament first.','bad');
+ if(career.summer&&!career.summer.done)return toast('Finish the summer tournament first.','err');
  career.summer=null;
  const parent=getClub(career.club),act=activeClub(),actPos=leaguePos(),S=career.ss;
  const pPos=career.loan?estPos(parent):actPos;const league=parent.l;
@@ -1774,7 +1778,8 @@ function doRetire(){
 function spCost(v){return v>=85?3:v>=75?2:1;}
 function renderTraining(){
  const isGK=career.pos==='GK',keys=POS_KEYS[career.pos],CR=!!career.creative;
- let h='<div class="panel" style="border-color:'+(CR?'var(--gold2)':'var(--b1)')+'"><div class="ph"><span>🎨 Creative Mode</span><label class="mono" style="font-size:.7rem;cursor:pointer;color:'+(CR?'var(--gold)':'var(--muted)')+'"><input type="checkbox" id="crTog"'+(CR?' checked':'')+' style="margin-right:6px;vertical-align:middle;">'+(CR?'ON':'OFF')+'</label></div><div class="mono" style="font-size:.62rem;color:var(--muted)">Set any attribute directly with sliders, edit SP and manager trust, and switch positions for free.</div>'+
+ let h='<div class="panel"><div class="ph"><span>Game options</span></div><label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer;margin-bottom:8px;"><input type="checkbox" id="optNoCine"'+(career.noCine?' checked':'')+' style="width:16px;height:16px;accent-color:#e8b84b;"> No cutscenes</label><label style="display:flex;align-items:center;gap:10px;font-size:.88rem;cursor:pointer;"><input type="checkbox" id="optNoPop"'+(career.noPop?' checked':'')+' style="width:16px;height:16px;accent-color:#e8b84b;"> No pop-up messages</label></div>';
+ h+='<div class="panel" style="border-color:'+(CR?'var(--gold2)':'var(--b1)')+'"><div class="ph"><span>🎨 Creative Mode</span><label class="mono" style="font-size:.7rem;cursor:pointer;color:'+(CR?'var(--gold)':'var(--muted)')+'"><input type="checkbox" id="crTog"'+(CR?' checked':'')+' style="margin-right:6px;vertical-align:middle;">'+(CR?'ON':'OFF')+'</label></div><div class="mono" style="font-size:.62rem;color:var(--muted)">Set any attribute directly with sliders, edit SP and manager trust, and switch positions for free.</div>'+
  (CR?'<div class="sr" style="margin-top:12px;"><div class="sl">Manager trust</div><input type="range" min="0" max="100" value="'+Math.round(career.fav)+'" id="crFav" style="flex:1"><div class="sv" id="crFavV">'+Math.round(career.fav)+'</div></div><div class="sr"><div class="sl">Skill points</div><input type="number" min="0" max="9999" value="'+career.sp+'" id="crSp" class="fi" style="width:100px;padding:5px 8px;"><button class="btn sm" id="crFat" style="margin-left:auto;">Reset fatigue</button><button class="btn sm" id="crMax">Max all stats</button></div>':'')+'</div>';
  h+='<div class="panel"><div class="ph"><span>Weekly Drills</span><span class="mono" style="font-size:.65rem;">SP: <b style="color:var(--gold)">'+career.sp+'</b> · Fatigue '+fatigue+'%</span></div><div class="bar" style="margin-bottom:12px;"><i style="width:'+fatigue+'%;background:'+(fatigue>70?'var(--red)':fatigue>40?'var(--gold)':'var(--green)')+'"></i></div>';
  DRILLS.forEach((d,i)=>{if(d.gk&&!isGK)return;if(!d.gk&&isGK&&d.b.length&&!d.b.every(k=>GKS.includes(k))&&d.n!=='Video Analysis'&&d.n!=='Double Session')return;const off=fatigue+d.f>100;h+='<div class="drill'+(off?' off':'')+'" data-d="'+i+'"><div class="i">'+d.ic+'</div><div style="flex:1"><div class="n">'+d.n+'</div><div class="d">'+d.d+'</div><div class="r">+'+d.sp+' SP · fatigue +'+d.f+'%</div></div></div>';});
@@ -1786,6 +1791,7 @@ function renderTraining(){
  $('trainBody').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>doDrill(+b.dataset.d));
  $('trainBody').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>upgrade(b.dataset.s));
  $('trainBody').querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>retrain(b.dataset.p));
+ $('optNoCine').onchange=e=>{career.noCine=e.target.checked;save();};$('optNoPop').onchange=e=>{career.noPop=e.target.checked;save();};
  $('crTog').onchange=e=>{career.creative=e.target.checked;save();toast('Creative Mode '+(career.creative?'ON':'OFF'),'g');renderTraining();};
  if(CR){
   $('crFav').oninput=e=>{career.fav=+e.target.value;$('crFavV').textContent=e.target.value;save();};
@@ -1794,12 +1800,12 @@ function renderTraining(){
   $('crMax').onclick=()=>{statKeys().forEach(k=>career.stats[k]=99);career.ovr=calcOvr(career.stats,career.pos);save();renderTraining();};
   $('trainBody').querySelectorAll('[data-cs]').forEach(r=>r.oninput=()=>{const k=r.dataset.cs;career.stats[k]=+r.value;$('cv_'+k).textContent=r.value;career.ovr=calcOvr(career.stats,career.pos);$('trOvr').textContent=career.pos+' OVR '+career.ovr;save();});}}
 function calcOvrPreview(p){if((p==='GK')!==(career.pos==='GK'))return '~45';return calcOvr(career.stats,p);}
-function doDrill(i){const d=DRILLS[i];if(fatigue+d.f>100)return toast('Too tired — play a fixture to recover.','bad');fatigue+=d.f;career.sp+=d.sp;
+function doDrill(i){const d=DRILLS[i];if(fatigue+d.f>100)return toast('Too tired — play a fixture to recover.','err');fatigue+=d.f;career.sp+=d.sp;
  if(d.n==='Double Session')statKeys().forEach(k=>{if(Math.random()<.25)career.stats[k]=clamp(career.stats[k]+1,1,99);});else d.b.forEach(k=>{if(career.stats[k]!==undefined&&Math.random()<.5)career.stats[k]=clamp(career.stats[k]+1,1,99);});
  if(d.fav&&(career.trainFav||0)<4){career.fav=clamp(career.fav+d.fav,0,100);career.trainFav=(career.trainFav||0)+d.fav;}
  career.ovr=calcOvr(career.stats,career.pos);save();toast(d.ic+' '+d.n+' complete · +'+d.sp+' SP','ok');renderTraining();}
-function upgrade(k){const v=career.stats[k],c=spCost(v);if(v>=99)return;if(career.sp<c)return toast('Need '+c+' SP.','bad');career.sp-=c;career.stats[k]=v+1;const o=career.ovr;career.ovr=calcOvr(career.stats,career.pos);save();toast(LBL[k]+' '+(v+1)+(career.ovr>o?' · OVR '+career.ovr+'!':''),'ok');renderTraining();}
-function retrain(p,ok){if(p===career.pos)return;if(!career.creative){if(career.sp<5)return toast('Retraining costs 5 SP.','bad');if(!ok)return ask('Retrain Position','Retrain as '+p+' for 5 SP?',()=>setTimeout(()=>retrain(p,true),0));career.sp-=5;}
+function upgrade(k){const v=career.stats[k],c=spCost(v);if(v>=99)return;if(career.sp<c)return toast('Need '+c+' SP.','err');career.sp-=c;career.stats[k]=v+1;const o=career.ovr;career.ovr=calcOvr(career.stats,career.pos);save();toast(LBL[k]+' '+(v+1)+(career.ovr>o?' · OVR '+career.ovr+'!':''),'ok');renderTraining();}
+function retrain(p,ok){if(p===career.pos)return;if(!career.creative){if(career.sp<5)return toast('Retraining costs 5 SP.','err');if(!ok)return ask('Retrain Position','Retrain as '+p+' for 5 SP?',()=>setTimeout(()=>retrain(p,true),0));career.sp-=5;}
  const wasGK=career.pos==='GK',toGK=p==='GK';
  if(wasGK&&!toGK){const st={};OUTFIELD.forEach(k=>st[k]=rng(38,52));career.stats=st;}
  else if(!wasGK&&toGK){const st={};GKS.forEach(k=>st[k]=rng(40,52));career.stats=st;}
@@ -1854,7 +1860,7 @@ function renderTransfers(){
  $('trBody').querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>acceptOffer(+b.dataset.acc));
  $('trBody').querySelectorAll('[data-rej]').forEach(b=>b.onclick=()=>{career.offers.splice(+b.dataset.rej,1);career.fav=clamp(career.fav+2,0,100);save();renderTransfers();});}
 function acceptOffer(i){
- const w=windowState();if(!w.open)return toast('Window closed.','bad');const o=career.offers[i],c=getClub(o.club);
+ const w=windowState();if(!w.open)return toast('Window closed.','err');const o=career.offers[i],c=getClub(o.club);
  const frac=career.mdPlayed/career.rounds.length;const prevClub=activeName();career.memo=Object.assign(career.memo||{},{prevClub});
  if(career.ss.apps)career.history.push({year:career.year,club:prevClub+(career.loan?' (loan)':'')+' (part)',league:activeClub().l,pos:leaguePos(),apps:career.ss.apps,g:career.ss.g,a:career.ss.a,avg:+(career.ss.rs/career.ss.apps).toFixed(2),ovr:career.ovr});
  career.ss={apps:0,g:0,a:0,rs:0,cs:0};
@@ -1904,7 +1910,7 @@ function renderProfile(){
  h+='<div class="panel"><div class="ph">Season history</div>'+(career.history.length?'<table class="t"><tr><th>Season</th><th>Club</th><th>Pos</th><th>Apps</th><th>G</th><th>A</th><th>Avg</th><th>OVR</th></tr>'+career.history.slice().reverse().map(x=>'<tr><td>'+x.year+'/'+String(x.year+1).slice(2)+'</td><td>'+esc(x.club)+'</td><td>#'+x.pos+'</td><td>'+x.apps+'</td><td>'+x.g+'</td><td>'+x.a+'</td><td>'+(x.avg||'—')+'</td><td>'+x.ovr+'</td></tr>').join('')+'</table>':'<div class="mono" style="font-size:.65rem;color:var(--muted)">First season in progress.</div>')+'</div>';
  h+='<div class="panel"><div class="ph">All attributes</div>'+statKeys().map(k=>'<div class="sr"><div class="sl'+(keys.includes(k)?' key':'')+'">'+LBL[k]+'</div><div class="sb"><i style="width:'+(career.stats[k]||0)+'%"></i></div><div class="sv">'+(career.stats[k]||0)+'</div></div>').join('')+'</div>';
  $('pfBody').innerHTML=h;
- $('pfNumB').onclick=()=>{const v=parseInt($('pfNum').value,10);if(!(v>=1&&v<=99))return toast('Pick a number from 1 to 99.','bad');career.num=v;save();toast('You now wear #'+v,'ok');renderProfile();};}
+ $('pfNumB').onclick=()=>{const v=parseInt($('pfNum').value,10);if(!(v>=1&&v<=99))return toast('Pick a number from 1 to 99.','err');career.num=v;save();toast('You now wear #'+v,'ok');renderProfile();};}
 
 // ═════════ AUDIO (everything synthesized with Web Audio — no files) ═════════
 const AU={ctx:null,on:true};
@@ -2112,7 +2118,7 @@ MUS.idx=0;
 function musicStart(){const c=auReady();if(!c||MUS.on)return;const tr=TRACKS[MUS.idx],sd=60/tr.bpm/tr.div;MUS.on=true;MUS.played=true;try{localStorage.setItem('fl_track',MUS.idx);}catch(e){}
  const bus=c.createGain();bus.gain.setValueAtTime(0,c.currentTime);bus.gain.linearRampToValueAtTime(1,c.currentTime+1.2);bus.connect(AU.music);const rs=c.createGain();rs.gain.value=.25;bus.connect(rs);rs.connect(AU.rev);MUS.bus=bus;
  if(tr.anthem&&ANTHEM.buf){const sr=c.createBufferSource();sr.buffer=ANTHEM.buf;sr.loop=true;sr.connect(bus);sr.start();MUS.src=sr;renderMusicBar();return;}
- if(tr.file){songBuf(tr.file).then(b=>{if(!MUS.on||MUS.bus!==bus)return;if(!b){toast('Could not load '+tr.name,'bad');return;}const sr=c.createBufferSource();sr.buffer=b;sr.loop=true;sr.connect(bus);sr.start();MUS.src=sr;});renderMusicBar();return;}
+ if(tr.file){songBuf(tr.file).then(b=>{if(!MUS.on||MUS.bus!==bus)return;if(!b){toast('Could not load '+tr.name,'err');return;}const sr=c.createBufferSource();sr.buffer=b;sr.loop=true;sr.connect(bus);sr.start();MUS.src=sr;});renderMusicBar();return;}
  MUS.step=0;MUS.nt=c.currentTime+.15;
  MUS.timer=setInterval(()=>{if(!MUS.on)return;while(MUS.nt<c.currentTime+.15){try{tr.play(MUS.step,MUS.nt,bus,sd);}catch(e){console.error(e);}MUS.nt+=sd;MUS.step++;}},30);renderMusicBar();}
 function musicStop(){if(!MUS.on)return;MUS.on=false;clearInterval(MUS.timer);const c=AU.ctx,b=MUS.bus;if(MUS.src){try{MUS.src.stop(c.currentTime+.7);}catch(e){}MUS.src=null;}b.gain.cancelScheduledValues(c.currentTime);b.gain.setValueAtTime(b.gain.value,c.currentTime);b.gain.linearRampToValueAtTime(0,c.currentTime+.6);setTimeout(()=>b.disconnect(),900);renderMusicBar();}
@@ -2924,6 +2930,7 @@ function tickInjury(P){const j=career.injury;if(!j)return;j.left--;if(j.left>0)r
 function negotiateCine(mode,fair){const c=getClub(career.club);return{type:'negotiate',mode,col:c.p,club:c.n,fair,sal:career.salary,mv:marketValue(),offers:career.offers.length,apps:career.ss.apps||((career.history||[]).slice(-1)[0]||{}).apps||0};}
 // ── engine ──
 function playCine(d,done){
+ if(noCine()&&!d.replay){if(done)setTimeout(done,0);return;}
  const ov=$('cine'),cv=$('cineCv'),x=cv.getContext('2d'),sc=SCENES[d.type];if(!sc){if(done)done();return;}
  let lines=d._lines;if(!lines){try{lines=LINES[d.type]&&career?LINES[d.type](d):[];}catch(e){console.error(e);lines=[];}d._lines=lines;}galRecord(d);
  let fin=false,raf,W,H;const st={fw:[],P:[],dpr:1};
@@ -3980,7 +3987,7 @@ function plGoal(team){const b=PM.ball,P=M.P;b.inNet=team===0?1:-1;b.owner=null;i
  PM.goalInfo={team,sc,as,og,min:M.min};PM.celStyle=plPick(['arms','knee','plane','siu','point','shush','heart','flip','arms']);plBanner('GOAL!',(og?'Own goal':sc.user?'YOU — '+career.name:sc.name)+'  '+M.min+"'"+(as?'  ·  assist '+(as.user?'YOU':lname(as.name)):''),team===0?'#e8b84b':'#ff5252',3.2);
  plFeed((team?P.opp.n:P.me.n)+' score! '+who,false);plSay(plPick(PL_LINES[team===0?'goalUs':'goalThem'])+(team===0&&sc?' '+(sc.user?lname(career.name):lname(sc.name))+'!':''),3);plSnd('net');if(PM.crowd)PM.crowd.cheer(team===0===P.home?1.35:1.05,.3,3);
  const ch=chantFor(team?P.opp.n:P.me.n);if(ch&&AU.ctx&&auReady())setTimeout(()=>{if(PM&&PM.state==='goal'||PM&&PM.state==='replay')crowdChant(AU.ctx.currentTime,ch,1,.9);},1600);
- PM.state='goal';PM.stT=0;PM.repFrames=PM.rep.slice(-150);head();PM.goalCine=PM.g3on&&team===0&&!!sc&&!og?{a0:null,conf:false}:null;
+ PM.state='goal';PM.stT=0;PM.repFrames=PM.rep.slice(-150);head();PM.goalCine=PM.g3on&&team===0&&!!sc&&!og&&!noCine()?{a0:null,conf:false}:null;
  if(sc){sc.st='celebrate';sc.stT=3;sc.celX=team?6:PLW-6;sc.celY=sc.y<34?3:PLH-3;}}
 function plDead(r,instant){PM.state='dead';PM.stT=instant?.55:0;PM.restart=r;PM.pass=null;PM.charge=null;if(PM.shot)PM.shot.done=true;PM.shot=null;
  if(!instant&&['throw','corner','goalkick'].includes(r.type))plFeed({throw:'Throw-in',corner:'Corner',goalkick:'Goal kick'}[r.type]+' to '+(r.team?M.P.opp.n:M.P.me.n)+'.');
@@ -4100,7 +4107,7 @@ function plGoalStep(dt){const sc=PM.goalInfo.sc;plBallStep(dt);
   else if(sc&&p.team===sc.team&&!p.gk&&Math.hypot(p.x-sc.x,p.y-sc.y)<35){tx=sc.x-(p.x<sc.x?1.2:-1.2);ty=sc.y+((p.id%3)-1)*1.2;urg=true;}
   else{[tx,ty]=plShape(p);}
   const[dvx,dvy]=plSeek(p,tx,ty,urg,!urg);plMove(p,dt,dvx*(p===sc?1:.85),dvy*(p===sc?1:.85));});
- plRef(dt);if(PM.skip&&PM.goalCine){PM.skip=false;PM.goalCine=null;PM.stT=99;}if(PM.stT>(PM.goalCine?7.6:3.4)){PM.goalCine=null;if(PM.repFrames.length>40){PM.state='replay';PM.repI=Math.max(0,PM.repFrames.length-135);PM.stT=0;}else plAfterReplay();}}
+ plRef(dt);if(PM.skip&&PM.goalCine){PM.skip=false;PM.goalCine=null;PM.stT=99;}if(PM.stT>(PM.goalCine?7.6:3.4)){PM.goalCine=null;if(PM.repFrames.length>40&&!noCine()){PM.state='replay';PM.repI=Math.max(0,PM.repFrames.length-135);PM.stT=0;}else plAfterReplay();}}
 function plAfterReplay(){const gi=PM.goalInfo;PM.pl.forEach(p=>{if(p.st==='celebrate')p.st='';});
  const go=()=>{plRestart({type:'kickoff',team:1-gi.team});};
  if(PM.siu){PM.siu=false;career.firstGoal=true;save();PM.cine=true;if(PM.crowd)PM.crowd.set(.1,.4);
@@ -4363,7 +4370,7 @@ function plTouchLabels(){if(!PM||!PM.touch)return;const U=PM.user,b=PM.ball;let 
 
 // ── start / finish ──
 function plPreSim(entry){const P=M.P;for(M.ti=1;M.ti*5<entry;M.ti++){M.min=M.ti*5;if(Math.random()<P.pMy){const s=pickMate('s');myGoal(s,Math.random()<.72?pickMate('a',s):null);}if(Math.random()<P.pOpp)oppGoal();if(M.min===45)mlog('HALF TIME: '+P.me.n+' '+M.ys+' – '+M.os+' '+P.opp.n,'e');}M.min=entry;M.flashT0=0;}
-function plStart(){if(!M||M.over||M.live||PM&&!PM.over)return;const P=M.P;if(P.role.type==='bench')return toast('You are not in the matchday squad.','bad');
+function plStart(){if(!M||M.over||M.live||PM&&!PM.over)return;const P=M.P;if(P.role.type==='bench')return toast('You are not in the matchday squad.','err');
  auUnlock();stopAnthemTail();musicStop();$('mLobby').innerHTML='';M.playMode=true;mlog('Kick-off! '+P.me.n+' vs '+P.opp.n+' — you are playing ('+PL_DIFF[plPref('diff','medium')].n+').','e');
  if(P.role.type==='sub'){mlog('You start on the bench — warming up.','n');plPreSim(P.role.entry);mlog(P.role.entry+"' — SUBSTITUTION: "+career.name+' comes on!','e');}
  plCreate({diff:plPref('diff','medium'),len:plPref('len','normal'),cam:plPref('cam','pro')});PM.firstKO=PM.restart.team;
