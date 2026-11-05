@@ -445,11 +445,75 @@ body:has(#s-menu.active) .snd-btn{display:none;}
  .wp span{display:none;}.wp{justify-content:center;flex:1;padding:8px 6px;}.wp.cur{flex:3;}.wp.cur span{display:inline;}
 }
 @media(prefers-reduced-motion:reduce){.pp-dot,.sw{transition:none;}}
+/* ── squad draft ── */
+.dr-wrap{max-width:1120px;}
+.dr-lead{color:#b7c1db;font-size:1rem;line-height:1.55;max-width:62ch;margin-top:8px;}
+.dr-forms{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;max-width:980px;}
+.dr-fg{margin-top:20px;}.dr-form small{font-size:.72rem;color:#93a0bf;margin-top:-6px;}
+.dr-form{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border-radius:12px;border:1px solid var(--b2);background:var(--s1);transition:border-color .15s,background .15s;}
+.dr-form svg{width:100%;max-width:72px;}.dr-form b{font-family:'Oswald',sans-serif;font-weight:500;font-size:1.05rem;color:#e8eefc;}
+.dr-form:hover{border-color:#3a4c75;}.dr-form.on{border-color:#e8b84b;background:rgba(232,184,75,.08);}.dr-form:focus-visible{outline:2px solid #e8b84b;outline-offset:2px;}
+.dr-start{display:flex;align-items:center;gap:16px;margin:22px 0 28px;}.dr-start .btn{min-width:200px;}.dr-start span{color:#93a0bf;font-size:.9rem;}
+.dr-how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:820px;}
+.dr-how div{border-top:2px solid var(--b2);padding-top:10px;display:flex;flex-direction:column;gap:4px;}.dr-how b{font-family:'Oswald',sans-serif;font-weight:500;font-size:1.05rem;color:#f0f0f8;}.dr-how span{font-size:.86rem;color:#93a0bf;line-height:1.45;}
+.dr-lay{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:24px;align-items:start;}
+.dr-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
+.dr-head b{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:500;color:#f0f0f8;display:block;line-height:1;}.dr-head span{font-size:.85rem;color:#93a0bf;}
+.dr-ovr{text-align:right;}.dr-ovr b{font-size:2.4rem;color:#e8b84b;font-variant-numeric:tabular-nums;}
+.dr-pitch{position:relative;aspect-ratio:68/80;max-height:calc(100vh - 150px);margin:0 auto 24px;border-radius:14px;border:1px solid #1d5a33;background:repeating-linear-gradient(0deg,#0f3720 0 8.33%,#123f22 8.33% 16.66%);}
+.dr-pitch i{position:absolute;border:2px solid rgba(255,255,255,.2);pointer-events:none;}
+.dp-half{left:0;right:0;top:50%;border-width:2px 0 0!important;}.dp-circ{left:50%;top:50%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;}
+.dp-box{left:25%;right:25%;height:14%;}.dp-box.b{bottom:-2px;border-bottom:none!important;}.dp-box.t{top:-2px;border-top:none!important;}
+.dr-slot{all:unset;box-sizing:border-box;position:absolute;z-index:1;transform:translate(-50%,50%);width:92px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;}
+.dr-slot .ds-p{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px dashed rgba(255,255,255,.35);color:#c9d2ea;font:600 .78rem 'Inter',sans-serif;background:rgba(6,12,26,.35);}
+.dr-slot .ds-r{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:600;font-size:1.15rem;color:#111;background:#e8eefc;border:2px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.35);}
+.dr-slot .ds-n{font-size:.74rem;font-weight:600;color:#fff;background:rgba(6,12,26,.75);padding:2px 7px;border-radius:999px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dr-slot .ds-c{width:22px;height:3px;border-radius:2px;}
+.dr-slot.full.ok .ds-r{background:#43c46b;border-color:#7ce39a;}.dr-slot.full.mid .ds-r{background:#e8b84b;border-color:#f5d48a;}.dr-slot.full.bad .ds-r{background:#e5675e;border-color:#f19b94;}
+.dr-slot.dr-pick{cursor:pointer;}.dr-slot.dr-pick .ds-r{background:rgba(6,12,26,.8);color:#fff;border-style:solid;animation:drPulse 1.2s ease-in-out infinite;}
+.dr-slot.dr-pick.ok .ds-r{border-color:#43c46b;}.dr-slot.dr-pick.mid .ds-r{border-color:#e8b84b;}.dr-slot.dr-pick.bad .ds-r{border-color:#e5675e;opacity:.8;}
+.dr-slot.dr-pick:hover .ds-r{transform:scale(1.1);}.dr-slot.dr-pick:focus-visible .ds-r{outline:2px solid #fff;outline-offset:3px;}
+@keyframes drPulse{50%{box-shadow:0 0 0 6px rgba(255,255,255,.08);}}
+.dr-reel{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--b2);background:var(--s1);}
+.dr-reel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--tc);}
+.dr-reel-in{padding:16px 18px 16px 24px;display:flex;flex-direction:column;gap:2px;min-height:78px;justify-content:center;}
+.dr-reel b{font-family:'Oswald',sans-serif;font-weight:600;font-size:1.6rem;color:#f0f0f8;line-height:1.1;}.dr-season{font-size:.9rem;color:#c9d2ea;font-variant-numeric:tabular-nums;}
+.dr-reel.spin b{color:#93a0bf;}
+.dr-ctrl{display:flex;gap:10px;margin:12px 0;}.dr-ctrl .btn{flex:1;}.dr-ctrl .btn:disabled{opacity:.45;cursor:default;transform:none;}
+.dr-tip{font-size:.86rem;color:#b7c1db;margin:4px 0 10px;line-height:1.45;}
+.dr-squad{display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 290px);overflow:auto;padding-right:4px;}
+.dr-pl{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--b1);background:var(--s1);position:relative;transition:border-color .12s,background .12s;}
+.dr-pl:hover{border-color:#3a4c75;background:var(--s2);}.dr-pl.on{border-color:#e8b84b;background:rgba(232,184,75,.08);}.dr-pl:focus-visible{outline:2px solid #e8b84b;outline-offset:2px;}
+.dr-pl:disabled{cursor:default;opacity:.45;}
+.dp-ovr{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:600;color:#e8b84b;text-align:center;font-variant-numeric:tabular-nums;}
+.dp-main{display:flex;flex-direction:column;gap:2px;min-width:0;}.dp-main b{font-size:.95rem;color:#f0f0f8;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dp-pos{font-size:.78rem;color:#e8b84b;font-weight:600;}.dp-roles{font-size:.76rem;color:#93a0bf;line-height:1.35;}
+.dp-phys{display:flex;flex-direction:column;align-items:flex-end;gap:1px;font-size:.74rem;color:#b7c1db;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.dp-taken{position:absolute;right:12px;top:8px;font-size:.7rem;color:#e8b84b;}
+.dr-final{display:flex;align-items:baseline;gap:12px;padding:16px 18px;border-radius:14px;border:1px solid var(--b2);background:linear-gradient(180deg,#14203b,#0c1322);}
+.dr-final span{font-size:.9rem;color:#b7c1db;}.dr-final b{font-family:'Oswald',sans-serif;font-size:3.4rem;line-height:1;color:#e8b84b;font-variant-numeric:tabular-nums;}.dr-final em{font-style:normal;margin-left:auto;font-size:.85rem;color:#93a0bf;}
+.dr-lines{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
+.dr-line{display:grid;grid-template-columns:96px 1fr 40px;gap:10px;align-items:center;font-size:.86rem;color:#c9d2ea;}
+.dr-line i{height:6px;border-radius:3px;background:var(--b1);overflow:hidden;}.dr-line i b{display:block;height:100%;background:#e8b84b;border-radius:3px;}
+.dr-line em{font-style:normal;text-align:right;font-weight:600;color:#f0f0f8;font-variant-numeric:tabular-nums;}
+.dr-mods{display:flex;flex-direction:column;gap:6px;}
+.dr-mods div{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;padding:8px 12px;border-radius:10px;background:var(--s1);border:1px solid var(--b1);color:#c9d2ea;}
+.dr-mods .up b{color:#5fd383;}.dr-mods .down b{color:#ef7d75;}
+.dr-res{display:flex;flex-direction:column;gap:6px;}
+.dr-res div{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;font-size:.86rem;padding:8px 12px;border-radius:10px;background:var(--s1);color:#c9d2ea;}
+.dr-res b{font-family:'Oswald',sans-serif;text-align:center;border-radius:6px;color:#111;}.dr-res .w b{background:#43c46b;}.dr-res .d b{background:#c9d2ea;}.dr-res .l b{background:#e5675e;}
+.dr-res em{font-style:normal;color:#93a0bf;font-size:.8rem;}
+@media(max-width:900px){
+ .dr-lay{grid-template-columns:1fr;}.dr-pitch{max-height:none;width:100%;aspect-ratio:68/96;}
+ .dr-squad{max-height:none;}.dr-forms{grid-template-columns:repeat(3,minmax(0,1fr));}.dr-form{padding:10px 6px;}.dr-how{grid-template-columns:1fr;}
+ .dr-slot{width:70px;}.dr-slot .ds-r,.dr-slot .ds-p{width:40px;height:40px;font-size:1rem;}.dr-slot .ds-n{font-size:.68rem;}
+}
+@media(prefers-reduced-motion:reduce){.dr-slot.dr-pick .ds-r{animation:none;}}
 </style>
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v25</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v26</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -536,6 +600,9 @@ body:has(#s-menu.active) .snd-btn{display:none;}
     </dl>
   </aside></div>
 </div></div>
+
+<!-- SQUAD DRAFT -->
+<div class="screen" id="s-draft"><div class="wrap dr-wrap"><button class="back" data-go="menu">← Menu</button><div id="drBody"></div></div></div>
 
 <!-- HUB -->
 <div class="screen" id="s-career"><div class="wrap">
@@ -921,7 +988,7 @@ function go(id){
  if(id!=='match'&&M&&M.live){stopLive();}
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
  $('s-'+id).classList.add('active');window.scrollTo(0,0);
- ({menu:renderMenu,create:renderWizard,career:renderCareer,match:renderMatch,training:renderTraining,calendar:renderCalendar,table:renderTable,comps:renderComps,transfers:renderTransfers,agent:renderAgent,profile:renderProfile,achieve:renderAchieve}[id]||function(){})();
+ ({menu:renderMenu,create:renderWizard,draft:renderDraft,career:renderCareer,match:renderMatch,training:renderTraining,calendar:renderCalendar,table:renderTable,comps:renderComps,transfers:renderTransfers,agent:renderAgent,profile:renderProfile,achieve:renderAchieve}[id]||function(){})();
 }
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('hc')){e.preventDefault();e.target.click();}});
 function curScreen(){const s=document.querySelector('.screen.active');return s?s.id.slice(2):'';}
@@ -1310,7 +1377,7 @@ function renderMenu(){
  if(career&&!career.retired){mk('Continue Career','gold',()=>go('career'));mk('New Career','',newCareer);
   $('menuInfo').innerHTML='<b>'+esc(career.name)+'</b><span>'+career.pos+' · '+esc(activeName())+' · Age '+career.age+' · '+career.ovr+' OVR</span>';}
  else{if(career&&career.retired)$('menuInfo').textContent='Retired legend: '+career.name+' — '+career.goals+' goals, '+career.assists+' assists in '+career.apps+' games, '+career.trophies.filter(t=>!t.startsWith('Named')).length+' honours.';else $('menuInfo').textContent='';mk('Start New Career','gold',newCareer);}
- mk('Achievements','',()=>go('achieve'));
+ mk('Squad Draft','',()=>go('draft'));mk('Achievements','',()=>go('achieve'));
  renderMusicBar();if(auReady())musicStart();introStart();
 }
 function newCareer(){const start=()=>{wipeCareer();setTimeout(()=>go('create'),0);};if(career&&!career.retired)ask('Start New Career','Your current career ('+career.name+') will be deleted.',start,'Start fresh');else start();}
@@ -1447,6 +1514,165 @@ function secretSold(){
  cs({ic:'📞',t:'Sold',s:from+' → '+nc.n,sc:'It was never just a loan. '+from+' had agreed an option to buy with '+nc.n+' — '+money(fee)+' — and after the season you have had, '+nc.n+' triggered it. Nobody told you. The club you grew up supporting, the academy that made you, has sold you. Your locker there has already been cleared.',q:'How do you take it?',
   ch:[{t:'Fresh start',x:'They wanted me here. Prove them right.',ef:()=>{career.fav=clamp(career.fav+8,0,100);}},{t:'Use the hurt',x:'One day '+from+' will regret this.',ef:()=>{career.sp+=2;career.stats[career.pos==='GK'?'gk_reflexes':'composure']=clamp((career.stats[career.pos==='GK'?'gk_reflexes':'composure']||50)+2,1,99);}}]});
  cs({cine:{type:'walkout',club:nc.n,col:nc.p,l1:'#'+career.num+' '+career.name.toUpperCase(),l2:'SIGNED FROM '+from.toUpperCase()+' · '+nc.l.toUpperCase()}});}
+
+// ═════════ SQUAD DRAFT: historic squads ═════════
+// Name|positions|roles|rating that season|height cm|weight kg|pace
+const DR_TEAMS=[
+{c:'Chelsea',s:'2020-21',col:'#034694',p:"Édouard Mendy|GK|Shot Stopper|85|194|86|50;César Azpilicueta|RB/CB|Fullback,Covering|85|178|70|64;Thiago Silva|CB|Ball-Playing,Covering|87|183|79|55;Antonio Rüdiger|CB|Stopper|84|190|85|82;Ben Chilwell|LB/LWB|Wingback|82|178|77|80;Reece James|RB/RWB|Wingback|81|182|82|82;Jorginho|CDM/CM|Deep-Lying Playmaker|85|180|68|57;N'Golo Kanté|CDM/CM|Holding,Box-to-Box,Deep-Lying Playmaker|89|168|70|78;Mateo Kovačić|CM|Box-to-Box|84|177|78|72;Mason Mount|CAM/CM|Playmaker,Shadow Striker|83|178|74|74;Kai Havertz|CAM/ST|False 9,Shadow Striker|84|190|82|76;Timo Werner|ST/LW|Advanced Forward,Pressing Forward|82|180|75|91;Christian Pulisic|LW/RW|Winger,Inside Forward|81|177|70|86"},
+{c:'Liverpool',s:'2023-24',col:'#c8102e',p:"Alisson|GK|Sweeper Keeper|89|193|91|56;Trent Alexander-Arnold|RB|Inverted Fullback,Wingback|86|175|69|76;Virgil van Dijk|CB|Ball-Playing,Stopper|89|195|92|75;Ibrahima Konaté|CB|Stopper|84|194|95|80;Andy Robertson|LB|Wingback|85|178|64|82;Alexis Mac Allister|CDM/CM|Deep-Lying Playmaker,Box-to-Box|85|174|71|66;Dominik Szoboszlai|CM/CAM|Box-to-Box|82|186|74|77;Ryan Gravenberch|CM|Box-to-Box|79|190|83|70;Mohamed Salah|RW/RM/ST|Inside Forward,Winger,Advanced Forward|90|175|71|89;Luis Díaz|LW|Winger,Inside Forward|84|180|65|90;Darwin Núñez|ST|Advanced Forward,Pressing Forward|82|187|81|90;Cody Gakpo|LW/ST|Inside Forward,False 9|82|193|76|80;Diogo Jota|ST/LW|Poacher,Inside Forward|84|178|70|82"},
+{c:'Barcelona',s:'2010-11',col:'#a50044',p:"Víctor Valdés|GK|Sweeper Keeper|85|183|78|55;Dani Alves|RB|Wingback|87|172|64|86;Gerard Piqué|CB|Ball-Playing|87|194|85|62;Carles Puyol|CB|Stopper,Covering|87|178|78|70;Éric Abidal|LB/CB|Fullback|84|186|75|78;Sergio Busquets|CDM|Holding,Deep-Lying Playmaker|86|189|76|50;Xavi|CM|Deep-Lying Playmaker,Playmaker|92|170|68|64;Andrés Iniesta|CM/LW|Playmaker|91|171|68|76;Lionel Messi|RW/ST/CAM|False 9,Inside Forward|94|170|72|92;David Villa|LW/ST|Inside Forward,Poacher|88|175|69|85;Pedro|LW/RW|Winger,Pressing Forward|84|169|64|85;Javier Mascherano|CDM/CB|Holding,Ball-Winner,Covering|85|174|73|72"},
+{c:'Real Madrid',s:'2016-17',col:'#febe10',p:"Keylor Navas|GK|Shot Stopper|85|185|80|60;Dani Carvajal|RB|Fullback|84|173|73|82;Sergio Ramos|CB|Stopper,Ball-Playing|90|184|82|74;Raphaël Varane|CB|Covering|85|191|81|82;Marcelo|LB|Wingback|87|174|75|80;Casemiro|CDM|Holding,Ball-Winner|85|185|84|60;Toni Kroos|CM|Deep-Lying Playmaker|89|183|76|54;Luka Modrić|CM|Playmaker,Deep-Lying Playmaker|89|172|66|74;Isco|CAM/CM|Playmaker|85|176|79|70;Cristiano Ronaldo|ST/LW|Advanced Forward,Inside Forward|94|187|83|90;Karim Benzema|ST|False 9,Advanced Forward|86|185|81|76;Gareth Bale|RW|Inside Forward|89|185|82|93"},
+{c:'Manchester City',s:'2017-18',col:'#6cabdd',p:"Ederson|GK|Sweeper Keeper|83|188|86|63;Kyle Walker|RB|Fullback|84|183|83|93;Nicolás Otamendi|CB|Stopper|84|183|81|64;John Stones|CB|Ball-Playing|81|188|70|66;Fabian Delph|LB/CM|Inverted Fullback|77|174|60|70;Fernandinho|CDM|Holding,Ball-Winner|86|179|67|68;Kevin De Bruyne|CM/CAM|Playmaker|91|181|70|78;David Silva|CM/CAM|Playmaker|89|173|67|66;Raheem Sterling|LW/RW|Inside Forward|85|170|69|92;Leroy Sané|LW|Winger|85|183|75|94;Sergio Agüero|ST|Poacher,Advanced Forward|89|173|70|85;Gabriel Jesus|ST|Pressing Forward|82|175|73|85;Bernardo Silva|RW/CAM|Wide Playmaker|83|173|64|78"},
+{c:'Manchester United',s:'2007-08',col:'#da291c',p:"Edwin van der Sar|GK|Sweeper Keeper|88|197|90|50;Wes Brown|RB|Fullback|79|186|80|74;Rio Ferdinand|CB|Ball-Playing,Covering|88|189|80|74;Nemanja Vidić|CB|Stopper|88|188|84|68;Patrice Evra|LB|Wingback|85|175|76|84;Michael Carrick|CDM/CM|Deep-Lying Playmaker|84|188|74|60;Paul Scholes|CM|Playmaker,Deep-Lying Playmaker|86|168|70|60;Owen Hargreaves|CDM|Holding,Ball-Winner|82|178|70|72;Cristiano Ronaldo|RW/LW/ST|Inside Forward,Advanced Forward|92|186|80|93;Wayne Rooney|ST/CAM|Advanced Forward,Shadow Striker|89|176|83|82;Carlos Tevez|ST|Pressing Forward|86|173|75|80;Ryan Giggs|LW/LM|Winger|84|179|68|78"},
+{c:'Arsenal',s:'2003-04',col:'#ef0107',p:"Jens Lehmann|GK|Shot Stopper|85|190|87|52;Lauren|RB|Fullback|82|178|71|76;Sol Campbell|CB|Stopper|87|188|92|72;Kolo Touré|CB|Covering|82|178|76|83;Ashley Cole|LB|Wingback|85|176|67|88;Patrick Vieira|CDM/CM|Box-to-Box,Ball-Winner|90|193|82|74;Gilberto Silva|CDM|Holding|83|185|78|62;Robert Pirès|LM/LW|Wide Playmaker,Inside Forward|88|186|73|80;Freddie Ljungberg|RM/RW|Winger|84|175|70|82;Dennis Bergkamp|ST/CAM|False 9,Playmaker|88|188|78|66;Thierry Henry|ST/LW|Advanced Forward,Inside Forward|94|188|83|95"},
+{c:'Bayern Munich',s:'2012-13',col:'#dc052d',p:"Manuel Neuer|GK|Sweeper Keeper|90|193|92|60;Philipp Lahm|RB/LB|Fullback,Inverted Fullback|88|170|66|76;Jérôme Boateng|CB|Stopper,Ball-Playing|84|192|90|80;Dante|CB|Stopper|82|187|87|60;David Alaba|LB|Wingback|84|180|76|85;Bastian Schweinsteiger|CDM/CM|Deep-Lying Playmaker,Box-to-Box|88|183|79|66;Javi Martínez|CDM/CB|Holding,Ball-Winner|84|190|81|60;Toni Kroos|CM/CAM|Playmaker|85|183|76|60;Thomas Müller|CAM/RW|Shadow Striker|86|185|75|76;Arjen Robben|RW|Inside Forward|89|180|80|91;Franck Ribéry|LW|Winger,Inside Forward|90|170|72|90;Mario Mandžukić|ST|Target Forward,Pressing Forward|84|190|85|70"},
+{c:'AC Milan',s:'2004-05',col:'#fb090b',p:"Dida|GK|Shot Stopper|87|195|85|50;Cafu|RB|Wingback|86|176|75|84;Alessandro Nesta|CB|Covering,Ball-Playing|90|187|79|72;Jaap Stam|CB|Stopper|85|191|88|64;Paolo Maldini|LB/CB|Fullback,Covering|89|186|85|70;Andrea Pirlo|CDM/CM|Deep-Lying Playmaker|89|177|68|62;Gennaro Gattuso|CDM|Ball-Winner,Holding|85|177|77|70;Clarence Seedorf|CM|Box-to-Box,Playmaker|87|176|80|70;Kaká|CAM|Shadow Striker,Playmaker|91|186|82|88;Andriy Shevchenko|ST|Advanced Forward|92|183|73|89;Hernán Crespo|ST|Poacher|86|184|79|76"},
+{c:'Inter Milan',s:'2009-10',col:'#0068a8',p:"Júlio César|GK|Shot Stopper|88|186|79|55;Maicon|RB|Wingback|88|184|77|86;Lúcio|CB|Stopper|87|188|86|72;Walter Samuel|CB|Stopper|86|182|81|60;Javier Zanetti|LB/RB/CM|Fullback|86|178|71|72;Esteban Cambiasso|CDM|Holding,Deep-Lying Playmaker|87|177|72|60;Thiago Motta|CDM|Holding|83|188|82|58;Wesley Sneijder|CAM|Playmaker|89|170|68|72;Samuel Eto'o|RW/ST|Advanced Forward,Pressing Forward|88|180|75|89;Diego Milito|ST|Poacher,Advanced Forward|88|181|78|76;Goran Pandev|LW|Winger|82|184|72|76"},
+{c:'Juventus',s:'2016-17',col:'#1d1d1b',p:"Gianluigi Buffon|GK|Shot Stopper|88|192|92|50;Dani Alves|RB|Wingback|84|172|70|80;Leonardo Bonucci|CB|Ball-Playing|88|190|86|62;Giorgio Chiellini|CB|Stopper|88|187|85|68;Andrea Barzagli|CB|Covering|86|187|87|58;Alex Sandro|LB|Wingback|85|180|80|84;Miralem Pjanić|CM/CDM|Deep-Lying Playmaker|86|180|72|70;Sami Khedira|CM|Box-to-Box|85|189|90|64;Paulo Dybala|CAM/ST|Shadow Striker,False 9|88|177|75|84;Gonzalo Higuaín|ST|Poacher|89|186|82|76;Mario Mandžukić|LW/ST|Target Forward|84|190|85|68"},
+{c:'Liverpool',s:'2018-19',col:'#c8102e',p:"Alisson|GK|Sweeper Keeper|89|193|91|56;Trent Alexander-Arnold|RB|Inverted Fullback,Wingback|83|175|69|76;Virgil van Dijk|CB|Ball-Playing,Stopper|91|195|92|75;Joël Matip|CB|Ball-Playing|81|195|88|65;Andy Robertson|LB|Wingback|86|178|64|82;Fabinho|CDM|Holding,Ball-Winner|85|188|78|66;Jordan Henderson|CM|Box-to-Box|84|182|67|68;Georginio Wijnaldum|CM|Box-to-Box|84|175|69|74;Mohamed Salah|RW|Inside Forward|89|175|71|91;Sadio Mané|LW|Inside Forward|88|175|69|94;Roberto Firmino|ST|False 9,Pressing Forward|86|181|76|78"},
+{c:'Leicester City',s:'2015-16',col:'#003090',p:"Kasper Schmeichel|GK|Shot Stopper|82|189|89|55;Danny Simpson|RB|Fullback|75|178|73|74;Robert Huth|CB|Stopper|79|191|93|45;Wes Morgan|CB|Stopper|77|185|86|40;Christian Fuchs|LB|Fullback|79|186|81|70;N'Golo Kanté|CDM/CM|Ball-Winner,Box-to-Box|84|168|70|78;Danny Drinkwater|CM|Deep-Lying Playmaker|80|177|70|62;Riyad Mahrez|RW|Inside Forward|85|179|61|85;Marc Albrighton|LM|Winger|78|175|74|74;Shinji Okazaki|ST|Pressing Forward|77|172|76|70;Jamie Vardy|ST|Advanced Forward|85|179|74|94"},
+{c:'Borussia Dortmund',s:'2012-13',col:'#fde100',p:"Roman Weidenfeller|GK|Shot Stopper|82|190|94|50;Łukasz Piszczek|RB|Wingback|82|184|79|78;Mats Hummels|CB|Ball-Playing|86|191|92|62;Neven Subotić|CB|Stopper|83|193|87|66;Marcel Schmelzer|LB|Fullback|79|181|74|78;İlkay Gündoğan|CDM/CM|Deep-Lying Playmaker|84|180|79|68;Sven Bender|CDM|Ball-Winner|80|186|79|66;Marco Reus|LW/CAM|Inside Forward|85|180|71|88;Mario Götze|CAM|Playmaker|86|176|71|82;Jakub Błaszczykowski|RW|Winger|82|176|74|84;Robert Lewandowski|ST|Advanced Forward|86|185|79|80"},
+{c:'Atlético Madrid',s:'2013-14',col:'#cb3524',p:"Thibaut Courtois|GK|Shot Stopper|85|199|96|48;Juanfran|RB|Wingback|81|180|70|82;Diego Godín|CB|Stopper|85|187|78|66;Miranda|CB|Stopper|83|186|78|60;Filipe Luís|LB|Fullback|83|182|73|78;Gabi|CDM|Ball-Winner,Holding|82|180|75|62;Tiago|CDM|Holding|80|182|73|50;Koke|CM/LM|Box-to-Box,Playmaker|84|176|74|70;Arda Turan|LM|Wide Playmaker|84|177|76|76;Raúl García|CM/ST|Target Forward|80|184|80|68;Diego Costa|ST|Advanced Forward,Target Forward|86|188|85|82;David Villa|ST|Poacher|82|175|69|74"},
+{c:'Paris Saint-Germain',s:'2022-23',col:'#004170',p:"Gianluigi Donnarumma|GK|Shot Stopper|88|196|90|50;Achraf Hakimi|RB/RWB|Wingback|85|181|73|92;Marquinhos|CB|Covering,Ball-Playing|87|183|75|76;Sergio Ramos|CB|Stopper|84|184|82|60;Nuno Mendes|LB/LWB|Wingback|82|176|70|87;Marco Verratti|CM|Deep-Lying Playmaker|87|165|60|70;Vitinha|CM|Playmaker|80|172|64|72;Lionel Messi|RW/CAM|Playmaker,Inside Forward|91|170|72|80;Neymar|LW/CAM|Inside Forward,Playmaker|89|175|68|87;Kylian Mbappé|ST/LW|Advanced Forward|91|178|73|97"},
+{c:'Napoli',s:'2022-23',col:'#12a0d7',p:"Alex Meret|GK|Shot Stopper|80|190|83|50;Giovanni Di Lorenzo|RB|Fullback|84|183|81|76;Kim Min-jae|CB|Stopper,Covering|84|190|88|80;Amir Rrahmani|CB|Stopper|80|192|87|60;Mário Rui|LB|Fullback|79|170|68|72;Stanislav Lobotka|CDM|Deep-Lying Playmaker|84|170|66|62;Frank Anguissa|CM|Box-to-Box|84|184|78|72;Piotr Zieliński|CM|Playmaker|83|180|70|72;Khvicha Kvaratskhelia|LW|Inside Forward,Winger|86|183|76|86;Matteo Politano|RW|Inside Forward|80|171|67|82;Victor Osimhen|ST|Advanced Forward|88|186|78|92"},
+{c:'Manchester City',s:'2022-23',col:'#6cabdd',p:"Ederson|GK|Sweeper Keeper|88|188|86|63;Kyle Walker|RB|Fullback|84|183|83|90;Rúben Dias|CB|Stopper,Ball-Playing|88|187|82|66;Manuel Akanji|CB|Covering|84|188|85|72;Nathan Aké|CB/LB|Fullback,Covering|83|180|75|70;John Stones|CB/CDM|Ball-Playing|85|188|70|66;Rodri|CDM|Holding,Deep-Lying Playmaker|89|191|82|60;Kevin De Bruyne|CM/CAM|Playmaker|91|181|70|74;İlkay Gündoğan|CM|Box-to-Box,Playmaker|86|180|79|66;Bernardo Silva|RW/CM|Wide Playmaker|87|173|64|76;Jack Grealish|LW|Winger|85|180|68|80;Erling Haaland|ST|Advanced Forward,Poacher|91|195|88|89;Phil Foden|LW/CAM|Inside Forward|86|171|69|84"},
+{c:'Real Madrid',s:'2023-24',col:'#febe10',p:"Andriy Lunin|GK|Shot Stopper|81|191|80|50;Dani Carvajal|RB|Fullback|85|173|73|76;Antonio Rüdiger|CB|Stopper|87|190|85|80;Nacho|CB|Covering|82|180|76|68;Ferland Mendy|LB|Fullback|82|180|73|85;Aurélien Tchouaméni|CDM|Holding,Ball-Winner|85|187|81|70;Federico Valverde|CM|Box-to-Box|88|182|78|88;Toni Kroos|CM|Deep-Lying Playmaker|87|183|76|50;Luka Modrić|CM|Playmaker|86|172|66|68;Jude Bellingham|CAM/CM|Box-to-Box,Shadow Striker|90|186|75|80;Vinícius Júnior|LW|Inside Forward,Winger|90|176|73|95;Rodrygo|RW/ST|Inside Forward|86|174|64|90"},
+{c:'Barcelona',s:'2014-15',col:'#a50044',p:"Marc-André ter Stegen|GK|Sweeper Keeper|85|187|85|58;Dani Alves|RB|Wingback|85|172|64|82;Gerard Piqué|CB|Ball-Playing|87|194|85|60;Javier Mascherano|CB/CDM|Covering,Ball-Winner|85|174|73|70;Jordi Alba|LB|Wingback|85|170|68|92;Sergio Busquets|CDM|Holding,Deep-Lying Playmaker|87|189|76|50;Ivan Rakitić|CM|Box-to-Box|86|184|78|66;Andrés Iniesta|CM|Playmaker|89|171|68|72;Lionel Messi|RW|Inside Forward,False 9|94|170|72|90;Neymar|LW|Inside Forward,Winger|88|175|68|92;Luis Suárez|ST|Advanced Forward|89|182|86|78"},
+{c:'Chelsea',s:'2004-05',col:'#034694',p:"Petr Čech|GK|Shot Stopper|88|196|90|50;Paulo Ferreira|RB|Fullback|80|183|76|72;John Terry|CB|Stopper|88|187|90|60;Ricardo Carvalho|CB|Covering|87|183|78|70;William Gallas|LB/CB|Fullback,Covering|84|180|72|74;Claude Makélélé|CDM|Holding|88|170|69|66;Frank Lampard|CM|Box-to-Box|89|184|88|72;Tiago|CM|Box-to-Box|80|181|75|66;Arjen Robben|LW/RW|Inside Forward|86|180|80|92;Damien Duff|LW/RW|Winger|84|177|70|85;Didier Drogba|ST|Target Forward,Advanced Forward|85|188|91|82;Eiður Guðjohnsen|ST/CAM|False 9|82|186|80|68"},
+{c:'Arsenal',s:'2023-24',col:'#ef0107',p:"David Raya|GK|Sweeper Keeper|84|183|80|56;Ben White|RB|Fullback|83|185|78|74;William Saliba|CB|Covering,Ball-Playing|86|192|85|82;Gabriel Magalhães|CB|Stopper|86|190|88|64;Oleksandr Zinchenko|LB|Inverted Fullback|80|175|64|70;Declan Rice|CDM/CM|Holding,Box-to-Box|87|185|80|72;Martin Ødegaard|CAM|Playmaker|89|178|68|74;Kai Havertz|CM/ST|Box-to-Box,False 9|83|193|83|74;Bukayo Saka|RW|Inside Forward|87|178|72|85;Gabriel Martinelli|LW|Winger|84|176|75|89;Gabriel Jesus|ST|Pressing Forward|81|175|73|82;Leandro Trossard|LW|Inside Forward|82|172|61|78"},
+{c:'Bayer Leverkusen',s:'2023-24',col:'#e32221',p:"Lukáš Hrádecký|GK|Shot Stopper|83|190|79|50;Jeremie Frimpong|RWB/RB|Wingback|84|171|63|94;Jonathan Tah|CB|Stopper|85|195|97|70;Edmond Tapsoba|CB|Ball-Playing|83|192|78|72;Piero Hincapié|CB/LB|Covering|81|184|80|80;Alejandro Grimaldo|LWB/LB|Wingback|86|171|69|82;Granit Xhaka|CDM|Deep-Lying Playmaker|86|186|82|50;Robert Andrich|CDM|Ball-Winner|81|187|80|62;Florian Wirtz|CAM|Playmaker|89|177|71|84;Jonas Hofmann|CAM/RW|Shadow Striker|81|176|72|72;Victor Boniface|ST|Target Forward,Advanced Forward|84|191|92|84;Amine Adli|CAM/LW|Inside Forward|78|174|68|84"},
+{c:'Tottenham Hotspur',s:'2016-17',col:'#132257',p:"Hugo Lloris|GK|Sweeper Keeper|88|188|82|70;Kyle Walker|RB|Fullback|83|183|83|91;Toby Alderweireld|CB|Ball-Playing|86|186|81|64;Jan Vertonghen|CB|Covering|85|189|86|66;Danny Rose|LB|Wingback|81|174|72|86;Victor Wanyama|CDM|Ball-Winner|82|188|85|64;Mousa Dembélé|CM|Box-to-Box|84|187|82|66;Christian Eriksen|CAM|Playmaker|87|182|76|72;Dele Alli|CAM|Shadow Striker|84|188|74|74;Son Heung-min|LW|Inside Forward|82|183|77|88;Harry Kane|ST|Advanced Forward,Target Forward|87|188|86|70"},
+{c:'Manchester United',s:'1998-99',col:'#da291c',p:"Peter Schmeichel|GK|Shot Stopper|89|191|92|50;Gary Neville|RB|Fullback|82|180|77|70;Jaap Stam|CB|Stopper|87|191|92|66;Ronny Johnsen|CB|Covering|80|190|86|66;Denis Irwin|LB|Fullback|83|173|70|72;Roy Keane|CDM/CM|Box-to-Box,Ball-Winner|89|178|80|72;Paul Scholes|CM|Playmaker|85|168|70|66;David Beckham|RM|Wide Playmaker|87|180|75|74;Ryan Giggs|LM|Winger|87|179|68|88;Dwight Yorke|ST|Advanced Forward|85|179|76|80;Andy Cole|ST|Poacher|85|176|70|82;Ole Gunnar Solskjær|ST|Poacher|82|178|70|76"},
+{c:'Barcelona',s:'2005-06',col:'#a50044',p:"Víctor Valdés|GK|Sweeper Keeper|82|183|78|55;Juliano Belletti|RB|Fullback|80|175|72|76;Carles Puyol|CB|Stopper,Covering|88|178|78|72;Rafael Márquez|CB|Ball-Playing|85|182|75|66;Giovanni van Bronckhorst|LB|Fullback|82|178|76|74;Edmílson|CDM|Holding|81|183|78|60;Deco|CM|Playmaker|89|174|73|70;Xavi|CM|Deep-Lying Playmaker|84|170|68|64;Ludovic Giuly|RW|Winger|83|164|62|86;Ronaldinho|LW/CAM|Inside Forward,Playmaker|95|181|80|86;Samuel Eto'o|ST|Advanced Forward|89|180|75|92;Lionel Messi|RW|Inside Forward|83|170|67|90"},
+{c:'Real Madrid',s:'2001-02',col:'#febe10',p:"Iker Casillas|GK|Shot Stopper|84|185|84|64;Míchel Salgado|RB|Fullback|82|174|72|74;Fernando Hierro|CB|Ball-Playing|86|187|82|55;Iván Helguera|CB|Covering|83|184|78|60;Roberto Carlos|LB|Wingback|89|168|70|92;Claude Makélélé|CDM|Holding|86|170|69|68;Zinedine Zidane|CAM|Playmaker|94|185|80|74;Luís Figo|RW|Winger,Wide Playmaker|92|180|75|84;Raúl|ST|Advanced Forward|90|180|73|80;Fernando Morientes|ST|Target Forward|84|186|79|66;Santiago Solari|LM|Winger|80|181|74|76"},
+{c:'Ajax',s:'2018-19',col:'#d2122e',p:"André Onana|GK|Sweeper Keeper|80|190|93|56;Noussair Mazraoui|RB|Fullback|75|183|70|80;Matthijs de Ligt|CB|Stopper|83|189|89|66;Daley Blind|CB/LB|Ball-Playing|80|180|72|62;Nicolás Tagliafico|LB|Fullback|80|172|64|80;Frenkie de Jong|CM|Deep-Lying Playmaker|85|181|74|78;Lasse Schöne|CM|Playmaker|78|176|70|60;Donny van de Beek|CAM|Box-to-Box,Shadow Striker|80|184|76|74;Hakim Ziyech|RW|Wide Playmaker,Inside Forward|84|180|65|78;David Neres|LW|Winger|81|177|66|88;Dušan Tadić|ST/LW|False 9|84|181|76|72"},
+{c:'Monaco',s:'2016-17',col:'#e51b22',p:"Danijel Subašić|GK|Shot Stopper|80|191|84|52;Djibril Sidibé|RB|Wingback|80|182|71|82;Kamil Glik|CB|Stopper|80|190|88|60;Jemerson|CB|Covering|77|184|78|70;Benjamin Mendy|LB|Wingback|79|185|85|84;Fabinho|CM/CDM|Holding,Box-to-Box|82|188|78|66;Tiémoué Bakayoko|CDM|Ball-Winner|79|185|77|70;Bernardo Silva|RW|Wide Playmaker|82|173|64|78;Thomas Lemar|LM|Winger|82|170|58|80;Radamel Falcao|ST|Poacher|85|177|72|70;Kylian Mbappé|ST|Advanced Forward|83|178|73|94"},
+{c:'Bayern Munich',s:'2019-20',col:'#dc052d',p:"Manuel Neuer|GK|Sweeper Keeper|89|193|92|58;Benjamin Pavard|RB|Fullback|81|186|76|64;Jérôme Boateng|CB|Ball-Playing|82|192|90|68;David Alaba|CB/LB|Ball-Playing,Covering|85|180|76|78;Alphonso Davies|LB|Wingback|82|183|75|96;Joshua Kimmich|CDM/RB|Deep-Lying Playmaker,Box-to-Box|88|177|75|70;Leon Goretzka|CM|Box-to-Box|85|189|82|76;Thiago|CM|Playmaker|87|174|70|66;Thomas Müller|CAM|Shadow Striker|87|185|75|70;Serge Gnabry|RW|Inside Forward|85|176|77|88;Kingsley Coman|LW|Winger|84|179|70|92;Robert Lewandowski|ST|Poacher,Advanced Forward|91|185|81|78"}];
+DR_TEAMS.forEach((t,i)=>{t.id=i;t.players=t.p.split(';').map(r=>{const f=r.split('|');return{n:f[0],pos:f[1].split('/'),roles:f[2].split(','),ovr:+f[3],h:+f[4],w:+f[5],pac:+f[6],club:t.c,season:t.s,tid:i,col:t.col};});});
+// formations: GK + back line + the rest; x = 0..100 left→right, y = 0..100 from own goal
+const DR_B4=[['LB',13,31],['CB',36,25],['CB',64,25],['RB',87,31]],DR_B3=[['CB',25,27],['CB',50,24],['CB',75,27]],DR_B5=[['LWB',8,38],['CB',28,26],['CB',50,23],['CB',72,26],['RWB',92,38]];
+const drF=(back,rest)=>[['GK',50,9]].concat(back,rest);
+const DR_FORM={
+ '4-3-3':drF(DR_B4,[['CDM',50,42],['CM',28,56],['CM',72,56],['LW',15,79],['ST',50,87],['RW',85,79]]),
+ '4-3-3 (attack)':drF(DR_B4,[['CM',30,47],['CM',70,47],['CAM',50,62],['LW',15,80],['ST',50,88],['RW',85,80]]),
+ '4-3-3 (defend)':drF(DR_B4,[['CDM',33,43],['CDM',67,43],['CM',50,56],['LW',15,79],['ST',50,87],['RW',85,79]]),
+ '4-2-3-1':drF(DR_B4,[['CDM',35,43],['CDM',65,43],['LW',14,68],['CAM',50,64],['RW',86,68],['ST',50,87]]),
+ '4-4-2':drF(DR_B4,[['LM',12,57],['CM',37,51],['CM',63,51],['RM',88,57],['ST',36,84],['ST',64,84]]),
+ '4-4-2 (holding)':drF(DR_B4,[['LM',12,57],['CDM',37,45],['CDM',63,45],['RM',88,57],['ST',36,84],['ST',64,84]]),
+ '4-4-1-1':drF(DR_B4,[['LM',12,56],['CM',37,50],['CM',63,50],['RM',88,56],['CAM',50,70],['ST',50,87]]),
+ '4-1-2-1-2 (diamond)':drF(DR_B4,[['CDM',50,41],['CM',28,54],['CM',72,54],['CAM',50,66],['ST',36,85],['ST',64,85]]),
+ '4-1-2-1-2 (wide)':drF(DR_B4,[['CDM',50,41],['LM',13,58],['RM',87,58],['CAM',50,64],['ST',36,85],['ST',64,85]]),
+ '4-3-1-2':drF(DR_B4,[['CM',25,49],['CM',50,46],['CM',75,49],['CAM',50,66],['ST',36,85],['ST',64,85]]),
+ '4-3-2-1':drF(DR_B4,[['CM',25,48],['CDM',50,44],['CM',75,48],['CAM',33,68],['CAM',67,68],['ST',50,87]]),
+ '4-1-4-1':drF(DR_B4,[['CDM',50,41],['LM',12,59],['CM',36,55],['CM',64,55],['RM',88,59],['ST',50,86]]),
+ '4-5-1':drF(DR_B4,[['LM',12,57],['CM',32,50],['CAM',50,64],['CM',68,50],['RM',88,57],['ST',50,86]]),
+ '4-2-2-2':drF(DR_B4,[['CDM',35,43],['CDM',65,43],['CAM',22,66],['CAM',78,66],['ST',36,86],['ST',64,86]]),
+ '4-2-4':drF(DR_B4,[['CM',35,48],['CM',65,48],['LW',13,76],['ST',37,86],['ST',63,86],['RW',87,76]]),
+ '4-1-3-2':drF(DR_B4,[['CDM',50,41],['LM',14,58],['CM',50,56],['RM',86,58],['ST',36,84],['ST',64,84]]),
+ '3-4-3':drF(DR_B3,[['LM',10,55],['CM',37,50],['CM',63,50],['RM',90,55],['LW',17,79],['ST',50,87],['RW',83,79]]),
+ '3-4-2-1':drF(DR_B3,[['LM',10,54],['CM',37,48],['CM',63,48],['RM',90,54],['CAM',33,70],['CAM',67,70],['ST',50,87]]),
+ '3-4-1-2':drF(DR_B3,[['LM',10,54],['CM',37,48],['CM',63,48],['RM',90,54],['CAM',50,68],['ST',36,86],['ST',64,86]]),
+ '3-5-2':drF(DR_B3,[['LWB',9,52],['CDM',50,42],['CM',30,58],['CM',70,58],['RWB',91,52],['ST',37,84],['ST',63,84]]),
+ '3-1-4-2':drF(DR_B3,[['CDM',50,41],['LM',10,58],['CM',36,56],['CM',64,56],['RM',90,58],['ST',36,84],['ST',64,84]]),
+ '3-4-3 (diamond)':drF(DR_B3,[['CDM',50,41],['LM',13,55],['RM',87,55],['CAM',50,66],['LW',17,80],['ST',50,88],['RW',83,80]]),
+ '3-5-1-1':drF(DR_B3,[['LWB',9,52],['CM',30,50],['CDM',50,42],['CM',70,50],['RWB',91,52],['CAM',50,68],['ST',50,87]]),
+ '5-3-2':drF(DR_B5,[['CM',28,53],['CDM',50,46],['CM',72,53],['ST',36,84],['ST',64,84]]),
+ '5-4-1':drF(DR_B5,[['LM',14,62],['CM',37,53],['CM',63,53],['RM',86,62],['ST',50,86]]),
+ '5-2-3':drF(DR_B5,[['CM',35,52],['CM',65,52],['LW',16,78],['ST',50,87],['RW',84,78]]),
+ '5-2-1-2':drF(DR_B5,[['CDM',35,48],['CDM',65,48],['CAM',50,66],['ST',36,85],['ST',64,85]]),
+ '5-3-1-1':drF(DR_B5,[['CM',28,52],['CDM',50,46],['CM',72,52],['CAM',50,68],['ST',50,87]])};
+const DR_ROLES={GK:['Shot Stopper','Sweeper Keeper'],CB:['Stopper','Ball-Playing','Covering'],LB:['Fullback','Wingback','Inverted Fullback'],RB:['Fullback','Wingback','Inverted Fullback'],LWB:['Wingback'],RWB:['Wingback'],
+ CDM:['Holding','Ball-Winner','Deep-Lying Playmaker'],CM:['Box-to-Box','Playmaker','Deep-Lying Playmaker'],CAM:['Playmaker','Shadow Striker'],LM:['Winger','Wide Playmaker'],RM:['Winger','Wide Playmaker'],
+ LW:['Inside Forward','Winger','Wide Playmaker'],RW:['Inside Forward','Winger','Wide Playmaker'],ST:['Advanced Forward','Poacher','Target Forward','False 9','Pressing Forward']};
+const DR_ADJ={CB:['CDM','RB','LB'],RB:['RWB','CB','RM'],LB:['LWB','CB','LM'],RWB:['RB','RM','RW'],LWB:['LB','LM','LW'],CDM:['CM','CB'],CM:['CDM','CAM'],CAM:['CM','ST','LW','RW'],LM:['LW','LWB','CM'],RM:['RW','RWB','CM'],LW:['LM','RW','ST','CAM'],RW:['RM','LW','ST','CAM'],ST:['LW','RW','CAM']};
+const DR_LINE={GK:'gk',CB:'def',LB:'def',RB:'def',LWB:'def',RWB:'def',CDM:'mid',CM:'mid',CAM:'mid',LM:'mid',RM:'mid',LW:'att',RW:'att',ST:'att'};
+// how well one player suits one slot: position, role and physical profile
+function drFit(p,slot){
+ let fit=p.pos.includes(slot)?1:(p.pos.some(x=>(DR_ADJ[x]||[]).includes(slot))?.93:.72);
+ if((slot==='GK')!==(p.pos[0]==='GK'))fit=.35;
+ const notes=[];let adj=0;
+ const role=p.roles.find(r=>(DR_ROLES[slot]||[]).includes(r));
+ if(role){adj+=1.5;notes.push(role);}else if(fit>.5){adj-=.5;}
+ const h=p.h,pac=p.pac,line=DR_LINE[slot];
+ if(slot==='GK'){if(h>=193){adj+=1;notes.push('Tall keeper');}else if(h<185){adj-=1.5;notes.push('Short keeper');}}
+ if(slot==='CB'){if(h>=190){adj+=1;notes.push('Aerial');}else if(h<180&&!p.roles.includes('Covering')){adj-=1.5;notes.push('Too small');}if(pac<58){adj-=.8;notes.push('Slow turn');}}
+ if(['LB','RB','LWB','RWB'].includes(slot)){if(pac>=85){adj+=1;notes.push('Overlap pace');}else if(pac<70){adj-=1.5;notes.push('Lacks pace');}}
+ if(slot==='CDM'){if(p.w>=78||h>=186){adj+=.5;notes.push('Physical shield');}else if(h<172&&!p.roles.some(r=>r==='Holding'||r==='Ball-Winner')){adj-=.8;notes.push('Lightweight');}}
+ if(['LW','RW','LM','RM'].includes(slot)){if(pac>=88){adj+=1;notes.push('Electric pace');}else if(pac<72){adj-=1.5;notes.push('Lacks pace');}}
+ if(slot==='ST'){if(p.roles.includes('Target Forward')&&h>=186){adj+=1;notes.push('Target man');}if(pac>=88){adj+=.5;notes.push('Runs in behind');}else if(pac<66&&h<182){adj-=1;notes.push('No outlet');}}
+ const score=p.ovr*fit+adj;return{score,fit,notes,line};}
+function drTeamRating(form,picks){
+ const slots=DR_FORM[form],filled=slots.map((s,i)=>picks[i]?Object.assign({slot:s[0]},drFit(picks[i],s[0]),{p:picks[i]}):null);
+ const got=filled.filter(Boolean);if(!got.length)return{ovr:0,lines:{},mods:[],chem:0};
+ const avgOf=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+ const lines={};['gk','def','mid','att'].forEach(l=>{const a=got.filter(x=>x.line===l).map(x=>x.score);lines[l]=a.length?avgOf(a):null;});
+ const mods=[];const m=(v,t)=>{mods.push([v,t]);};
+ const full=got.length===slots.length;
+ if(full){
+  const back=got.filter(x=>x.line==='def').map(x=>x.p),mid=got.filter(x=>x.line==='mid').map(x=>x.p),att=got.filter(x=>x.line==='att').map(x=>x.p);
+  const bp=avgOf(back.map(p=>p.pac));if(bp<66)m(-1,'Slow back line ('+Math.round(bp)+' pace)');else if(bp>=80)m(.6,'Quick back line ('+Math.round(bp)+' pace)');
+  const air=got.filter(x=>x.slot==='GK'||x.slot==='CB'||x.slot==='ST').map(x=>x.p.h),ah=avgOf(air);if(ah>=189)m(.8,'Aerial dominance ('+Math.round(ah)+' cm)');else if(ah<=181)m(-.8,'Weak in the air ('+Math.round(ah)+' cm)');
+  const has=(arr,roles)=>arr.some(p=>p.roles.some(r=>roles.includes(r)));
+  if(!has(mid,['Holding','Ball-Winner']))m(-1.2,'No shield in midfield');
+  if(!has(mid.concat(att),['Playmaker','Deep-Lying Playmaker','Wide Playmaker']))m(-1,'No creator');
+  if(mid.filter(p=>p.roles.includes('Box-to-Box')).length>=2)m(.5,'Engine room');
+  if(!att.some(p=>p.pac>=86))m(-.8,'No runner in behind');
+  const mw=avgOf(mid.map(p=>p.w));if(mw<68)m(-.6,'Lightweight midfield');else if(mw>=78)m(.4,'Physical midfield');}
+ let chem=0;const links=[];
+ for(let i=0;i<got.length;i++)for(let j=i+1;j<got.length;j++){const a=got[i].p,b=got[j].p;if(a.tid===b.tid){chem+=.3;}else if(a.club===b.club)chem+=.12;}
+ chem=Math.min(3,chem);
+ const base=avgOf(got.map(x=>x.score)),modSum=mods.reduce((s,x)=>s+x[0],0);
+ return{ovr:base+modSum+chem,base,lines,mods,chem,filled};}
+function drAutoXI(t,form){const slots=DR_FORM[form],left=t.players.slice(),picks=[];
+ slots.forEach((s,i)=>{let best=-1,bi=-1;left.forEach((p,k)=>{const f=drFit(p,s[0]).score;if(f>best){best=f;bi=k;}});picks[i]=bi>=0?left.splice(bi,1)[0]:null;});return picks;}
+const DR={phase:'setup',form:'4-3-3',picks:[],team:null,sel:null,rerolls:2,spinning:false,last:-1,results:[]};
+let drBest=0;try{drBest=+localStorage.getItem('fl_draftBest')||0;}catch(e){}
+const drShort=n=>{const w=n.split(' ');return w.length>1?w.slice(1).join(' '):n;};
+const drFitCls=f=>f>=1?'ok':f>=.9?'mid':'bad';
+function renderDraft(){const b=$('drBody');if(!b)return;
+ if(DR.phase==='setup'){
+  const mini=f=>'<svg viewBox="0 0 60 80" aria-hidden="true"><rect x="1" y="1" width="58" height="78" rx="5" fill="#123f22" stroke="#1d5a33"/><line x1="1" y1="40" x2="59" y2="40" stroke="rgba(255,255,255,.2)"/>'+DR_FORM[f].map(s=>'<circle cx="'+(s[1]*.56+2)+'" cy="'+(78-s[2]*.74)+'" r="3.4" fill="#e8b84b"/>').join('')+'</svg>';
+  b.innerHTML='<h2 class="h2">Squad Draft</h2><p class="dr-lead">Spin a random club season, take one player from it, and build an XI. Position, role, height, weight and pace all shape your rating, and players from the same squad link up for chemistry.</p>'+
+   [['Back four','4'],['Back three','3'],['Back five','5']].map(([t,k])=>'<div class="fl dr-fg">'+t+'</div><div class="dr-forms">'+Object.keys(DR_FORM).filter(f=>f[0]===k).map(f=>{const m=f.match(/^(\S+)(?: \((.+)\))?$/);return '<button type="button" class="dr-form'+(f===DR.form?' on':'')+'" data-f="'+f+'" aria-pressed="'+(f===DR.form)+'">'+mini(f)+'<b>'+m[1]+'</b>'+(m[2]?'<small>'+m[2]+'</small>':'')+'</button>';}).join('')+'</div>').join('')+
+   '<div class="dr-start"><button class="btn gold" id="drGo">Start draft</button>'+(drBest?'<span>Best rating '+Math.round(drBest)+'</span>':'')+'</div>'+
+   '<div class="dr-how"><div><b>11 spins</b><span>Each spin lands on one club season. Pick a player and drop them into an open slot.</span></div><div><b>2 rerolls</b><span>Skip a spin you do not like. Use them wisely.</span></div><div><b>Fit matters</b><span>A centre-back at 178 cm or a winger without pace drags your team down.</span></div></div>';
+  b.querySelectorAll('[data-f]').forEach(x=>x.onclick=()=>{DR.form=x.dataset.f;renderDraft();});
+  $('drGo').onclick=()=>{Object.assign(DR,{phase:'draft',picks:new Array(11).fill(null),team:null,sel:null,rerolls:2,results:[]});renderDraft();drSpin();};return;}
+ const R=drTeamRating(DR.form,DR.picks),n=DR.picks.filter(Boolean).length,slots=DR_FORM[DR.form];
+ const sel=DR.sel;
+ const pitch='<div class="dr-pitch" id="drPitch"><i class="dp-half"></i><i class="dp-circ"></i><i class="dp-box b"></i><i class="dp-box t"></i>'+slots.map((s,i)=>{const p=DR.picks[i];
+  if(p){const f=drFit(p,s[0]);return '<div class="dr-slot full '+drFitCls(f.fit)+'" style="left:'+s[1]+'%;bottom:'+s[2]+'%" title="'+esc(p.n+' · '+s[0]+(f.notes.length?' · '+f.notes.join(', '):''))+'"><span class="ds-r">'+Math.round(f.score)+'</span><span class="ds-n">'+esc(drShort(p.n))+'</span><span class="ds-c" style="background:'+p.col+'"></span></div>';}
+  if(sel){const f=drFit(sel,s[0]);return '<button type="button" class="dr-slot open dr-pick '+drFitCls(f.fit)+'" data-slot="'+i+'" style="left:'+s[1]+'%;bottom:'+s[2]+'%" aria-label="Place in '+s[0]+'"><span class="ds-r">'+Math.round(f.score)+'</span><span class="ds-n">'+s[0]+'</span></button>';}
+  return '<div class="dr-slot open" style="left:'+s[1]+'%;bottom:'+s[2]+'%"><span class="ds-p">'+s[0]+'</span></div>';}).join('')+'</div>';
+ const head='<div class="dr-head"><div><b>'+DR.form+'</b><span>'+n+' / 11 drafted</span></div><div class="dr-ovr"><span>Team rating</span><b>'+(n?Math.round(R.ovr):'—')+'</b></div></div>';
+ let side='';
+ if(DR.phase==='draft'){const t=DR.team;
+  side='<div class="dr-reel'+(DR.spinning?' spin':'')+'" style="--tc:'+(t?t.col:'#283859')+'"><div class="dr-reel-in"><span class="dr-season" id="drSeason">'+(t?t.s:'')+'</span><b id="drClub">'+(t?esc(t.c):'Spin for a club')+'</b></div></div>'+
+   '<div class="dr-ctrl"><button class="btn" id="drReroll"'+(DR.rerolls&&t&&!DR.spinning?'':' disabled')+'>Reroll · '+DR.rerolls+' left</button></div>'+
+   (t&&!DR.spinning?'<p class="dr-tip">'+(sel?'Now tap a highlighted slot on the pitch. Numbers show the rating '+esc(drShort(sel.n))+' would have there.':'Pick one player from this squad.')+'</p><div class="dr-squad">'+t.players.map((p,k)=>{const taken=DR.picks.some(q=>q&&q.n===p.n);
+    return '<button type="button" class="dr-pl'+(sel===p?' on':'')+'" data-pk="'+k+'"'+(taken?' disabled':'')+'><span class="dp-ovr">'+p.ovr+'</span><span class="dp-main"><b>'+esc(p.n)+'</b><span class="dp-pos">'+p.pos.join(' / ')+'</span><span class="dp-roles">'+esc(p.roles.join(' · '))+'</span></span><span class="dp-phys"><span>'+p.h+' cm</span><span>'+p.w+' kg</span><span>'+p.pac+' pace</span></span>'+(taken?'<span class="dp-taken">In your XI</span>':'')+'</button>';}).join('')+'</div>':'');}
+ else{const L=R.lines,row=(k,t)=>L[k]==null?'':'<div class="dr-line"><span>'+t+'</span><i><b style="width:'+clamp((L[k]-60)/35*100,4,100)+'%"></b></i><em>'+Math.round(L[k])+'</em></div>';
+  if(R.ovr>drBest){drBest=R.ovr;try{localStorage.setItem('fl_draftBest',drBest);}catch(e){}}
+  side='<div class="dr-final"><span>Final rating</span><b>'+Math.round(R.ovr)+'</b><em>'+(Math.round(R.ovr)>=Math.round(drBest)?'New best':'Best '+Math.round(drBest))+'</em></div>'+
+   '<div class="dr-lines">'+row('gk','Goalkeeper')+row('def','Defence')+row('mid','Midfield')+row('att','Attack')+'<div class="dr-line"><span>Chemistry</span><i><b style="width:'+(R.chem/3*100)+'%"></b></i><em>+'+R.chem.toFixed(1)+'</em></div></div>'+
+   '<div class="dr-mods">'+(R.mods.length?R.mods.map(x=>'<div class="'+(x[0]>0?'up':'down')+'"><span>'+esc(x[1])+'</span><b>'+(x[0]>0?'+':'')+x[0].toFixed(1)+'</b></div>').join(''):'<div><span>A balanced side. No bonuses or penalties.</span></div>')+'</div>'+
+   '<div class="dr-ctrl"><button class="btn gold" id="drPlay">Play a match</button><button class="btn" id="drNew">New draft</button></div>'+
+   (DR.results.length?'<div class="dr-res">'+DR.results.map(r=>'<div class="'+r.k+'"><b>'+r.k.toUpperCase()+'</b><span>'+r.sc+' vs '+esc(r.opp)+'</span><em>'+r.oo+'</em></div>').join('')+'</div>':'');}
+ b.innerHTML='<div class="dr-lay"><div class="dr-left">'+head+pitch+'</div><div class="dr-side">'+side+'</div></div>';
+ b.querySelectorAll('[data-pk]').forEach(x=>x.onclick=()=>{const p=DR.team.players[+x.dataset.pk];DR.sel=DR.sel===p?null:p;renderDraft();if(DR.sel&&innerWidth<900)$('drPitch').scrollIntoView({behavior:'smooth',block:'center'});});
+ b.querySelectorAll('[data-slot]').forEach(x=>x.onclick=()=>{DR.picks[+x.dataset.slot]=DR.sel;DR.sel=null;DR.team=null;
+  if(DR.picks.every(Boolean)){DR.phase='done';renderDraft();}else{renderDraft();setTimeout(drSpin,260);}});
+ const rr=$('drReroll');if(rr)rr.onclick=()=>{if(!DR.rerolls)return;DR.rerolls--;DR.sel=null;drSpin();};
+ const pl=$('drPlay');if(pl)pl.onclick=drPlayMatch;const nw=$('drNew');if(nw)nw.onclick=()=>{DR.phase='setup';renderDraft();};}
+function drSpin(){if(DR.spinning)return;DR.spinning=true;DR.sel=null;
+ let pool=DR_TEAMS.filter(t=>t.id!==DR.last&&t.players.some(p=>!DR.picks.some(q=>q&&q.n===p.n)));const t=pool[rng(0,pool.length-1)];DR.team=t;DR.last=t.id;renderDraft();
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,steps=reduce?0:14;let k=0;
+ const tick=()=>{if(curScreen()!=='draft'){DR.spinning=false;return;}if(k<steps){const r=DR_TEAMS[rng(0,DR_TEAMS.length-1)];const c=$('drClub'),s=$('drSeason');if(c){c.textContent=r.c;s.textContent=r.s;}k++;setTimeout(tick,40+k*k*1.6);}
+  else{DR.spinning=false;renderDraft();}};tick();}
+function drPlayMatch(){const me=drTeamRating(DR.form,DR.picks).ovr,t=DR_TEAMS[rng(0,DR_TEAMS.length-1)],opp=drTeamRating('4-3-3',drAutoXI(t,'4-3-3')).ovr;
+ const pois=l=>{let L=Math.exp(-l),k=0,p=1;do{k++;p*=Math.random();}while(p>L);return k-1;};
+ const d=me-opp,a=pois(1.35*Math.exp(d*.07)),b=pois(1.35*Math.exp(-d*.07));
+ DR.results.unshift({k:a>b?'w':a<b?'l':'d',sc:a+'–'+b,opp:t.c+' '+t.s,oo:Math.round(opp)+' OVR'});DR.results=DR.results.slice(0,6);renderDraft();}
 
 // ═════════ WIZARD ═════════
 function renderWizard(){
@@ -2243,7 +2469,7 @@ const TRACKS=[
  {flag:'🇫🇷',name:'Allez les Bleus',file:'audio/france.mp3'},
  {flag:'🇪🇸',name:'Y Que Fue',file:'audio/spain.mp3'}];
 const MUS={idx:0,on:false,played:false,timer:null,bus:null,step:0,nt:0};
-const MENU_SCREENS=['menu','create'];
+const MENU_SCREENS=['menu','create','draft'];
 MUS.idx=0;
 function musicStart(){const c=auReady();if(!c||MUS.on)return;const tr=TRACKS[MUS.idx],sd=60/tr.bpm/tr.div;MUS.on=true;MUS.played=true;try{localStorage.setItem('fl_track',MUS.idx);}catch(e){}
  const bus=c.createGain();bus.gain.setValueAtTime(0,c.currentTime);bus.gain.linearRampToValueAtTime(1,c.currentTime+1.2);bus.connect(AU.music);const rs=c.createGain();rs.gain.value=.25;bus.connect(rs);rs.connect(AU.rev);MUS.bus=bus;
