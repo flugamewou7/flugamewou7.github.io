@@ -547,7 +547,7 @@ button.dr-slot.full:focus-visible .ds-r{outline:2px solid #fff;outline-offset:3p
 </head>
 <body>
 <div class="toasts" id="toasts"></div>
-<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v29</div>
+<div style="position:fixed;right:10px;bottom:6px;z-index:1001;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(232,184,75,.75);pointer-events:none;">v30</div>
 <button class="snd-btn" id="sndBtn" title="Sound on/off" onclick="toggleSound()">🔊</button>
 <div class="cs-ov" id="csOv"><div class="cs-box"><div class="cs-h"><div class="i" id="csI"></div><div><div class="t" id="csT"></div><div class="s" id="csS"></div></div></div><div class="cs-b"><div class="cs-sc" id="csSc"></div><div class="cs-q" id="csQ"></div><div id="csC"></div></div></div></div>
 <div class="play-ov" id="playOv"><canvas id="playGl"></canvas><canvas id="playCv"></canvas>
@@ -4931,10 +4931,6 @@ function mxShorts(c){const key='sh|'+c.shorts+'|'+c.socks+'|'+c.kit+'|'+c.kit2;c
  x.fillStyle=c.shorts||'#fff';x.fillRect(0,236,1024,276);x.fillStyle=isLight(c.shorts||'#fff')?'rgba(0,0,0,.12)':'rgba(255,255,255,.14)';x.fillRect(0,236,1024,6);
  const st=c.kit===c.shorts?(c.kit2||'#fff'):c.kit;x.fillStyle=st;[300,690].forEach(cx=>x.fillRect(cx,240,10,240));
  return(C[key]=mxTexOf(cv));}
-// photo faces for the hero model (lib/faces), with the skin tone each was shot in
-const PL_FACES=[null,{skin:'#CB8F6D'},{skin:'#7A5445'},{skin:'#D8A88E'},{skin:'#D69D83'},{skin:'#D49874'}];
-const PL_FACE_BY_SKIN=[[3,4,1,0],[3,4,1,5,0],[1,5,4,0],[5,1,0],[2,0],[2,0]];
-function plFaceFor(name,skin){const i=Math.max(0,SKINS.indexOf(skin)),opts=PL_FACE_BY_SKIN[i<0?2:i],k=opts[hash32(String(name)+'face')%opts.length];return k&&PLIMG.faces&&PLIMG.faces[k-1]?k:0;}
 function mxTint(name,col,mode,G){const key=name+'|'+col+'|'+mode+(G?'|h':''),C=G3.mxTex;if(C[key])return C[key];const im=mxImg(name,G);if(!im)return null;const w=im.width,h=im.height,[cv,x]=plCv(w,h);x.drawImage(im,0,0,w,h);
  if(mode==='skin'){const base=[200,160,128],t=[1,3,5].map(i=>parseInt(col.slice(i,i+2),16)),lt=(t[0]+t[1]+t[2])/(base[0]+base[1]+base[2]);
   if(lt<.97){x.globalCompositeOperation='multiply';const v=Math.round(255*Math.max(.25,lt));x.fillStyle='rgb('+v+','+Math.round(v*.96)+','+Math.round(v*.92)+')';x.fillRect(0,0,w,h);}
@@ -4949,10 +4945,9 @@ const MX_SHORT_HAIR=['Buzz Cut','Short Fade','Cornrows','Bald','Textured Crop'];
 function plMkMixamo(c,name,gk,G){const THREE=T3,g=G3,P=mxProto(G),hero=!!G&&(G===PLHERO||G===PLHEROLOD),hi=G===PLHERO;if(!g.mxTex)g.mxTex={};if(!g.mxMats)g.mxMats={};
  const root=new THREE.Group(),body=new THREE.Group();root.add(body);const h=plHash(name||c.name||c.num),ht=.95+(h%11)*.01,bw=.96+((h>>4)%9)*.012;body.scale.set(bw,ht,bw);
  const model=PLSU.clone(P.G.scene);model.scale.setScalar(P.s);model.position.y=P.y0;body.add(model);
- const face=hero?plFaceFor(name,c.skin||SKINS[2]):0,skinC=face?PL_FACES[face].skin:(c.skin||SKINS[2]),hairC=c.hairCol||'#222222',bootHue=(h>>6)%360;
+ const skinC=c.skin||SKINS[2],hairC=c.hairCol||'#222222',bootHue=(h>>6)%360;
  model.traverse(o=>{if(!o.isMesh)return;o.castShadow=g.shadows;o.receiveShadow=false;o.frustumCulled=false;const n=o.material.name;let mat=null;
   if(hero){if(n==='texture_6')mat=mxMat(heroShirt(c,name,hi?1024:512),.8);else if(n==='texture_7'){const k='h|sh|'+c.shorts;mat=g.mxMats[k]||(g.mxMats[k]=new THREE.MeshStandardMaterial({color:new THREE.Color(c.shorts||'#ffffff'),roughness:.82}));}else if(n==='texture_8'){const k='h|so|'+c.socks+c.kit+c.kit2;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(heroSocks(c,PLHERO),.85));}
-   else if(n==='texture_1'&&face){const k='h|face'+face;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTexOf(PLIMG.faces[face-1]),.55));}
    else if(/^texture_[134]$/.test(n)){const k='h|'+n+skinC;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTint(n,skinC,'skin',PLHERO),.55));}else if(n==='texture_2'){if(c.hair==='Bald'){o.visible=false;return;}const k='h|hair'+hairC;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxTint(n,hairC,'hair',PLHERO),.7));mat.alphaTest=.4;}else{o.material=o.material.clone();o.material.roughness=n==='texture_9'?.35:.6;}if(mat){mat.name=n;o.material=mat;}return;}
   if(n==='argentina')mat=mxMat(mxShirt(c,name),.82);
   else if(n==='katok'){const k='m|sh|'+c.shorts+c.socks+c.kit+c.kit2;mat=g.mxMats[k]||(g.mxMats[k]=mxMat(mxShorts(c),.85));}
@@ -4968,7 +4963,7 @@ function plMkMixamo(c,name,gk,G){const THREE=T3,g=G3,P=mxProto(G),hero=!!G&&(G==
  const hips=GG(gb,0,.975,0),spine=GG(hips,0,.06,0),head=GG(spine,0,.63,0),shL=GG(spine,.19,.47,0),shR=GG(spine,-.19,.47,0),elL=GG(shL,0,-.3,0),elR=GG(shR,0,-.3,0),
   hipL=GG(hips,.084,-.04,0),hipR=GG(hips,-.084,-.04,0),knL=GG(hipL,0,-.43,0),knR=GG(hipR,0,-.43,0),anL=GG(knL,0,-.425,0),anR=GG(knR,0,-.425,0);
  const blob=new THREE.Mesh(g.geo.blob,g.blobM);blob.rotation.x=-Math.PI/2;blob.position.y=.015;root.add(blob);
- return{mx:true,hero,face,P,act,root,body,model,B,mixer,aI,aR,aD,aS,aSp,gb,hips,spine,head,shL,shR,elL,elR,hipL,hipR,knL,knR,anL,anR,blob,ry:0,ht,sty:.85+((h>>8)%7)*.05,kf:1,wp:0,wl:0,gq:{}};}
+ return{mx:true,hero,P,act,root,body,model,B,mixer,aI,aR,aD,aS,aSp,gb,hips,spine,head,shL,shR,elL,elR,hipL,hipR,knL,knR,anL,anR,blob,ry:0,ht,sty:.85+((h>>8)%7)*.05,kf:1,wp:0,wl:0,gq:{}};}
 // hero: event-timed mocap one-shots (contact frame lands on the game event)
 function heroActions(m,p,st,rep){if(rep){if(m.one){m.one.a.stop();m.one=null;}m.pst2=st;return;}const A=m.act,P=m.P;
  const go=(k,t0,dur,ts,mir)=>{const a=A[k];if(!a)return;if(m.one&&m.one.a!==a)m.one.a.stop();a.reset();a.time=t0;a.timeScale=0;a.setEffectiveWeight(1);a.play();m.one={a,t0,until:PM.t+dur,ts:ts||1};m.body.scale.x=Math.abs(m.body.scale.x)*(mir?-1:1);};
@@ -5025,7 +5020,7 @@ function plMxDrive(m,p,s,rep,dt,extra){const THREE=T3,P=m.P||G3.mx,st=rep?s.st:p
  m.gy=(m.gy||0);const want=air?0:clamp(m.gy-lo,-.4,.15);m.gy+=(want-m.gy)*Math.min(1,dt*20);m.model.position.y=P.y0+m.gy/m.body.scale.y;}
 
 let PLBODY=null;
-function plLoad3D(){if(T3)return Promise.resolve(T3);if(!T3P)T3P=(location.protocol==='file:'?Promise.reject(new Error('file://')):Promise.all([import('./lib/three.module.min.js'),import('./lib/GLTFLoader.js'),import('./lib/SkeletonUtils.js'),import('./lib/RoomEnvironment.js').catch(()=>null),...['grass_detail.jpg','crowd_a.jpg','crowd_b.jpg','faces/face1.webp','faces/face2.webp','faces/face3.webp','faces/face4.webp','faces/face5.webp'].map(f=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src='./lib/'+f;}))]).then(([m,GL,SU,RE,gI,cA,cB,...fc])=>{T3=m;PLSU=SU;PLIMG={grass:gI,crowdA:cA,crowdB:cB,RE,faces:fc};
+function plLoad3D(){if(T3)return Promise.resolve(T3);if(!T3P)T3P=(location.protocol==='file:'?Promise.reject(new Error('file://')):Promise.all([import('./lib/three.module.min.js'),import('./lib/GLTFLoader.js'),import('./lib/SkeletonUtils.js'),import('./lib/RoomEnvironment.js').catch(()=>null),...['grass_detail.jpg','crowd_a.jpg','crowd_b.jpg'].map(f=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src='./lib/'+f;}))]).then(([m,GL,SU,RE,gI,cA,cB])=>{T3=m;PLSU=SU;PLIMG={grass:gI,crowdA:cA,crowdB:cB,RE};
   const L=new GL.GLTFLoader(),wantSt=!(window.matchMedia&&matchMedia('(pointer:coarse)').matches)&&plPref('gfx','auto')!=='lite'&&plPref('stadium','vinh')!=='classic';
   PLGL=GL;if(wantSt)plLoadStad();
   const heroP=Promise.all([L.loadAsync('./lib/player_hero.glb').then(g=>{PLHERO=g;}),L.loadAsync('./lib/player_hero_lod.glb').then(g=>{PLHEROLOD=g;}).catch(()=>null)]).catch(e=>console.warn('hero model unavailable',e));
